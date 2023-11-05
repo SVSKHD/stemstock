@@ -1,8 +1,8 @@
 import { createRouter } from "next-connect";
-import mongoose from "mongoose";
-import User from "../../models/UserModel"; // Adjust the import path as necessary
+import User from "@/backend/models/user"; // Adjust the import path as necessary
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import db from "@/backend/db/db";
 
 const App = createRouter();
 
@@ -11,7 +11,7 @@ App.post(async (req, res) => {
 
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI);
+    db.connectDb();
 
     // Check if user exists
     const user = await User.findOne({ email: email.toLowerCase() });
@@ -37,13 +37,15 @@ App.post(async (req, res) => {
     };
 
     // Sign the token
-    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+    const token = jwt.sign(payload, process.env.NEXT_PUBLIC_JWT_SECRET, {
       expiresIn: "1d",
     });
     res.status(200).json({ success: true, user: payload.user, token: token });
+    db.disconnectDb();
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error");
+    db.disconnectDb();
   }
 });
 

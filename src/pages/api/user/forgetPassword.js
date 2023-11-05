@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import User from "../../models/UserModel"; // Adjust the import path as necessary
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import db from "@/backend/db/db";
 
 const App = createRouter();
 
@@ -11,7 +12,8 @@ App.post(async (req, res) => {
 
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI);
+    
+    db.connectDb()
 
     // Check if user exists
     const user = await User.findOne({ email: email.toLowerCase() });
@@ -31,9 +33,11 @@ App.post(async (req, res) => {
 
     // Respond with a message
     res.status(200).send("Password reset link has been sent to your email.");
+    db.disconnectDb()
   } catch (error) {
     console.error(error.message);
     res.status(500).send("Server error");
+    db.disconnectDb()
   }
 });
 
