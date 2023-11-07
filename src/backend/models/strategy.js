@@ -1,40 +1,41 @@
-import mongoose from 'mongoose';
-import User from './user';
+import mongoose from "mongoose";
 
-const { Schema } = mongoose;
-
-const StrategySchema = new Schema({
-  userId: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
+const LegSchema = new mongoose.Schema({
+  instrument: { type: String, required: true },
+  segments: { type: String, enum: ["OPT", "FUT"], required: true },
+  position: { type: String, enum: ["BUY", "SELL"], required: true },
+  optionType: { type: String, enum: ["CE", "PE"], required: true },
+  strikeCriteria: { type: String, enum: ["ATM", "ITM", "OTM"], required: true },
+  strikeType: { type: String, enum: ["ATM", "ITM", "OTM"], required: true },
+  lots: { type: Number, required: true },
+  target: { type: Number, default: 0 },
+  stoploss: { type: Number },
+  trailStopLoss: {
+    x: {},
+    y: {},
   },
-  legs: [
-    {
-      symbol: {
-        type: String,
-        required: true,
-      },
-      quantity: {
-        type: Number,
-        required: true,
-      },
-      orderType: {
-        type: String,
-        required: true,
-        enum: ['market', 'limit'],
-      },
-      // Other strategy leg details...
-    },
-  ],
-  execution: {
-    type: String,
-    enum: ['manual', 'auto'],
-    required: true,
-  },
-  // Other strategy fields...
+  waitAndTrade: { type: Number, default: 0 },
+  ReEntry: { type: Number, default: 0 },
 });
 
-const Strategy = mongoose.model('Strategy', StrategySchema);
+const StrategySchema = new mongoose.Schema({
+  strategyName: { type: String, required: true },
+  legs: [LegSchema],
+  entryTime: { type: String, required: true },
+  exitTime: { type: String, required: true },
+  overallMTM: {
+    stopLoss: { type: String },
+    overAllTarget: { type: String },
+  },
+  daysToExecute: [
+    {
+      type: String,
+      enum: ["All", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+    },
+  ],
+  // Additional fields such as stop loss, targets, etc., can be added here
+});
+
+const Strategy = mongoose.model("Strategy", StrategySchema);
 
 export default Strategy;

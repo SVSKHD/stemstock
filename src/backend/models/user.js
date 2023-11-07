@@ -31,8 +31,8 @@ const UserSchema = new mongoose.Schema({
   forgotPasswordDate: {
     type: Date,
   },
-  lastPasswordUpdates: {
-    type: String,
+  lastPasswordUpdated: {
+    type: Date,
   },
 });
 
