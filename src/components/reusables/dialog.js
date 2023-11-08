@@ -19,7 +19,7 @@ const StemReusableDialog = (props) => {
           {props.children}
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={props.onHide}>Close</Button>
+          <Button onClick={onHide}>Close</Button>
         </Modal.Footer>
       </Modal>
     </>

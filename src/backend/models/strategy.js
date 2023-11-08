@@ -19,6 +19,11 @@ const LegSchema = new mongoose.Schema({
 });
 
 const StrategySchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User", // This should match the model name you used when you did mongoose.model('User', userSchema)
+    required: true,
+  },
   strategyName: { type: String, required: true },
   legs: [LegSchema],
   entryTime: { type: String, required: true },
