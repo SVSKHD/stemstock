@@ -1,7 +1,7 @@
 import { Navbar, Button, Container } from "react-bootstrap";
 import { FaUserAlt } from "react-icons/fa";
 import { useDispatch } from "react-redux";
-import StemAuthDialog from "@/components/reusables/Auth/AuthDialog";
+import StemAuthDialog from "@/components/Auth/AuthDialog";
 
 const StemIndexLayout = (props) => {
   const dispatch = useDispatch();
