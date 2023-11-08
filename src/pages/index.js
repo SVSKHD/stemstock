@@ -1,11 +1,12 @@
-import StemLayout from "@/Layout/Layout"
+import StemIndexLayout from "@/Layout/indexLayout";
 
-
-const StemHome = () =>{
-return(
-  <StemLayout>
-    <h1>Home</h1>
-  </StemLayout>
-)
-}
-export default StemHome
+const StemHome = () => {
+  return (
+    <>
+      <StemIndexLayout>
+        <h1 className="display-3">Stem Stock</h1>
+      </StemIndexLayout>
+    </>
+  );
+};
+export default StemHome;
