@@ -14,7 +14,7 @@ App.post(async (req, res) => {
     db.connectDb();
 
     // Check if user exists
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const user = await User.findOne({ email: email });
     if (!user) {
       return res.status(404).send("User not found.");
     }

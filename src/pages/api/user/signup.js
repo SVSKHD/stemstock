@@ -11,7 +11,7 @@ App.post(async (req, res) => {
 
   try {
     // Connect to MongoDB
-    db.connectDb();
+    await db.connectDb();
 
     // Check if user already exists
     let user = await User.findOne({ email: email.toLowerCase() });
@@ -46,11 +46,12 @@ App.post(async (req, res) => {
       expiresIn: "1d",
     });
     res.status(200).json({ success: true, user: payload.user, token: token });
-    db.disconnectDb();
+    await db.disconnectDb();
   } catch (error) {
+    await db.connectDb()
     console.error(error.message);
     res.status(500).send("please send valid details");
-    db.disconnectDb();
+    await db.disconnectDb();
   }
 });
 

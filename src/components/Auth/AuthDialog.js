@@ -1,5 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import StemReusableDialog from "../reusables/dialog";
+import StemSignin from "./signin";
+import StemSignup from "./signup";
 
 const StemAuthDialog = () => {
   const { authDialog, signupStatus } = useSelector((state) => ({ ...state }));
@@ -17,6 +19,7 @@ const StemAuthDialog = () => {
         size={"md"}
         title={signupStatus ? "Signup" : "Signin"}
       >
+        {signupStatus ? <StemSignup /> : <StemSignin />}
         <span
           className="text-center text-primary"
           onClick={() => {
