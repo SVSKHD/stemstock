@@ -1,10 +1,12 @@
 import { NavLink } from "react-bootstrap";
 import StemNavBar from "./Header";
+import StemAuthDialog from "@/components/Auth/AuthDialog";
 
 const StemLayout = (props) => {
   return (
     <>
       <StemNavBar />
+      <StemAuthDialog/>
       <div className="row" style={{ minHeight: "100vh" }}>
         <div className="col-md-2 col-lg-2 col-xs-12 col-sm-12">
           <div className="bg-dark h-100 text-center p-5">
