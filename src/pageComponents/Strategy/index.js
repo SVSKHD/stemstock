@@ -3,34 +3,35 @@ import { Form, Card, Button } from "react-bootstrap";
 import { useState, useEffect } from "react";
 
 const StemStrategyComponent = () => {
+  const days = ["All", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   const [selectedDays, setSelectedDays] = useState([]);
 
-  const days = ["All", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-  const isAllSelected = () =>
-    days.every((day) => selectedDays.includes(day) || day === "All");
+  useEffect(() => {
+    // Automatically select or deselect "All" based on other days
+    const weekdays = days.slice(1);
+    if (weekdays.every(day => selectedDays.includes(day))) {
+      setSelectedDays([...weekdays, 'All']);
+    } else {
+      setSelectedDays(selectedDays.filter(day => day !== 'All'));
+    }
+  }, [selectedDays]);
 
   const handleDayClick = (day) => {
-    if (day === "All") {
-      if (isAllSelected() || selectedDays.length === 0) {
-        setSelectedDays([]);
-      } else {
-        setSelectedDays([...days]);
-      }
+    if (day === 'All') {
+      setSelectedDays(selectedDays.includes('All') ? [] : [...days]);
     } else {
-      setSelectedDays(
-        selectedDays.includes(day)
-          ? selectedDays.filter((d) => d !== day)
-          : [...selectedDays, day]
+      setSelectedDays(selectedDays.includes(day) 
+        ? selectedDays.filter(d => d !== day)
+        : [...selectedDays, day]
       );
     }
   };
 
-  const getButtonVariant = (day) => {
-    if (isAllSelected() || selectedDays.includes(day)) {
-      return "primary";
-    }
-    return "outlined-primary";
+  const isDaySelected = (day) => {
+    return selectedDays.includes(day);
   };
+
+
   return (
     <>
       <StemLayout>
@@ -90,29 +91,19 @@ const StemStrategyComponent = () => {
             <Card bg="dark">
               <Card.Body>
                 <div className="row">
-                  {days.map((r, i) => (
-                    <>
-                      <div key={i} className="col-md-1 col-lg-2">
-                        {/* <Button
-                          variant={isAllSelected() || selectedDays.includes(r) ? "light" : "outlined-light"}
-                          onClick={() => handleDayClick(r)}
-                          className="btn-width"
-                        >
-                          {r}
-                        </Button> */}
-                        <Button
-                          variant={
-                            isAllSelected() || selectedDays.includes(r)
-                              ? "light"
-                              : "outline-light"
-                          }
-                          onClick={()=>handleDayClick(r)}
-                          className="btn-width"
-                        >
-                          {r}
-                        </Button>
-                      </div>
-                    </>
+                  {days.map((day, i) => (
+                    <div key={i} className="col-md-1 col-lg-2">
+                      <Button
+                        key={day}
+                        className="btn-width"
+                        variant={
+                          selectedDays.includes(day) ? "light" : "outline-light"
+                        }
+                        onClick={() => handleDayClick(day)}
+                      >
+                        {day}
+                      </Button>
+                    </div>
                   ))}
                 </div>
               </Card.Body>
