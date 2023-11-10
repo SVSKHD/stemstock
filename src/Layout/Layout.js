@@ -21,8 +21,10 @@ const StemLayout = (props) => {
             </NavLink>
           </div>
         </div>
-        <div className="col-md-10 col-lg-10 col-xs-12 col-sm-12">
+        <div className="col-md-10 col-lg-10 col-xs-12 col-sm-12 main-content">
+          <div className="p-5">
           {props.children}
+          </div>
         </div>
       </div>
     </>

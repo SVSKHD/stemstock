@@ -1,14 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 :root {
   --max-width: 1100px;
   --border-radius: 12px;
-  --font-mono: ui-monospace, Menlo, Monaco, 'Cascadia Mono', 'Segoe UI Mono',
-    'Roboto Mono', 'Oxygen Mono', 'Ubuntu Monospace', 'Source Code Pro',
-    'Fira Mono', 'Droid Sans Mono', 'Courier New', monospace;
-
+  --font-mono: "Poppins";
+  --bs-body-font-family: "Poppins";
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
-
   --primary-glow: conic-gradient(
     from 180deg at 50% 50%,
     #16abff33 0deg,
@@ -81,8 +79,7 @@
 
 html,
 body {
-  max-width: 100vw;
-  overflow-x: hidden;
+  font-family: "Roboto", sans-serif;
 }
 
 body {
@@ -106,144 +103,159 @@ a {
   }
 }
 
-
-
 .fsw-success-checkmark-container {
-	width: 300px;
-	height: 300px;
-	stroke: rgb(34, 191, 89);
-	stroke-width: 6;
-	stroke-miterlimit: 10;
+  width: 300px;
+  height: 300px;
+  stroke: rgb(34, 191, 89);
+  stroke-width: 6;
+  stroke-miterlimit: 10;
 }
 
 .fsw-success-checkmark-outline-stroke {
-	stroke-dasharray: 252;
-  	stroke-dashoffset: 252;
-	stroke-width: 3.5;
-	stroke-miterlimit: 10;
-	animation: fsw-success-checkmark-stroke 0.6s cubic-bezier(0.650, 0.000, 0.450, 1.000) 0.3s forwards;
-	transform-origin: center;
-	transform: rotateZ(-45deg);
+  stroke-dasharray: 252;
+  stroke-dashoffset: 252;
+  stroke-width: 3.5;
+  stroke-miterlimit: 10;
+  animation: fsw-success-checkmark-stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1)
+    0.3s forwards;
+  transform-origin: center;
+  transform: rotateZ(-45deg);
 }
 
 .fsw-success-checkmark-outline-fill {
-	opacity: 0;
-	fill: rgb(34, 191, 89);
-	animation: fsw-success-checkmark-fill 2s cubic-bezier(0.650, 0.000, 0.450, 1.000) 0.6s forwards;
-	transform: scale(0.01);
-	transform-origin: center;
+  opacity: 0;
+  fill: rgb(34, 191, 89);
+  animation: fsw-success-checkmark-fill 2s cubic-bezier(0.65, 0, 0.45, 1) 0.6s
+    forwards;
+  transform: scale(0.01);
+  transform-origin: center;
 }
 
 .fsw-success-checkmark-outline-rotate {
-	stroke-dasharray: 289;
-  	stroke-dashoffset: 289;
-	stroke: rgb(34, 191, 89);
-	stroke-width: 2;
-	stroke-miterlimit: 10;
-	animation: fsw-success-checkmark-circle-rotate 1s cubic-bezier(0.650, 0.000, 0.450, 1.000) 1.2s forwards;
-	transform-origin: center;
-	transform: rotateZ(-135deg);
+  stroke-dasharray: 289;
+  stroke-dashoffset: 289;
+  stroke: rgb(34, 191, 89);
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+  animation: fsw-success-checkmark-circle-rotate 1s
+    cubic-bezier(0.65, 0, 0.45, 1) 1.2s forwards;
+  transform-origin: center;
+  transform: rotateZ(-135deg);
 }
 
 .fsw-success-checkmark-line-stroke {
-	stroke-dasharray: 59;
-	stroke-dashoffset: 59;
-	animation: fsw-success-checkmark-stroke-fade 0.3s cubic-bezier(0.650, 0.000, 0.450, 1.000) forwards;
+  stroke-dasharray: 59;
+  stroke-dashoffset: 59;
+  animation: fsw-success-checkmark-stroke-fade 0.3s
+    cubic-bezier(0.65, 0, 0.45, 1) forwards;
 }
 
 .fsw-success-checkmark-line-shake {
-	opacity: 0;
-	animation: fsw-success-checkmark-enter-shake 1.6s cubic-bezier(0.650, 0.000, 0.450, 1.000) 0.3s forwards;
-	transform-origin: center;
+  opacity: 0;
+  animation: fsw-success-checkmark-enter-shake 1.6s
+    cubic-bezier(0.65, 0, 0.45, 1) 0.3s forwards;
+  transform-origin: center;
 }
 
 @keyframes fsw-success-checkmark-fill {
-	0% {
-		opacity: 0;
-		transform: scale(0.01);
-	}
-	45% {
-		opacity: 0.8;
-		transform: scale(0.77);
-	}
-	100% {
-		opacity: 1;
-		stroke: rgb(34, 191, 89);
-		transform: scale(1);
-	}
+  0% {
+    opacity: 0;
+    transform: scale(0.01);
+  }
+  45% {
+    opacity: 0.8;
+    transform: scale(0.77);
+  }
+  100% {
+    opacity: 1;
+    stroke: rgb(34, 191, 89);
+    transform: scale(1);
+  }
 }
 
 @keyframes fsw-success-checkmark-stroke {
-	100% {
-		stroke-dashoffset: 0;
-	}
+  100% {
+    stroke-dashoffset: 0;
+  }
 }
 
 @keyframes fsw-success-checkmark-stroke-fade {
-	99% {
-		stroke-dashoffset: 0;
-		opacity: 1;
-	}
-	100% {
-		opacity: 0;
-	}
+  99% {
+    stroke-dashoffset: 0;
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes fsw-success-checkmark-enter-shake {
-	0% {
-		opacity: 1;
-	}
-	37.5% {
-		transform: rotateZ(0deg);
-	}
-	46% {
-		transform: rotateZ(18deg);
-	}
-	54.5% {
-		transform: rotateZ(-18deg);
-	}
-	63% {
-		transform: rotateZ(20deg);
-	}
-	71.5% {
-		transform: rotateZ(-20deg);
-	}
-	80% {
-		transform: rotateZ(24deg);
-	}
-	90% {
-		transform: rotateZ(-24deg);
-	}
-	100% {
-		opacity: 1;
-		stroke: rgb(255, 255, 255);
-		transform: rotateZ(0deg);
-	}
+  0% {
+    opacity: 1;
+  }
+  37.5% {
+    transform: rotateZ(0deg);
+  }
+  46% {
+    transform: rotateZ(18deg);
+  }
+  54.5% {
+    transform: rotateZ(-18deg);
+  }
+  63% {
+    transform: rotateZ(20deg);
+  }
+  71.5% {
+    transform: rotateZ(-20deg);
+  }
+  80% {
+    transform: rotateZ(24deg);
+  }
+  90% {
+    transform: rotateZ(-24deg);
+  }
+  100% {
+    opacity: 1;
+    stroke: rgb(255, 255, 255);
+    transform: rotateZ(0deg);
+  }
 }
 
 @keyframes fsw-success-checkmark-circle-rotate {
-	0% {
-		stroke-dasharray: 150;
-  		stroke-dashoffset: 100;
-		opacity: 0;
-	}
-	10% {
-		opacity: 1;
-	}
-	35% {
-		stroke: rgb(140, 240, 255);
-		stroke-width: 3;
-	}
-	60% {
-		stroke-dasharray: 270;
-  		stroke-dashoffset: 150;
-	}
-	97% {
-		opacity: 1;
-	}
-	100% {
-		stroke-dasharray: 0;
-  		stroke-dashoffset: 0;
-		opacity: 0;
-	}
+  0% {
+    stroke-dasharray: 150;
+    stroke-dashoffset: 100;
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  35% {
+    stroke: rgb(140, 240, 255);
+    stroke-width: 3;
+  }
+  60% {
+    stroke-dasharray: 270;
+    stroke-dashoffset: 150;
+  }
+  97% {
+    opacity: 1;
+  }
+  100% {
+    stroke-dasharray: 0;
+    stroke-dashoffset: 0;
+    opacity: 0;
+  }
+}
+
+.stem-fin-input {
+  width: 40%px;
+}
+
+.main-content {
+  border-radius: 10px;
+}
+
+.btn-width {
+  width: 100%;
 }

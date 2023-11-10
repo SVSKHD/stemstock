@@ -1,10 +1,8 @@
-import StemLayout from "@/Layout/Layout";
+import StemStrategyComponent from "@/pageComponents/Strategy";
 
 const StemStrategy = () => {
   return (
-    <StemLayout>
-      <h1>Strategy</h1>
-    </StemLayout>
+    <StemStrategyComponent/>
   );
 };
 export default StemStrategy;
