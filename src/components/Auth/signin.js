@@ -3,6 +3,7 @@ import { useState } from "react";
 import StemUserOperations from "./authOperations";
 import StemToast from "../reusables/js/toast";
 import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 const StemSignin = () => {
   const dispatch = useDispatch();
@@ -11,6 +12,8 @@ const StemSignin = () => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState({ type: false, message: [] });
+
+  const Router = useRouter();
 
   const { userData } = useSelector((state) => ({ ...state }));
 
@@ -21,7 +24,6 @@ const StemSignin = () => {
         StemToast("Successfully Logged in", "success");
         setTimeout(() => setLoading(false), 3000);
         setTimeout(() => setSuccess(true), 3000);
-        console.log("user", res.data, userData);
         dispatch({
           type: "LOGGED_IN_USER",
           payload: res.data,
@@ -34,6 +36,7 @@ const StemSignin = () => {
             }),
           5000
         );
+        Router.push("/strategy");
       })
       .catch(() => {
         StemToast("Sorry please try again", "error");

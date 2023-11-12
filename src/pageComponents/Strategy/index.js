@@ -1,28 +1,108 @@
 import StemLayout from "@/Layout/Layout";
-import { Form, Card, Button } from "react-bootstrap";
+import { Form, Card, Button, Row, Col, InputGroup } from "react-bootstrap";
 import { useState, useEffect } from "react";
+import TimePicker from "react-time-picker";
+import "react-time-picker/dist/TimePicker.css";
+import "react-clock/dist/Clock.css";
 
 const StemStrategyComponent = () => {
+  let straddleStrategy = {
+    name: "",
+    entryTime: "",
+    endTime: "",
+    immediate: false,
+    legs: [
+      {
+        instrument: "",
+        instrumentType: "",
+        entry_type: "time",
+        expiry: "current",
+        index: 0,
+        segement: "",
+        strike_type: "",
+        strike_value: "",
+        position: "",
+        quantity: "",
+        takeProfit: "",
+        stopLoss: "",
+        traiLStopLoss: { x: "", y: "" },
+        waitAndTrade: "",
+        Re_Entry: "",
+      },
+      // ... more legs as needed
+    ],
+    stopLoss: 0, // e.g., 1000 (currency amount or percentage)
+    overallMTM: 0, // e.g., 5000 (currency amount or percentage)
+    daysToExecute: [], // e.g., 30 (number of days),
+    brokerSelected: "",
+    status: "",
+  };
+
+  const [strategy, setStrategy] = useState(straddleStrategy);
+  const [startTime, setStartTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date());
   const days = ["All", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
   const [selectedDays, setSelectedDays] = useState([]);
+
+  const [legs, setLegs] = useState([
+    {
+      instrument: "BankNifty",
+      segment: "OPT",
+      position: "BUY",
+      optionType: "CE",
+      lots: 1,
+    },
+  ]);
+
+  const updateStrategyAttribute = (property, newValue) => {
+    setStrategy((prevStrategy) => ({
+      ...prevStrategy,
+      [property]: newValue, // Note the use of square brackets
+    }));
+  };
+
+  const addLeg = () => {
+    const newLeg = {
+      instrument: "BankNifty",
+      segment: "OPT",
+      position: "BUY",
+      optionType: "CE",
+      lots: 1,
+    };
+    setLegs([...legs, newLeg]);
+  };
+
+  const removeLeg = (index) => {
+    const newLegs = [...legs];
+    newLegs.splice(index, 1);
+    setLegs(newLegs);
+  };
+
+  const handleChange = (index, event) => {
+    const updatedLegs = [...legs];
+    updatedLegs[index][event.target.name] = event.target.value;
+    setLegs(updatedLegs);
+  };
 
   useEffect(() => {
     // Automatically select or deselect "All" based on other days
     const weekdays = days.slice(1);
-    if (weekdays.every(day => selectedDays.includes(day))) {
-      setSelectedDays([...weekdays, 'All']);
+    if (weekdays.every((day) => selectedDays.includes(day))) {
+      setSelectedDays([...weekdays, "All"]);
     } else {
-      setSelectedDays(selectedDays.filter(day => day !== 'All'));
+      setSelectedDays(selectedDays.filter((day) => day !== "All"));
     }
   }, [selectedDays]);
 
+  // handle days
   const handleDayClick = (day) => {
-    if (day === 'All') {
-      setSelectedDays(selectedDays.includes('All') ? [] : [...days]);
+    if (day === "All") {
+      setSelectedDays(selectedDays.includes("All") ? [] : [...days]);
     } else {
-      setSelectedDays(selectedDays.includes(day) 
-        ? selectedDays.filter(d => d !== day)
-        : [...selectedDays, day]
+      setSelectedDays(
+        selectedDays.includes(day)
+          ? selectedDays.filter((d) => d !== day)
+          : [...selectedDays, day]
       );
     }
   };
@@ -31,6 +111,11 @@ const StemStrategyComponent = () => {
     return selectedDays.includes(day);
   };
 
+  const formatDate = () => {};
+
+  const handleSaveStrategy = () => {
+    console.log("strategy", strategy);
+  };
 
   return (
     <>
@@ -46,17 +131,121 @@ const StemStrategyComponent = () => {
                 type="email"
                 placeholder="Eg:Straddle Name"
                 className="stem-fin-input"
+                value={strategy.name}
+                onChange={(e) =>
+                  updateStrategyAttribute("name", e.target.value)
+                }
               />
             </Form.Group>
           </div>
-          <div className="col-md-6 col-lg-6 col-xs-12 col-sm-12"></div>
+          <div className="col-md-6 col-lg-6 col-xs-12 col-sm-12">
+            <div className="col">
+              <div className="row">
+                <div className="col">
+                  <label>Start Date : </label>
+                  <input
+                    type="time"
+                    placeholder="Start date"
+                    className="form-control"
+                    value={strategy.entryTime}
+                    onChange={(e) =>
+                      updateStrategyAttribute("entryTime", e.target.value)
+                    }
+                  />
+                  <div className="mt-2 text-start">
+                    <label className="font-weight-bold">Immediate</label>
+                    <label class="switch">
+                      <input
+                        type="checkbox"
+                        onChange={(e) => console.log(e.target.value)}
+                        value={false}
+                      />
+                      <span class="slider round"></span>
+                    </label>
+                  </div>
+                </div>
+                <div className="col">
+                  <label>End Date : </label>
+                  <input
+                    type="time"
+                    className="form-control"
+                    value={strategy.endTime}
+                    onChange={(e) =>
+                      updateStrategyAttribute("endTime", e.target.value)
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
         <h2>Add Leg</h2>
         <Card className="text-center shadow-lg mb-3 mt-3">
           <Card.Body>
-            <div className="row"></div>
+            <div className="row">
+              <div className="col">
+                <Form.Label className="text-start">Instrument</Form.Label>
+                <Form.Select
+                  aria-label="Default select example"
+                  onChange={(e) => e.target.value}
+                  value={straddleStrategy.legs.instrument}
+                >
+                  <option value="1">BankNifty</option>
+                  <option value="2">Nifty</option>
+                  <option value="3">finnifty</option>
+                </Form.Select>
+              </div>
+              <div className="col">
+                <Form.Label className="text-start">Segments</Form.Label>
+                <Form.Select aria-label="Default select example">
+                  <option value="1">OPT</option>
+                  <option value="2">FUT</option>
+                </Form.Select>
+              </div>
+              <div className="col">
+                <Form.Label className="text-start">Position</Form.Label>
+                <Form.Select aria-label="Default select example">
+                  <option value="1">BUY</option>
+                  <option value="2">SELL</option>
+                </Form.Select>
+              </div>
+              <div className="col">
+                <Form.Label className="text-start">Option Type</Form.Label>
+                <Form.Select aria-label="Default select example">
+                  <option value="1">CE</option>
+                  <option value="2">PE</option>
+                </Form.Select>
+              </div>
+              <div className="col">
+                <Form.Label className="text-start">Strike Criteria</Form.Label>
+                <Form.Select aria-label="Default select example">
+                  <option value="1">ATM Type</option>
+                  <option value="2">Closet Premium</option>
+                </Form.Select>
+              </div>
+              <div className="col">
+                <Form.Label className="text-start">Strike Type</Form.Label>
+                <Form.Select aria-label="Default select example">
+                  <option value="1">ATM</option>
+                  <option value="2">PE</option>
+                </Form.Select>
+              </div>
+              <div className="col">
+                <Form.Label className="text-start">Total Lots</Form.Label>
+                <input
+                  type="number"
+                  className="form-control"
+                  placeholder="lot size"
+                />
+              </div>
+              <div className="col">
+                <Button>Add-Leg</Button>
+              </div>
+            </div>
           </Card.Body>
         </Card>
+
+        <div></div>
 
         <div className="row">
           <div className="col-md-6 col-lg-6 col-xs-12 col-sm-12">
@@ -68,18 +257,16 @@ const StemStrategyComponent = () => {
                     <Form.Label>Stop Loss</Form.Label>
                     <Form.Select aria-label="Default select example">
                       <option>none</option>
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
+                      <option value="1">MTM</option>
+                      <option value="2">Premium %</option>
                     </Form.Select>
                   </div>
                   <div className="col-md-6 col-lg-6">
                     <Form.Label>Overall Target</Form.Label>
                     <Form.Select aria-label="Default select example">
                       <option>none</option>
-                      <option value="1">One</option>
-                      <option value="2">Two</option>
-                      <option value="3">Three</option>
+                      <option value="1">MTM</option>
+                      <option value="2">Premium %</option>
                     </Form.Select>
                   </div>
                 </div>
@@ -109,6 +296,9 @@ const StemStrategyComponent = () => {
               </Card.Body>
             </Card>
           </div>
+        </div>
+        <div className="row mt-5">
+          <Button onClick={handleSaveStrategy}>Save Strategy</Button>
         </div>
       </StemLayout>
     </>

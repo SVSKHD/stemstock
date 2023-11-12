@@ -7,7 +7,7 @@ const LegSchema = new mongoose.Schema({
   optionType: { type: String, enum: ["CE", "PE"], required: true },
   strikeCriteria: { type: String, enum: ["ATM", "ITM", "OTM"], required: true },
   strikeType: { type: String, enum: ["ATM", "ITM", "OTM"], required: true },
-  lots: { type: Number, required: true },
+  Quantity: { type: Number, required: true },
   target: { type: Number, default: 0 },
   stoploss: { type: Number },
   trailStopLoss: {
@@ -38,6 +38,18 @@ const StrategySchema = new mongoose.Schema({
       enum: ["All", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
     },
   ],
+
+  enabled: {
+    type: Boolean,
+    default: false,
+  },
+  status: {
+    type: Boolean,
+    default: false,
+  },
+  mode: {
+    type: String,
+  },
   // Additional fields such as stop loss, targets, etc., can be added here
 });
 

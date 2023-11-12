@@ -1,12 +1,13 @@
-
 import { Container, Navbar, Button } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { FaArrowRightFromBracket } from "react-icons/fa6";
-import {FaUserAlt} from "react-icons/fa"
+import { FaUserAlt } from "react-icons/fa";
+import { useEffect } from "react";
 
 const StemNavBar = () => {
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => ({ ...state }));
+
   const StemLogout = () => {
     dispatch({
       type: "LOGOUT",
@@ -20,7 +21,7 @@ const StemNavBar = () => {
           <Navbar.Brand href="/">StemNav</Navbar.Brand>
           {userData ? (
             <>
-              <Navbar.Text>{userData.user.firstName}</Navbar.Text>
+              <Navbar.Text className="text-bolder">Welcome Back : {userData.user.firstname}</Navbar.Text>
               <Button onClick={StemLogout}>
                 <FaArrowRightFromBracket size={25} />
               </Button>

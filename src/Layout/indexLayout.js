@@ -3,6 +3,7 @@ import { FaUserAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import StemAuthDialog from "@/components/Auth/AuthDialog";
 import { FaArrowRightFromBracket } from "react-icons/fa6";
+import Head from "next/head";
 
 const StemIndexLayout = (props) => {
   const dispatch = useDispatch();
@@ -12,6 +13,7 @@ const StemIndexLayout = (props) => {
       type: "LOGOUT",
       payload: null,
     });
+    localStorage.removeItem("user");
   };
   return (
     <>
