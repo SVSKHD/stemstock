@@ -16,7 +16,14 @@ const StemStrategyComponent = () => {
     legs: [],
     stopLoss: 0, // e.g., 1000 (currency amount or percentage)
     overallMTM: 0, // e.g., 5000 (currency amount or percentage)
-    daysToExecute: [], // e.g., 30 (number of days),
+    daysToExecute: [
+      { all: false },
+      { monday: false },
+      { tuesday: false },
+      { wednesday: false },
+      { thursday: false },
+      { friday: false },
+    ], // e.g., 30 (number of days),
     brokerSelected: "",
     status: "",
   };
@@ -30,28 +37,34 @@ const StemStrategyComponent = () => {
     { thursday: false },
     { friday: false },
   ];
+
   const [selectedDays, setSelectedDays] = useState(days);
 
   const handleDayClick = (day) => {
-    if (day === "all") {
-      const allSelected = !selectedDays[0].all; // Toggle the state of 'all'
-      setSelectedDays(
-        selectedDays.map((d) => ({
-          ...d,
-          [Object.keys(d)[0]]: allSelected,
-        }))
-      );
-    } else {
-      setSelectedDays(
-        selectedDays
-          .map((d) => ({
+    setStrategy((prevStrategy) => {
+      if (day === "all") {
+        const allSelected = !prevStrategy.daysToExecute[0].all; // Toggle the state of 'all'
+        return {
+          ...prevStrategy,
+          daysToExecute: prevStrategy.daysToExecute.map((d) => ({
             ...d,
-            [Object.keys(d)[0]]: Object.keys(d)[0] === day ? !d[day] : false,
-          }))
-          .map((d, idx) => (idx === 0 ? { all: false } : d))
-      ); // Unselect 'all' if any individual day is toggled
-    }
+            [Object.keys(d)[0]]: allSelected,
+          })),
+        };
+      } else {
+        return {
+          ...prevStrategy,
+          daysToExecute: prevStrategy.daysToExecute.map((d) => {
+            if (Object.keys(d)[0] === day) {
+              return { ...d, [day]: !d[day] }; // Toggle the selected day
+            }
+            return d;
+          }),
+        };
+      }
+    });
   };
+  
 
   const newLegTemplate = {
     instrument: "",
@@ -85,16 +98,15 @@ const StemStrategyComponent = () => {
       } else {
         // Optionally handle the case where there are already 10 legs
         StemToast("we can allow only 9 legs", "error");
-        console.log("Maximum of 10 legs reached");
         return prevStrategy;
       }
     });
   };
 
   const removeLeg = (legIndex) => {
-    setStrategy(prevStrategy => ({
+    setStrategy((prevStrategy) => ({
       ...prevStrategy,
-      legs: prevStrategy.legs.filter((_, index) => index !== legIndex)
+      legs: prevStrategy.legs.filter((_, index) => index !== legIndex),
     }));
   };
 
@@ -273,33 +285,35 @@ const StemStrategyComponent = () => {
         </Card>
 
         {/* //legs length and loop */}
-        {strategy.legs.length >0?(
+        {strategy.legs.length > 0 ? (
           <>
-          <>
-            <div className="row">
-              <div className="col"></div>
-              <div className="col text-end">
-                <div className="fw-bolder">Legs:{strategy.legs.length}</div>
-              </div>
-            </div>
-          </>
-          {strategy.legs.map((r, i) => (
-          <>
-            <Card className="m-1 shadow-lg" key={i}>
-              <Card.Body>
-                <div className="row">
-                  <div className="col">
-                    <Button onClick={()=>removeLeg(i)}><FaTrash size={25}/></Button>
-                  </div>
+            <>
+              <div className="row">
+                <div className="col"></div>
+                <div className="col text-end">
+                  <div className="fw-bolder">Legs:{strategy.legs.length}</div>
                 </div>
-              </Card.Body>
-            </Card>
-          </>
-        ))}
+              </div>
+            </>
+            {strategy.legs.map((r, i) => (
+              <>
+                <Card className="m-1 shadow-lg" key={i}>
+                  <Card.Body>
+                    <div className="row">
+                      <div className="col">
+                        <Button onClick={() => removeLeg(i)}>
+                          <FaTrash size={25} />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </>
+            ))}
           </>
         ) : (
           <div></div>
-        ) }
+        )}
 
         <div className="row">
           <div className="col-md-6 col-lg-6 col-xs-12 col-sm-12">
@@ -332,7 +346,7 @@ const StemStrategyComponent = () => {
             <Card bg="dark">
               <Card.Body>
                 <div className="row">
-                  {selectedDays.map((day, index) => {
+                  {strategy.daysToExecute.map((day, index) => {
                     const dayName = Object.keys(day)[0];
                     return (
                       <Button
