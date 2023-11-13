@@ -29,43 +29,7 @@ const StemStrategyComponent = () => {
   };
 
   const [strategy, setStrategy] = useState(straddleStrategy);
-  const days = [
-    { all: false },
-    { monday: false },
-    { tuesday: false },
-    { wednesday: false },
-    { thursday: false },
-    { friday: false },
-  ];
-
-  const [selectedDays, setSelectedDays] = useState(days);
-
-  const handleDayClick = (day) => {
-    setStrategy((prevStrategy) => {
-      if (day === "all") {
-        const allSelected = !prevStrategy.daysToExecute[0].all; // Toggle the state of 'all'
-        return {
-          ...prevStrategy,
-          daysToExecute: prevStrategy.daysToExecute.map((d) => ({
-            ...d,
-            [Object.keys(d)[0]]: allSelected,
-          })),
-        };
-      } else {
-        return {
-          ...prevStrategy,
-          daysToExecute: prevStrategy.daysToExecute.map((d) => {
-            if (Object.keys(d)[0] === day) {
-              return { ...d, [day]: !d[day] }; // Toggle the selected day
-            }
-            return d;
-          }),
-        };
-      }
-    });
-  };
-  
-
+ 
   const newLegTemplate = {
     instrument: "",
     instrumentType: "",
@@ -109,6 +73,52 @@ const StemStrategyComponent = () => {
       legs: prevStrategy.legs.filter((_, index) => index !== legIndex),
     }));
   };
+
+  const handleDayClick = (day) => {
+    setStrategy((prevStrategy) => {
+      if (day === "all") {
+        const allSelected = !prevStrategy.daysToExecute[0].all; // Toggle the state of 'all'
+        return {
+          ...prevStrategy,
+          daysToExecute: prevStrategy.daysToExecute.map((d) => ({
+            ...d,
+            [Object.keys(d)[0]]: allSelected,
+          })),
+        };
+      } else {
+        let daysUpdated = prevStrategy.daysToExecute.map((d) => {
+          if (Object.keys(d)[0] === day) {
+            return { ...d, [day]: !d[day] }; // Toggle the selected day
+          }
+          return d;
+        });
+  
+        // Check if any individual day is false
+        const anyDayNotSelected = daysUpdated.slice(1).some((d) => !d[Object.keys(d)[0]]);
+  
+        if (anyDayNotSelected) {
+          // Set 'all' to false
+          daysUpdated[0] = { all: false };
+        } else {
+          // Else, check if all days are true
+          const allDaysSelected = daysUpdated.slice(1).every((d) => d[Object.keys(d)[0]]);
+          if (allDaysSelected) {
+            // Set 'all' to true
+            daysUpdated[0] = { all: true };
+          }
+        }
+  
+        return {
+          ...prevStrategy,
+          daysToExecute: daysUpdated,
+        };
+      }
+    });
+  };
+  
+  
+
+ 
 
   const updateStrategyAttribute = (property, newValue) => {
     setStrategy((prevStrategy) => ({
@@ -297,7 +307,7 @@ const StemStrategyComponent = () => {
             </>
             {strategy.legs.map((r, i) => (
               <>
-                <Card className="m-1 shadow-lg" key={i}>
+                <Card key={i} className="m-1 shadow-lg" key={i}>
                   <Card.Body>
                     <div className="row">
                       <div className="col">
@@ -353,6 +363,7 @@ const StemStrategyComponent = () => {
                         key={index}
                         className="col m-2"
                         onClick={() => handleDayClick(dayName)}
+                        variant={day[dayName] ? "light" : "outline-light"}
                       >
                         {dayName.charAt(0).toUpperCase() + dayName.slice(1)}{" "}
                         {day[dayName] ? "(Selected)" : ""}

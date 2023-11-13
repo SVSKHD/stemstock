@@ -1,10 +1,6 @@
-import StemLayout from "@/Layout/Layout";
+import StemDashboardComponent from "@/pageComponents/Dashboard";
 
 const StemDashboard = () => {
-  return (
-    <StemLayout>
-      <h1>Dashboard</h1>
-    </StemLayout>
-  );
+  return <StemDashboardComponent />;
 };
 export default StemDashboard;

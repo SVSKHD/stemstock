@@ -1,10 +1,6 @@
-import StemLayout from "@/Layout/Layout";
+import StemStrategyComponent from "@/pageComponents/Strategy";
 
 const StemBroker = () => {
-  return (
-    <StemLayout>
-      <h1>Broker</h1>
-    </StemLayout>
-  );
+  return <StemStrategyComponent />;
 };
 export default StemBroker;
