@@ -5,6 +5,7 @@ import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import StemToast from "@/components/reusables/js/toast";
+import { FaTrash } from "react-icons/fa6";
 
 const StemStrategyComponent = () => {
   let straddleStrategy = {
@@ -12,26 +13,7 @@ const StemStrategyComponent = () => {
     entryTime: "",
     endTime: "",
     immediate: false,
-    legs: [
-      {
-        instrument: "",
-        instrumentType: "",
-        entry_type: "time",
-        expiry: "current",
-        index: 0,
-        segement: "",
-        strike_type: "",
-        strike_value: "",
-        position: "",
-        quantity: "",
-        takeProfit: "",
-        stopLoss: "",
-        traiLStopLoss: { x: "", y: "" },
-        waitAndTrade: "",
-        Re_Entry: "",
-      },
-      // ... more legs as needed
-    ],
+    legs: [],
     stopLoss: 0, // e.g., 1000 (currency amount or percentage)
     overallMTM: 0, // e.g., 5000 (currency amount or percentage)
     daysToExecute: [], // e.g., 30 (number of days),
@@ -89,10 +71,10 @@ const StemStrategyComponent = () => {
     Re_Entry: "",
   };
 
+  // adding and removing legs
   const addNewLeg = () => {
     setStrategy((prevStrategy) => {
       if (prevStrategy.legs.length < 9) {
-     
         return {
           ...prevStrategy,
           legs: [
@@ -102,17 +84,18 @@ const StemStrategyComponent = () => {
         };
       } else {
         // Optionally handle the case where there are already 10 legs
-        StemToast("we can allow only 9 legs", "error")
+        StemToast("we can allow only 9 legs", "error");
         console.log("Maximum of 10 legs reached");
         return prevStrategy;
       }
     });
   };
 
-  const removeLeg = (index) => {
-    const newLegs = [...legs];
-    newLegs.splice(index, 1);
-    setLegs(newLegs);
+  const removeLeg = (legIndex) => {
+    setStrategy(prevStrategy => ({
+      ...prevStrategy,
+      legs: prevStrategy.legs.filter((_, index) => index !== legIndex)
+    }));
   };
 
   const updateStrategyAttribute = (property, newValue) => {
@@ -289,7 +272,34 @@ const StemStrategyComponent = () => {
           </Card.Body>
         </Card>
 
-        <div></div>
+        {/* //legs length and loop */}
+        {strategy.legs.length >0?(
+          <>
+          <>
+            <div className="row">
+              <div className="col"></div>
+              <div className="col text-end">
+                <div className="fw-bolder">Legs:{strategy.legs.length}</div>
+              </div>
+            </div>
+          </>
+          {strategy.legs.map((r, i) => (
+          <>
+            <Card className="m-1 shadow-lg" key={i}>
+              <Card.Body>
+                <div className="row">
+                  <div className="col">
+                    <Button onClick={()=>removeLeg(i)}><FaTrash size={25}/></Button>
+                  </div>
+                </div>
+              </Card.Body>
+            </Card>
+          </>
+        ))}
+          </>
+        ) : (
+          <div></div>
+        ) }
 
         <div className="row">
           <div className="col-md-6 col-lg-6 col-xs-12 col-sm-12">
