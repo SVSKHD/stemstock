@@ -1,6 +1,6 @@
-import StemStrategyComponent from "@/pageComponents/Strategy";
+import StemBrokerComponent from "@/pageComponents/Broker/Broker";
 
 const StemBroker = () => {
-  return <StemStrategyComponent />;
+  return <StemBrokerComponent />;
 };
 export default StemBroker;
