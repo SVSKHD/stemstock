@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
+import StemToast from "@/components/reusables/js/toast";
 
 const StemStrategyComponent = () => {
   let straddleStrategy = {
@@ -39,37 +40,73 @@ const StemStrategyComponent = () => {
   };
 
   const [strategy, setStrategy] = useState(straddleStrategy);
-  const [startTime, setStartTime] = useState(new Date());
-  const [endTime, setEndTime] = useState(new Date());
-  const days = ["All", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-  const [selectedDays, setSelectedDays] = useState([]);
+  const days = [
+    { all: false },
+    { monday: false },
+    { tuesday: false },
+    { wednesday: false },
+    { thursday: false },
+    { friday: false },
+  ];
+  const [selectedDays, setSelectedDays] = useState(days);
 
-  const [legs, setLegs] = useState([
-    {
-      instrument: "BankNifty",
-      segment: "OPT",
-      position: "BUY",
-      optionType: "CE",
-      lots: 1,
-    },
-  ]);
-
-  const updateStrategyAttribute = (property, newValue) => {
-    setStrategy((prevStrategy) => ({
-      ...prevStrategy,
-      [property]: newValue, // Note the use of square brackets
-    }));
+  const handleDayClick = (day) => {
+    if (day === "all") {
+      const allSelected = !selectedDays[0].all; // Toggle the state of 'all'
+      setSelectedDays(
+        selectedDays.map((d) => ({
+          ...d,
+          [Object.keys(d)[0]]: allSelected,
+        }))
+      );
+    } else {
+      setSelectedDays(
+        selectedDays
+          .map((d) => ({
+            ...d,
+            [Object.keys(d)[0]]: Object.keys(d)[0] === day ? !d[day] : false,
+          }))
+          .map((d, idx) => (idx === 0 ? { all: false } : d))
+      ); // Unselect 'all' if any individual day is toggled
+    }
   };
 
-  const addLeg = () => {
-    const newLeg = {
-      instrument: "BankNifty",
-      segment: "OPT",
-      position: "BUY",
-      optionType: "CE",
-      lots: 1,
-    };
-    setLegs([...legs, newLeg]);
+  const newLegTemplate = {
+    instrument: "",
+    instrumentType: "",
+    entry_type: "time",
+    expiry: "current",
+    index: 0,
+    segement: "",
+    strike_type: "",
+    strike_value: "",
+    position: "",
+    quantity: "",
+    takeProfit: "",
+    stopLoss: "",
+    traiLStopLoss: { x: "", y: "" },
+    waitAndTrade: "",
+    Re_Entry: "",
+  };
+
+  const addNewLeg = () => {
+    setStrategy((prevStrategy) => {
+      if (prevStrategy.legs.length < 9) {
+     
+        return {
+          ...prevStrategy,
+          legs: [
+            ...prevStrategy.legs,
+            { ...newLegTemplate, index: prevStrategy.legs.length },
+          ],
+        };
+      } else {
+        // Optionally handle the case where there are already 10 legs
+        StemToast("we can allow only 9 legs", "error")
+        console.log("Maximum of 10 legs reached");
+        return prevStrategy;
+      }
+    });
   };
 
   const removeLeg = (index) => {
@@ -78,34 +115,41 @@ const StemStrategyComponent = () => {
     setLegs(newLegs);
   };
 
+  const updateStrategyAttribute = (property, newValue) => {
+    setStrategy((prevStrategy) => ({
+      ...prevStrategy,
+      [property]: newValue, // Note the use of square brackets
+    }));
+  };
+
   const handleChange = (index, event) => {
     const updatedLegs = [...legs];
     updatedLegs[index][event.target.name] = event.target.value;
     setLegs(updatedLegs);
   };
 
-  useEffect(() => {
-    // Automatically select or deselect "All" based on other days
-    const weekdays = days.slice(1);
-    if (weekdays.every((day) => selectedDays.includes(day))) {
-      setSelectedDays([...weekdays, "All"]);
-    } else {
-      setSelectedDays(selectedDays.filter((day) => day !== "All"));
-    }
-  }, [selectedDays]);
+  // useEffect(() => {
+  //   // Automatically select or deselect "All" based on other days
+  //   const weekdays = days.slice(1);
+  //   if (weekdays.every((day) => selectedDays.includes(day))) {
+  //     setSelectedDays([...weekdays, "All"]);
+  //   } else {
+  //     setSelectedDays(selectedDays.filter((day) => day !== "All"));
+  //   }
+  // }, [selectedDays]);
 
   // handle days
-  const handleDayClick = (day) => {
-    if (day === "All") {
-      setSelectedDays(selectedDays.includes("All") ? [] : [...days]);
-    } else {
-      setSelectedDays(
-        selectedDays.includes(day)
-          ? selectedDays.filter((d) => d !== day)
-          : [...selectedDays, day]
-      );
-    }
-  };
+  // const handleDayClick = (day) => {
+  //   if (day === "All") {
+  //     setSelectedDays(selectedDays.includes("All") ? [] : [...days]);
+  //   } else {
+  //     setSelectedDays(
+  //       selectedDays.includes(day)
+  //         ? selectedDays.filter((d) => d !== day)
+  //         : [...selectedDays, day]
+  //     );
+  //   }
+  // };
 
   const isDaySelected = (day) => {
     return selectedDays.includes(day);
@@ -239,7 +283,7 @@ const StemStrategyComponent = () => {
                 />
               </div>
               <div className="col">
-                <Button>Add-Leg</Button>
+                <Button onClick={addNewLeg}>Add-Leg</Button>
               </div>
             </div>
           </Card.Body>
@@ -278,20 +322,19 @@ const StemStrategyComponent = () => {
             <Card bg="dark">
               <Card.Body>
                 <div className="row">
-                  {days.map((day, i) => (
-                    <div key={i} className="col-md-1 col-lg-2">
+                  {selectedDays.map((day, index) => {
+                    const dayName = Object.keys(day)[0];
+                    return (
                       <Button
-                        key={day}
-                        className="btn-width"
-                        variant={
-                          selectedDays.includes(day) ? "light" : "outline-light"
-                        }
-                        onClick={() => handleDayClick(day)}
+                        key={index}
+                        className="col m-2"
+                        onClick={() => handleDayClick(dayName)}
                       >
-                        {day}
+                        {dayName.charAt(0).toUpperCase() + dayName.slice(1)}{" "}
+                        {day[dayName] ? "(Selected)" : ""}
                       </Button>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </Card.Body>
             </Card>
