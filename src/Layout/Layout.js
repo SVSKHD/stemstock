@@ -18,7 +18,7 @@ const StemLayout = (props) => {
             <NavLink className="text-white  text-start p-2" href="/">
               <h3>Dashboard</h3>
             </NavLink>
-            <NavLink className="text-white text-start p-2" href="/startegy">
+            <NavLink className="text-white text-start p-2" href="/strategy">
               <h3>Strategy</h3>
             </NavLink>
             <NavLink className="text-white text-start p-2" href="/broker">
