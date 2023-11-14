@@ -8,6 +8,34 @@ import StemToast from "@/components/reusables/js/toast";
 import { FaTrash, FaRegCircleCheck } from "react-icons/fa6";
 
 const StemStrategyComponent = () => {
+  const instrumenOptions = [
+    { value: "1", displayText: "BankNifty" },
+    { value: "2", displayText: "Nifty" },
+    { value: "3", displayText: "Finnifty" },
+  ];
+  const segmentOptions = [
+    { value: "1", displayText: "OPT" },
+    { value: "2", displayText: "FUT" },
+  ];
+  const positionOptions = [
+    { value: "1", displayText: "BUY" },
+    { value: "2", displayText: "SELL" },
+  ];
+  const optionTypeOptions = [
+    { value: "1", displayText: "CE" },
+    { value: "2", displayText: "PE" },
+  ];
+  const strikeTypeOptions = [
+    { value: "1", displayText: "ATM-100" },
+    { value: "2", displayText: "ATM-50" },
+    { value: "3", displayText: "ATM" },
+    { value: "4", displayText: "ATM+50" },
+    { value: "5", displayText: "ATM+50" },
+  ];
+  const strikeCriteriaOptions = [
+    { value: "1", displayText: "ATM Type" },
+    { value: "2", displayText: "Closest Premium" },
+  ];
   let straddleStrategy = {
     name: "",
     entryTime: "",
@@ -29,14 +57,14 @@ const StemStrategyComponent = () => {
   };
 
   const [strategy, setStrategy] = useState(straddleStrategy);
- 
+
   const newLegTemplate = {
     instrument: "",
     instrumentType: "",
     entry_type: "time",
     expiry: "current",
     index: 0,
-    segement: "",
+    segment: "",
     strike_type: "",
     strike_value: "",
     position: "",
@@ -48,19 +76,51 @@ const StemStrategyComponent = () => {
     Re_Entry: "",
   };
 
+  const [Newleg, setNewleg] = useState(newLegTemplate);
+
+  const legStateManage = (key, e) => {
+    const value = key === "quantity" ? Number(e.target.value) : e.target.value;
+    setNewleg({ ...Newleg, [key]: e.target.value });
+  };
   // adding and removing legs
+  // const addNewLeg = () => {
+  //   console.log("legs", Newleg , strategy);
+  //   setStrategy((prevStrategy) => {
+  //     if (prevStrategy.legs.length < 9) {
+  //       return {
+  //         ...prevStrategy,
+  //         legs: [
+  //           ...prevStrategy.legs,
+  //           { ...Newleg, index: prevStrategy.legs.length },
+  //         ],
+  //       };
+  //     } else {
+  //       // Optionally handle the case where there are already 10 legs
+  //       StemToast("we can allow only 9 legs", "error");
+  //       return prevStrategy;
+  //     }
+  //   });
+  // };
+
   const addNewLeg = () => {
+    console.log("legs", Newleg, strategy);
+
     setStrategy((prevStrategy) => {
+      // Check if the maximum number of legs (9 in this case) has been reached
       if (prevStrategy.legs.length < 9) {
+        // Create a new leg object with updated index
+        const updatedNewLeg = {
+          ...Newleg,
+          index: prevStrategy.legs.length,
+        };
+
+        // Return the updated strategy with the new leg added
         return {
           ...prevStrategy,
-          legs: [
-            ...prevStrategy.legs,
-            { ...newLegTemplate, index: prevStrategy.legs.length },
-          ],
+          legs: [...prevStrategy.legs, updatedNewLeg],
         };
       } else {
-        // Optionally handle the case where there are already 10 legs
+        // Handle the case where there are already 9 legs
         StemToast("we can allow only 9 legs", "error");
         return prevStrategy;
       }
@@ -72,6 +132,29 @@ const StemStrategyComponent = () => {
       ...prevStrategy,
       legs: prevStrategy.legs.filter((_, index) => index !== legIndex),
     }));
+  };
+
+  const handleLegChange = (legIndex, key, value) => {
+    setStrategy((prevStrategy) => {
+      // Clone the legs array
+      const updatedLegs = [...prevStrategy.legs];
+
+      // Update the specified leg
+      updatedLegs[legIndex] = { ...updatedLegs[legIndex], [key]: value };
+
+      // Return the updated strategy
+      return { ...prevStrategy, legs: updatedLegs };
+    });
+  };
+
+  const handleInputChange = (e, section, field, index) => {
+    const updatedFormData = { ...strategy };
+    if (section === "products") {
+      updatedFormData[section][index][field] = e.target.value;
+    } else {
+      updatedFormData[section][field] = e.target.value;
+    }
+    setStrategy(updatedFormData);
   };
 
   const handleDayClick = (day) => {
@@ -92,22 +175,26 @@ const StemStrategyComponent = () => {
           }
           return d;
         });
-  
+
         // Check if any individual day is false
-        const anyDayNotSelected = daysUpdated.slice(1).some((d) => !d[Object.keys(d)[0]]);
-  
+        const anyDayNotSelected = daysUpdated
+          .slice(1)
+          .some((d) => !d[Object.keys(d)[0]]);
+
         if (anyDayNotSelected) {
           // Set 'all' to false
           daysUpdated[0] = { all: false };
         } else {
           // Else, check if all days are true
-          const allDaysSelected = daysUpdated.slice(1).every((d) => d[Object.keys(d)[0]]);
+          const allDaysSelected = daysUpdated
+            .slice(1)
+            .every((d) => d[Object.keys(d)[0]]);
           if (allDaysSelected) {
             // Set 'all' to true
             daysUpdated[0] = { all: true };
           }
         }
-  
+
         return {
           ...prevStrategy,
           daysToExecute: daysUpdated,
@@ -115,10 +202,6 @@ const StemStrategyComponent = () => {
       }
     });
   };
-  
-  
-
- 
 
   const updateStrategyAttribute = (property, newValue) => {
     setStrategy((prevStrategy) => ({
@@ -236,47 +319,84 @@ const StemStrategyComponent = () => {
                 <Form.Label className="text-start">Instrument</Form.Label>
                 <Form.Select
                   aria-label="Default select example"
-                  onChange={(e) => e.target.value}
-                  value={straddleStrategy.legs.instrument}
+                  onChange={(e) => legStateManage("instrument", e)}
+                  value={Newleg.instrument}
                 >
-                  <option value="1">BankNifty</option>
-                  <option value="2">Nifty</option>
-                  <option value="3">finnifty</option>
+                  {instrumenOptions.map((option) => (
+                    <option key={option.value} value={option.displayText}>
+                      {option.displayText}
+                    </option>
+                  ))}
                 </Form.Select>
               </div>
               <div className="col">
                 <Form.Label className="text-start">Segments</Form.Label>
-                <Form.Select aria-label="Default select example">
-                  <option value="1">OPT</option>
-                  <option value="2">FUT</option>
+                <Form.Select
+                  aria-label="Default select example"
+                  value={Newleg.segment}
+                  onChange={(e) => legStateManage("segment", e)}
+                >
+                  {segmentOptions.map((option) => (
+                    <option key={option.value} value={option.displayText}>
+                      {option.displayText}
+                    </option>
+                  ))}
                 </Form.Select>
               </div>
               <div className="col">
                 <Form.Label className="text-start">Position</Form.Label>
-                <Form.Select aria-label="Default select example">
-                  <option value="1">BUY</option>
-                  <option value="2">SELL</option>
+                <Form.Select
+                  aria-label="Default select example"
+                  value={Newleg.position}
+                  onChange={(e) => legStateManage("position", e)}
+                >
+                  {positionOptions.map((option) => (
+                    <option key={option.value} value={option.displayText}>
+                      {option.displayText}
+                    </option>
+                  ))}
                 </Form.Select>
               </div>
               <div className="col">
                 <Form.Label className="text-start">Option Type</Form.Label>
-                <Form.Select aria-label="Default select example">
-                  <option value="1">CE</option>
-                  <option value="2">PE</option>
+                <Form.Select
+                  aria-label="Default select example"
+                  value={Newleg.instrumentType}
+                  onChange={(e) => legStateManage("instrumentType", e)}
+                >
+                  {optionTypeOptions.map((option) => (
+                    <option key={option.value} value={option.displayText}>
+                      {option.displayText}
+                    </option>
+                  ))}
                 </Form.Select>
               </div>
               <div className="col">
                 <Form.Label className="text-start">Strike Criteria</Form.Label>
-                <Form.Select aria-label="Default select example">
-                  <option value="1">ATM Type</option>
-                  <option value="2">Closet Premium</option>
+                <Form.Select
+                  aria-label="Default select example"
+                  value={Newleg.strike_value}
+                  onChange={(e) => legStateManage("strike_value", e)}
+                >
+                  {strikeCriteriaOptions.map((option) => (
+                    <option key={option.value} value={option.displayText}>
+                      {option.displayText}
+                    </option>
+                  ))}
                 </Form.Select>
               </div>
               <div className="col">
                 <Form.Label className="text-start">Strike Type</Form.Label>
-                <Form.Select aria-label="Default select example">
-                  <option value="1">ATM</option>
-                  <option value="2">PE</option>
+                <Form.Select
+                  aria-label="Default select example"
+                  value={Newleg.strike_type}
+                  onChange={(e) => legStateManage("strike_type", e)}
+                >
+                  {strikeTypeOptions.map((option) => (
+                    <option key={option.value} value={option.displayText}>
+                      {option.displayText}
+                    </option>
+                  ))}
                 </Form.Select>
               </div>
               <div className="col">
@@ -285,6 +405,8 @@ const StemStrategyComponent = () => {
                   type="number"
                   className="form-control"
                   placeholder="lot size"
+                  value={Newleg.quantity}
+                  onChange={(e) => legStateManage("quantity", e)}
                 />
               </div>
               <div className="col">
@@ -305,20 +427,93 @@ const StemStrategyComponent = () => {
                 </div>
               </div>
             </>
-            {strategy.legs.map((r, i) => (
-              <>
-                <Card key={i} className="m-1 shadow-lg" key={i}>
+            {strategy.legs.map((leg, i) => (
+              <div key={i}>
+                {/* Example: Dropdown for selecting instrument */}
+                <Card className="shadow-lg mt-2">
                   <Card.Body>
                     <div className="row">
                       <div className="col">
-                        <Button onClick={() => removeLeg(i)}>
+                      <Form.Label className="text-start">Instrument</Form.Label>
+                        <Form.Select
+                          value={leg.instrument}
+                          onChange={(e) =>
+                            handleLegChange(i, "instrument", e.target.value)
+                          }
+                        >
+                          {instrumenOptions.map((option) => (
+                            <option
+                              key={option.value}
+                              value={option.displayText}
+                            >
+                              {option.displayText}
+                            </option>
+                          ))}
+                        </Form.Select>
+                      </div>
+                      <div className="col">
+                        <Form.Label className="text-start">Segments</Form.Label>
+                        <Form.Select
+                          aria-label="Default select example"
+                          value={Newleg.segment}
+                          onChange={(e) =>
+                            handleLegChange(i, "segment", e.target.value)
+                          }
+                        >
+                          {segmentOptions.map((option) => (
+                            <option
+                              key={option.value}
+                              value={option.displayText}
+                            >
+                              {option.displayText}
+                            </option>
+                          ))}
+                        </Form.Select>
+                      </div>
+                      <div className="col">
+                        <Form.Label className="text-start">Position</Form.Label>
+                        <Form.Select
+                          aria-label="Default select example"
+                          value={Newleg.position}
+                          onChange={(e) => legStateManage("position", e)}
+                        >
+                          {positionOptions.map((option) => (
+                            <option
+                              key={option.value}
+                              value={option.displayText}
+                            >
+                              {option.displayText}
+                            </option>
+                          ))}
+                        </Form.Select>
+                      </div>
+                      <div className="col">
+                      <Form.Label className="text-start">lots</Form.Label>
+                        <input
+                          type="number"
+                          className="form-control"
+                          placeholder="lot-size"
+                          value={leg.quantity}
+                          onChange={(e) =>
+                            handleLegChange(i, "quantity", e.target.value)
+                          }
+                        />
+                      </div>
+
+                      <div className="col">
+                        <Button variant="primary" onClick={() => removeLeg(i)}>
                           <FaTrash size={25} />
                         </Button>
                       </div>
                     </div>
                   </Card.Body>
                 </Card>
-              </>
+
+                {/* Additional inputs for other properties... */}
+                {/* Example: Input for quantity */}
+
+                {/* Button to remove this leg */}
+              </div>
             ))}
           </>
         ) : (
