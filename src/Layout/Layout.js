@@ -15,7 +15,7 @@ const StemLayout = (props) => {
       <div className="row" style={{ minHeight: "100vh" }}>
         <div className="col-md-2 col-lg-2 col-xs-12 col-sm-12" id="leftbar">
           <div className="bg-light h-100 text-center">
-            <NavLink href="/">Dashboard
+            <NavLink href="/dashboard">Dashboard
             </NavLink>
             <NavLink href="/strategy">Strategy
             </NavLink>
