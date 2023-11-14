@@ -34,7 +34,7 @@ const StemNavBar = () => {
                 <FaArrowRightFromBracket size={25} />
               </Button> */}
               <Dropdown>
-                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                <Dropdown.Toggle variant="transparent" id="dropdown-basic">
                   <span className="user-image me-3">
                     <Image src={user} width="50px" />
                     <span className="username fw-semibolds ms-3 text-start">

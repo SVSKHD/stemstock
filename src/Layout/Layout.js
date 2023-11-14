@@ -24,7 +24,7 @@ const StemLayout = (props) => {
           </div>
         </div>
         <div className="col-md-10 col-lg-10 col-xs-12 col-sm-12 main-content">
-          <div className="p-5">
+          <div className="px-2 py-3">
           {props.children}
           </div>
         </div>
