@@ -13,16 +13,13 @@ const StemLayout = (props) => {
       <StemNavBar />
       <StemAuthDialog/>
       <div className="row" style={{ minHeight: "100vh" }}>
-        <div className="col-md-2 col-lg-2 col-xs-12 col-sm-12">
-          <div className="bg-dark h-100 text-center p-5">
-            <NavLink className="text-white  text-start p-2" href="/dashboard">
-              <h3>Dashboard</h3>
+        <div className="col-md-2 col-lg-2 col-xs-12 col-sm-12" id="leftbar">
+          <div className="bg-light h-100 text-center">
+            <NavLink href="/">Dashboard
             </NavLink>
-            <NavLink className="text-white text-start p-2" href="/strategy">
-              <h3>Strategy</h3>
+            <NavLink href="/strategy">Strategy
             </NavLink>
-            <NavLink className="text-white text-start p-2" href="/broker">
-              <h3>Broker</h3>
+            <NavLink href="/broker" className="active">Broker
             </NavLink>
           </div>
         </div>

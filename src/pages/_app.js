@@ -1,6 +1,6 @@
 import rootReducer from "@/store";
-import "@/styles/globals.css";
 import "bootstrap/dist/css/bootstrap.min.css";
+import "@/styles/globals.css";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
 import { Toaster } from "react-hot-toast";
