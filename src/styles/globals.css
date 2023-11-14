@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 :root {
+  --color-theme: #12667b;
   --max-width: 1100px;
   --border-radius: 12px;
   --font-mono: "Poppins";
@@ -36,6 +37,30 @@
   --callout-border-rgb: 172, 175, 176;
   --card-rgb: 180, 185, 188;
   --card-border-rgb: 131, 134, 135;
+}
+
+.btn-theme{
+  background: var(--color-theme);
+  border-radius: 1px solid var(--color-theme);
+  color:  var(--bs-white);
+}
+.btn-theme:hover,
+.btn-theme:focus{
+  color: var(--color-theme);
+  border-radius: 1px solid var(--color-theme);
+  background:  var(--bs-white);
+}
+.outline-theme{
+  color: var(--color-theme)!important;
+  border-radius: 1px solid var(--color-theme)!important;
+  background:  var(--bs-white)!important;
+  border-radius: .25rem!important;
+}
+.outline-theme:hover,
+.outline-theme:focus{
+  background: var(--color-theme)!important;
+  border-radius: 1px solid var(--color-theme)!important;
+  color:  var(--bs-white)!important;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -321,4 +346,32 @@ input:checked + .slider:before {
 
 .slider.round:before {
   border-radius: 50%;
+}
+.navbar-brand{
+  max-width: 14.66666667%;
+}
+#leftbar .nav-link{
+  line-height: 40px;
+  padding: 10px 15px;
+  font-size: 1.3rem;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+#leftbar .nav-link:hover,
+#leftbar .nav-link.active{
+  color: var(--bs-white);
+  background-color: #12667b;
+}
+.user-image{
+  display: flex;
+  align-items: center;
+}
+.user-image img{
+  width: 50px;
+  height: 50px;
+}
+.user-image .username{
+  color: #12667b;
+  font-size: 1rem;
+  line-height: 16px;
 }
