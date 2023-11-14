@@ -32,6 +32,10 @@ const StemStrategyComponent = () => {
     { value: "4", displayText: "ATM+50" },
     { value: "5", displayText: "ATM+50" },
   ];
+  const strikeCriteriaOptions = [
+    { value: "1", displayText: "ATM Type" },
+    { value: "2", displayText: "Closest Premium" },
+  ];
   let straddleStrategy = {
     name: "",
     entryTime: "",
@@ -75,26 +79,52 @@ const StemStrategyComponent = () => {
   const [Newleg, setNewleg] = useState(newLegTemplate);
 
   const legStateManage = (key, e) => {
+    const value = key === "quantity" ? Number(e.target.value) : e.target.value;
     setNewleg({ ...Newleg, [key]: e.target.value });
   };
   // adding and removing legs
+  // const addNewLeg = () => {
+  //   console.log("legs", Newleg , strategy);
+  //   setStrategy((prevStrategy) => {
+  //     if (prevStrategy.legs.length < 9) {
+  //       return {
+  //         ...prevStrategy,
+  //         legs: [
+  //           ...prevStrategy.legs,
+  //           { ...Newleg, index: prevStrategy.legs.length },
+  //         ],
+  //       };
+  //     } else {
+  //       // Optionally handle the case where there are already 10 legs
+  //       StemToast("we can allow only 9 legs", "error");
+  //       return prevStrategy;
+  //     }
+  //   });
+  // };
+
   const addNewLeg = () => {
-    console.log("legs", Newleg);
-    // setStrategy((prevStrategy) => {
-    //   if (prevStrategy.legs.length < 9) {
-    //     return {
-    //       ...prevStrategy,
-    //       legs: [
-    //         ...prevStrategy.legs,
-    //         { ...newLegTemplate, index: prevStrategy.legs.length },
-    //       ],
-    //     };
-    //   } else {
-    //     // Optionally handle the case where there are already 10 legs
-    //     StemToast("we can allow only 9 legs", "error");
-    //     return prevStrategy;
-    //   }
-    // });
+    console.log("legs", Newleg, strategy);
+
+    setStrategy((prevStrategy) => {
+      // Check if the maximum number of legs (9 in this case) has been reached
+      if (prevStrategy.legs.length < 9) {
+        // Create a new leg object with updated index
+        const updatedNewLeg = {
+          ...Newleg,
+          index: prevStrategy.legs.length,
+        };
+
+        // Return the updated strategy with the new leg added
+        return {
+          ...prevStrategy,
+          legs: [...prevStrategy.legs, updatedNewLeg],
+        };
+      } else {
+        // Handle the case where there are already 9 legs
+        StemToast("we can allow only 9 legs", "error");
+        return prevStrategy;
+      }
+    });
   };
 
   const removeLeg = (legIndex) => {
@@ -289,7 +319,7 @@ const StemStrategyComponent = () => {
                 <Form.Label className="text-start">Instrument</Form.Label>
                 <Form.Select
                   aria-label="Default select example"
-                  onChange={(e) => legStateManage('instrument', e)}
+                  onChange={(e) => legStateManage("instrument", e)}
                   value={Newleg.instrument}
                 >
                   {instrumenOptions.map((option) => (
@@ -304,7 +334,7 @@ const StemStrategyComponent = () => {
                 <Form.Select
                   aria-label="Default select example"
                   value={Newleg.segment}
-                  onChange={(e) => legStateManage('segment', e)}
+                  onChange={(e) => legStateManage("segment", e)}
                 >
                   {segmentOptions.map((option) => (
                     <option key={option.value} value={option.displayText}>
@@ -318,7 +348,7 @@ const StemStrategyComponent = () => {
                 <Form.Select
                   aria-label="Default select example"
                   value={Newleg.position}
-                  onChange={(e) => legStateManage('position', e)}
+                  onChange={(e) => legStateManage("position", e)}
                 >
                   {positionOptions.map((option) => (
                     <option key={option.value} value={option.displayText}>
@@ -329,8 +359,12 @@ const StemStrategyComponent = () => {
               </div>
               <div className="col">
                 <Form.Label className="text-start">Option Type</Form.Label>
-                <Form.Select aria-label="Default select example" value={Newleg.instrumentType} onChange={(e)=>legStateManage('instrumentType' , e)}>
-                {optionTypeOptions.map((option) => (
+                <Form.Select
+                  aria-label="Default select example"
+                  value={Newleg.instrumentType}
+                  onChange={(e) => legStateManage("instrumentType", e)}
+                >
+                  {optionTypeOptions.map((option) => (
                     <option key={option.value} value={option.displayText}>
                       {option.displayText}
                     </option>
@@ -339,15 +373,26 @@ const StemStrategyComponent = () => {
               </div>
               <div className="col">
                 <Form.Label className="text-start">Strike Criteria</Form.Label>
-                <Form.Select aria-label="Default select example">
-                  <option value="1">ATM Type</option>
-                  <option value="2">Closet Premium</option>
+                <Form.Select
+                  aria-label="Default select example"
+                  value={Newleg.strike_value}
+                  onChange={(e) => legStateManage("strike_value", e)}
+                >
+                  {strikeCriteriaOptions.map((option) => (
+                    <option key={option.value} value={option.displayText}>
+                      {option.displayText}
+                    </option>
+                  ))}
                 </Form.Select>
               </div>
               <div className="col">
                 <Form.Label className="text-start">Strike Type</Form.Label>
-                <Form.Select aria-label="Default select example" value={Newleg.strike_type} onChange={(e)=>legStateManage('strike_type',e)}>
-                {strikeTypeOptions.map((option) => (
+                <Form.Select
+                  aria-label="Default select example"
+                  value={Newleg.strike_type}
+                  onChange={(e) => legStateManage("strike_type", e)}
+                >
+                  {strikeTypeOptions.map((option) => (
                     <option key={option.value} value={option.displayText}>
                       {option.displayText}
                     </option>
@@ -360,6 +405,8 @@ const StemStrategyComponent = () => {
                   type="number"
                   className="form-control"
                   placeholder="lot size"
+                  value={Newleg.quantity}
+                  onChange={(e) => legStateManage("quantity", e)}
                 />
               </div>
               <div className="col">
@@ -387,6 +434,7 @@ const StemStrategyComponent = () => {
                   <Card.Body>
                     <div className="row">
                       <div className="col">
+                      <Form.Label className="text-start">Instrument</Form.Label>
                         <Form.Select
                           value={leg.instrument}
                           onChange={(e) =>
@@ -403,8 +451,44 @@ const StemStrategyComponent = () => {
                           ))}
                         </Form.Select>
                       </div>
-                      <div className="col"></div>
                       <div className="col">
+                        <Form.Label className="text-start">Segments</Form.Label>
+                        <Form.Select
+                          aria-label="Default select example"
+                          value={Newleg.segment}
+                          onChange={(e) =>
+                            handleLegChange(i, "segment", e.target.value)
+                          }
+                        >
+                          {segmentOptions.map((option) => (
+                            <option
+                              key={option.value}
+                              value={option.displayText}
+                            >
+                              {option.displayText}
+                            </option>
+                          ))}
+                        </Form.Select>
+                      </div>
+                      <div className="col">
+                        <Form.Label className="text-start">Position</Form.Label>
+                        <Form.Select
+                          aria-label="Default select example"
+                          value={Newleg.position}
+                          onChange={(e) => legStateManage("position", e)}
+                        >
+                          {positionOptions.map((option) => (
+                            <option
+                              key={option.value}
+                              value={option.displayText}
+                            >
+                              {option.displayText}
+                            </option>
+                          ))}
+                        </Form.Select>
+                      </div>
+                      <div className="col">
+                      <Form.Label className="text-start">lots</Form.Label>
                         <input
                           type="number"
                           className="form-control"
