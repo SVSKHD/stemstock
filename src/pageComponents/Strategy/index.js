@@ -5,7 +5,7 @@ import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import StemToast from "@/components/reusables/js/toast";
-import { FaTrash } from "react-icons/fa6";
+import { FaTrash, FaRegCircleCheck } from "react-icons/fa6";
 
 const StemStrategyComponent = () => {
   let straddleStrategy = {
@@ -326,9 +326,9 @@ const StemStrategyComponent = () => {
         )}
 
         <div className="row">
-          <div className="col-md-6 col-lg-6 col-xs-12 col-sm-12">
+          <div className="col-md-5">
             <h2>Overall MTM</h2>
-            <Card className="shadow-lg">
+            <Card className="">
               <Card.Body bg="light">
                 <div className="row">
                   <div className="col-md-6 col-lg-6">
@@ -351,9 +351,9 @@ const StemStrategyComponent = () => {
               </Card.Body>
             </Card>
           </div>
-          <div className="col-md-6 col-lg-6 col-xs-12 col-sm-12">
+          <div className="col-md-7">
             <h2>Days to Execute</h2>
-            <Card bg="dark">
+            <Card bg="light">
               <Card.Body>
                 <div className="row">
                   {strategy.daysToExecute.map((day, index) => {
@@ -363,10 +363,11 @@ const StemStrategyComponent = () => {
                         key={index}
                         className="col m-2"
                         onClick={() => handleDayClick(dayName)}
-                        variant={day[dayName] ? "light" : "outline-light"}
+                        variant={day[dayName] ? "light" : "outline-dark"}
                       >
+                        <span>{day[dayName] ? <FaRegCircleCheck className="text-success"/> : ""}</span>
                         {dayName.charAt(0).toUpperCase() + dayName.slice(1)}{" "}
-                        {day[dayName] ? "(Selected)" : ""}
+                         
                       </Button>
                     );
                   })}
