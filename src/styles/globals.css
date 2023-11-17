@@ -379,3 +379,49 @@ input:checked + .slider:before {
 .h-auto{
   height: auto!important;
 }
+.on-off-switch #custom-switch{
+  position: relative;
+  width: 3rem;
+  height: 1.4rem;
+  background-color: #ff000078;
+  outline: none;
+  box-shadow: none;
+}
+.on-off-switch #custom-switch:checked{
+  position: relative;
+  width: 3rem;
+  height: 1.4rem;
+  background-color: #2e8b5778!important;
+}
+.on-off-switch #custom-switch::before{
+  content: 'off';
+  position: absolute;
+  color: var(--bs-black);
+  overflow: hidden;
+  height: 1.4rem;
+  right: 0;
+  width: 25px;
+  border-top-right-radius: 0.7rem;
+  border-bottom-right-radius: 0.7rem;
+  line-height: 21px;
+  font-size: 64%;
+  text-align: center;
+  text-transform: uppercase;
+}
+.on-off-switch #custom-switch:checked:before{
+  content: 'on';
+  position: absolute;
+  color: var(--bs-black);
+  overflow: hidden;
+  height: 1.4rem;
+  left: 0;
+  right: auto;
+  
+  width: 25px;
+  border-top-right-radius: 0.7rem;
+  border-bottom-right-radius: 0.7rem;
+  line-height: 21px;
+  font-size: 64%;
+  text-align: center;
+  text-transform: uppercase;
+}
