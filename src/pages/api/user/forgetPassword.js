@@ -42,3 +42,14 @@ App.post(async (req, res) => {
 });
 
 export default App.handler();
+
+
+// NEXT_PUBLIC_API_DB = "mongodb+srv://hithesh:hithesh@aqua.6swj0.mongodb.net/"
+// NEXT_PUBLIC_API_URL= "http://localhost:4000/api"
+// NEXT_PUBLIC_JWT_SECRET="stemstock"
+
+
+// # kite connect
+// NEXT_PUBLIC_API_ZERODHA_KEY = 2g58vdwzg7xhqkk7
+// NEXT_PUBLIC_API_ZERODHA_SECRET = 5zyx5mdfltk3illcdv6fj7pq6zujy4e1
+
