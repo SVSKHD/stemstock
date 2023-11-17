@@ -22,6 +22,20 @@ const StemNavBar = () => {
 
   return (
     <>
+     {/* <Navbar bg="white" data-bs-theme="light" className="shadow-sm">
+          <Container>
+            <Navbar.Brand href="#home"><Image src={logo} className="w-100" alt="logo"/></Navbar.Brand>
+            <Nav className="ms-auto">
+              <Nav.Link href="#home">
+              <Button variant="outline-info" className="px-4 rounded-pill shoadow-sm"><FaArrowRightToBracket /> Login</Button>
+              <Button variant="info" className="px-4 rounded-pill shoadow-sm ms-3"><FaWpforms /> Signup</Button>
+              </Nav.Link>
+              <Nav.Link href="#features">
+
+              </Nav.Link>
+            </Nav>
+          </Container>
+        </Navbar> */}
       <Navbar bg="light" data-bs-theme="light" className="py-0 shadow-sm">
         <Container fluid>
           <Navbar.Brand href="/" className="border-end border-light-subtle">

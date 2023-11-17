@@ -1,9 +1,12 @@
-import { Form, Button, Spinner } from "react-bootstrap";
+import { Form, Button, Spinner, Row, Col } from "react-bootstrap";
 import { useState } from "react";
 import StemUserOperations from "./authOperations";
 import StemToast from "../reusables/js/toast";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/router";
+import Image from "next/image";
+import Signinimg from "../../assets/images/signin.png";
+import { FaUserShield } from "react-icons/fa6";
 
 const StemSignin = () => {
   const dispatch = useDispatch();
@@ -86,36 +89,44 @@ const StemSignin = () => {
           </svg>
         </div>
       ) : (
-        <Form>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Email Address</Form.Label>
-            <Form.Control
-              type="email"
-              value={data.email}
-              onChange={(e) => setData({ ...data, email: e.target.value })}
-              placeholder="name@example.com"
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Password</Form.Label>
-            <Form.Control
-              type="password"
-              value={data.password}
-              onChange={(e) => setData({ ...data, password: e.target.value })}
-              placeholder="enter your password"
-            />
-          </Form.Group>
+        <Row className="align-items-center">
+          <Col md={6}>
+            <Image src={Signinimg} alt="Signin" className="w-100 h-auto"/>
+          </Col>
+          <Col md={6}>
+            <Form>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label className="mb-0">Email Address:</Form.Label>
+                <Form.Control
+                  type="email"
+                  value={data.email}
+                  onChange={(e) => setData({ ...data, email: e.target.value })}
+                  placeholder="Name@example.com"
+                />
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Label className="mb-0">Password:</Form.Label>
+                <Form.Control
+                  type="password"
+                  value={data.password}
+                  onChange={(e) => setData({ ...data, password: e.target.value })}
+                  placeholder="Enter your password"
+                />
+              </Form.Group>
 
-          <div className="d-grid gap-2">
-            <Button variant="primary" onClick={handleSubmit} size="md">
-              {loading ? (
-                <Spinner animation="border" variant="light" />
-              ) : (
-                "Signin"
-              )}
-            </Button>
-          </div>
-        </Form>
+              <div className="d-grid gap-2">
+                <Button variant="success w-auto rounded-pill px-4 d-flex align-items-center me-auto mt-3" onClick={handleSubmit} size="md">
+                <FaUserShield /> &nbsp;
+                  {loading ? (
+                    <Spinner animation="border" variant="light" />
+                  ) : (
+                    "Login"
+                  )}
+                </Button>
+              </div>
+            </Form>
+          </Col>
+        </Row>
       )}
     </>
   );

@@ -16,12 +16,12 @@ const StemAuthDialog = () => {
             payload: false,
           })
         }
-        size={"md"}
+        size={signupStatus ? "xl" :"lg"}
         title={signupStatus ? "Signup" : "Signin"}
       >
         {signupStatus ? <StemSignup /> : <StemSignin />}
         <span
-          className="text-center text-primary"
+          className="text-end"
           onClick={() => {
             dispatch({
               type: "SET_AUTH_STATUS_VISIBLE",
@@ -30,9 +30,9 @@ const StemAuthDialog = () => {
           }}
         >
           {signupStatus ? (
-            <h6>Already Have An Account..? Signin</h6>
+            <span className="d-flex align-items-center justify-content-end text-dark"><span>Already Have An Account..?</span> &nbsp;<span class="text-theme">Signin</span></span>
           ) : (
-            <h6>Don't Have Account..? Signup</h6>
+            <span className="d-flex align-items-center justify-content-end text-dark"><span>Don't Have Account?</span> &nbsp;<span class="text-theme">Signup</span></span>
           )}
         </span>
       </StemReusableDialog>

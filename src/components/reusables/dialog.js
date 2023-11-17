@@ -11,16 +11,13 @@ const StemReusableDialog = (props) => {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header closeButton>
+        <Modal.Header closeButton className="bg-theme text-white">
           <Modal.Title id="contained-modal-title-vcenter">{title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <h4>{description}</h4>
           {props.children}
         </Modal.Body>
-        <Modal.Footer>
-          <Button onClick={onHide}>Close</Button>
-        </Modal.Footer>
       </Modal>
     </>
   );

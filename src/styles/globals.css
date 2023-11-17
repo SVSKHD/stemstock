@@ -1,10 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Mulish:wght@300;400;500;800;900&display=swap');
 :root {
   --color-theme: #12667b;
   --max-width: 1100px;
   --border-radius: 12px;
-  --font-mono: "Poppins";
-  --bs-body-font-family: "Poppins";
+  /* --font-mono: "Poppins"; */
+  /* --bs-body-font-family: "Poppins"; */
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
@@ -39,10 +39,19 @@
   --card-border-rgb: 131, 134, 135;
 }
 
+body{
+  font-family: 'Mulish', sans-serif!important;
+}
+.text-theme{
+  color:  var(--color-theme)!important;
+}
+.bg-theme{
+  background-color:  var(--color-theme)!important;
+}
 .btn-theme{
-  background: var(--color-theme);
-  border-radius: 1px solid var(--color-theme);
-  color:  var(--bs-white);
+  background: var(--color-theme)!important;
+  border-radius: 1px solid var(--color-theme)!important;
+  color:  var(--bs-white)!important;
 }
 .btn-theme:hover,
 .btn-theme:focus{
@@ -366,4 +375,7 @@ input:checked + .slider:before {
   color: #12667b;
   font-size: 1rem;
   line-height: 16px;
+}
+.h-auto{
+  height: auto!important;
 }

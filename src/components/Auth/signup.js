@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Row, Col } from "react-bootstrap";
 import StemUserOperations from "./authOperations";
 import StemToast from "../reusables/js/toast";
 import { useDispatch } from "react-redux";
+import Image from "next/image";
+import Signupimg from "../../assets/images/signup.png";
+import { FaUserShield } from "react-icons/fa6";
 
 const StemSignup = () => {
   const [data, setData] = useState({
@@ -38,70 +41,89 @@ const StemSignup = () => {
   };
   return (
     <>
-      <Form>
-        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-          <Form.Label>Firstname</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="enter your First Name"
-            value={data.firstName}
-            onChange={(e) => setData({ ...data, firstName: e.target.value })}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-          <Form.Label>Lastname</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="enter your Last Name"
-            value={data.lastName}
-            onChange={(e) => setData({ ...data, lastName: e.target.value })}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-          <Form.Label>Phone No</Form.Label>
-          <Form.Control
-            type="number"
-            placeholder="enter Phone no"
-            value={data.phoneNo}
-            onChange={(e) => setData({ ...data, phoneNo: e.target.value })}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-          <Form.Label>Email Address</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="name@example.com"
-            value={data.email}
-            onChange={(e) => setData({ ...data, email: e.target.value })}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="enter your password"
-            value={data.password}
-            onChange={(e) => setData({ ...data, password: e.target.value })}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-          <Form.Label>Retype-Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="retype password"
-            value={data.retypePassword}
-            onChange={(e) =>
-              setData({ ...data, retypePassword: e.target.value })
-            }
-          />
-        </Form.Group>
+      <Row class="d-flex align-items-center">
+        <Col md={6}>
+          <Image src={Signupimg} alt="Signup" className="w-100 h-auto"/>
+        </Col>
+        <Col md={6}>
+          <Form>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                  <Form.Label className="mb-0">Firstname:</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter your First Name"
+                    value={data.firstName}
+                    onChange={(e) => setData({ ...data, firstName: e.target.value })}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                  <Form.Label  className="mb-0">Lastname:</Form.Label>
+                  <Form.Control
+                    type="text"
+                    placeholder="Enter your Last Name"
+                    value={data.lastName}
+                    onChange={(e) => setData({ ...data, lastName: e.target.value })}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label  className="mb-0">Phone No:</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Enter Phone no"
+                value={data.phoneNo}
+                onChange={(e) => setData({ ...data, phoneNo: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Label  className="mb-0">Email Address:</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="name@example.com"
+                value={data.email}
+                onChange={(e) => setData({ ...data, email: e.target.value })}
+              />
+            </Form.Group>
+            <Row>
+              <Col md={6}>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                  <Form.Label  className="mb-0">Password:</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Enter your password"
+                    value={data.password}
+                    onChange={(e) => setData({ ...data, password: e.target.value })}
+                  />
+                </Form.Group>
+              </Col>
+              <Col md={6}>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                  <Form.Label  className="mb-0">Retype-Password:</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="Retype password"
+                    value={data.retypePassword}
+                    onChange={(e) =>
+                      setData({ ...data, retypePassword: e.target.value })
+                    }
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
 
-        <div className="d-grid gap-2">
-          <Button onClick={handleSubmit} variant="primary" size="md">
-            Signup
-          </Button>
-        </div>
-      </Form>
+            <div className="d-grid gap-2">
+              <Button onClick={handleSubmit} variant="primary" size="md" className="w-auto rounded-pill px-4 d-flex align-items-center me-auto mt-3">
+                <FaUserShield /> &nbsp; Signup
+              </Button>
+            </div>
+          </Form>
+        </Col>
+      </Row>
     </>
   );
 };
