@@ -59,7 +59,7 @@ App.put(async (req, res) => {
 });
 
 // Route to delete a specific trading strategy by ID
-handler.delete(async (req, res) => {
+App.delete(async (req, res) => {
   const { id } = req.query;
   try {
     const deletedTradingStrategy = await TradingStrategy.findByIdAndRemove(id);
