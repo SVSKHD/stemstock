@@ -36,6 +36,30 @@ const StemStrategyComponent = () => {
     { value: "1", displayText: "ATM Type" },
     { value: "2", displayText: "Closest Premium" },
   ];
+  const takeProfitOptions = [
+    { value: "1", displayText: "TP %" },
+    { value: "2", displayText: "TP Pts" },
+    { value: "2", displayText: "TP Spot Pts" },
+    { value: "2", displayText: "TP Spot %" },
+  ];
+  const stopLossOptions = [
+    { value: "1", displayText: "SL %" },
+    { value: "2", displayText: "SL Pts" },
+    { value: "2", displayText: "SL Spot Pts" },
+    { value: "2", displayText: "SL Spot %" },
+  ];
+  const traiLStopLossOptions = [
+    { value: "1", displayText: "TSL %" },
+    { value: "2", displayText: "TSL Pts" },
+  ];
+  const waitAndTradeOptions = [
+    { value: "1", displayText: "% ⬆️" },
+    { value: "2", displayText: "% ⬇️" },
+    { value: "3", displayText: "Pts ⬆️" },
+    { value: "4", displayText: "Pts ⬇️" },
+    { value: "5", displayText: "Spot % ⬆️" },
+    { value: "6", displayText: "Spot % ⬇️" },
+  ];
   let straddleStrategy = {
     name: "",
     entryTime: "",
@@ -57,6 +81,10 @@ const StemStrategyComponent = () => {
   };
 
   const [strategy, setStrategy] = useState(straddleStrategy);
+  const [toggle, setTooglle] = useState({
+    overAllStopLoss: false,
+    overAllMTM: false,
+  });
 
   const newLegTemplate = {
     instrument: "",
@@ -69,10 +97,18 @@ const StemStrategyComponent = () => {
     strike_value: "",
     position: "",
     quantity: "",
-    takeProfit: "",
-    stopLoss: "",
-    traiLStopLoss: { x: "", y: "" },
-    waitAndTrade: "",
+    takeProfit: false,
+    takeProfitType: "",
+    takeProfitValue: 0,
+    stopLoss: false,
+    stopLossType: "",
+    stopLossValue: 0,
+    trialStopLoss: false,
+    trialStopLossType: 0,
+    traiLStopLossValue: { x: 0, y: 0 },
+    waitAndTrade: false,
+    waitAndTradeType: "",
+    waitAndTradeValue: 0,
     Re_Entry: "",
   };
 
@@ -135,6 +171,7 @@ const StemStrategyComponent = () => {
   };
 
   const handleLegChange = (legIndex, key, value) => {
+    console.log("legs", strategy.legs);
     setStrategy((prevStrategy) => {
       // Clone the legs array
       const updatedLegs = [...prevStrategy.legs];
@@ -434,7 +471,9 @@ const StemStrategyComponent = () => {
                   <Card.Body>
                     <div className="row">
                       <div className="col">
-                      <Form.Label className="text-start">Instrument</Form.Label>
+                        <Form.Label className="text-start">
+                          Instrument
+                        </Form.Label>
                         <Form.Select
                           value={leg.instrument}
                           onChange={(e) =>
@@ -455,7 +494,7 @@ const StemStrategyComponent = () => {
                         <Form.Label className="text-start">Segments</Form.Label>
                         <Form.Select
                           aria-label="Default select example"
-                          value={Newleg.segment}
+                          value={leg.segment}
                           onChange={(e) =>
                             handleLegChange(i, "segment", e.target.value)
                           }
@@ -474,8 +513,10 @@ const StemStrategyComponent = () => {
                         <Form.Label className="text-start">Position</Form.Label>
                         <Form.Select
                           aria-label="Default select example"
-                          value={Newleg.position}
-                          onChange={(e) => legStateManage("position", e)}
+                          value={leg.position}
+                          onChange={(e) =>
+                            handleLegChange(i, "position", e.target.value)
+                          }
                         >
                           {positionOptions.map((option) => (
                             <option
@@ -488,7 +529,308 @@ const StemStrategyComponent = () => {
                         </Form.Select>
                       </div>
                       <div className="col">
-                      <Form.Label className="text-start">lots</Form.Label>
+                        <Form.Label className="text-start">
+                          Option Type
+                        </Form.Label>
+                        <Form.Select
+                          aria-label="Default select example"
+                          value={Newleg.instrumentType}
+                          onChange={(e) =>
+                            handleLegChange(i, "instrumentType", e)
+                          }
+                        >
+                          {optionTypeOptions.map((option) => (
+                            <option
+                              key={option.value}
+                              value={option.displayText}
+                            >
+                              {option.displayText}
+                            </option>
+                          ))}
+                        </Form.Select>
+                      </div>
+                      <div className="col">
+                        <div className="mb-1">
+                          <Form.Select
+                            aria-label="Default select example"
+                            value={leg.strike_type}
+                            placeholder="Strike Criteria "
+                            onChange={(e) =>
+                              handleLegChange(i, "strike_type", e.target.value)
+                            }
+                          >
+                            {strikeCriteriaOptions.map((option) => (
+                              <option
+                                key={option.value}
+                                value={option.displayText}
+                              >
+                                {option.displayText}
+                              </option>
+                            ))}
+                          </Form.Select>
+                        </div>
+                        <div>
+                          <Form.Select
+                            aria-label="Default select example"
+                            value={leg.strike_value}
+                            placeholder="Strike Type"
+                            onChange={(e) =>
+                              handleLegChange(i, "stirke_value", e.target.value)
+                            }
+                          >
+                            {strikeTypeOptions.map((option) => (
+                              <option
+                                key={option.value}
+                                value={option.displayText}
+                              >
+                                {option.displayText}
+                              </option>
+                            ))}
+                          </Form.Select>
+                        </div>
+                      </div>
+                      <div className="col">
+                        <Form.Group
+                          className="mb-3"
+                          controlId="formBasicCheckbox"
+                        >
+                          <Form.Check
+                            type="checkbox"
+                            label={leg.takeProfit ? "" : "Target"}
+                            checked={leg.takeProfit}
+                            onChange={(e) =>
+                              handleLegChange(i, "takeProfit", e.target.checked)
+                            }
+                          />
+                        </Form.Group>
+                        <span>
+                          {leg.takeProfit ? (
+                            <>
+                              <Form.Select
+                                aria-label="Default select example"
+                                className="m-1"
+                                value={leg.takeProfitType}
+                                placeholder="Target Type"
+                                onChange={(e) =>
+                                  handleLegChange(
+                                    i,
+                                    "takeProfitType",
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                {takeProfitOptions.map((option) => (
+                                  <option
+                                    key={option.value}
+                                    value={option.displayText}
+                                  >
+                                    {option.displayText}
+                                  </option>
+                                ))}
+                              </Form.Select>
+                              <input
+                                type="number"
+                                className="form-control"
+                                placeholder="lot-size"
+                                value={leg.takeProfitValue}
+                                onChange={(e) =>
+                                  handleLegChange(
+                                    i,
+                                    "takeProfitValue",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </>
+                          ) : (
+                            <div />
+                          )}
+                        </span>
+                      </div>
+                      <div className="col">
+                        <Form.Group
+                          className="mb-3"
+                          controlId="formBasicCheckbox"
+                        >
+                          <Form.Check
+                            type="checkbox"
+                            label={leg.stopLoss ? "" : "Stop-Loss"}
+                            checked={leg.stopLoss}
+                            onChange={(e) =>
+                              handleLegChange(i, "stopLoss", e.target.checked)
+                            }
+                          />
+                        </Form.Group>
+                        <span>
+                          {leg.stopLoss ? (
+                            <>
+                              <Form.Select
+                                aria-label="Default select example"
+                                className="m-1"
+                                value={leg.stopLossType}
+                                placeholder="Target Type"
+                                onChange={(e) =>
+                                  handleLegChange(
+                                    i,
+                                    "stopLossType",
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                {stopLossOptions.map((option) => (
+                                  <option
+                                    key={option.value}
+                                    value={option.displayText}
+                                  >
+                                    {option.displayText}
+                                  </option>
+                                ))}
+                              </Form.Select>
+                              <input
+                                type="number"
+                                className="form-control"
+                                placeholder="lot-size"
+                                value={leg.stopLossValue}
+                                onChange={(e) =>
+                                  handleLegChange(
+                                    i,
+                                    "stopLossValue",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </>
+                          ) : (
+                            <div />
+                          )}
+                        </span>
+                      </div>
+                      <div className="col">
+                        <Form.Group
+                          className="mb-3"
+                          controlId="formBasicCheckbox"
+                        >
+                          <Form.Check
+                            type="checkbox"
+                            label={leg.trialStopLoss ? "" : "Trail-Stop-Loss"}
+                            checked={leg.trialStopLoss}
+                            onChange={(e) =>
+                              handleLegChange(
+                                i,
+                                "trialStopLoss",
+                                e.target.checked
+                              )
+                            }
+                          />
+                        </Form.Group>
+                        <span>
+                          {leg.trialStopLoss ? (
+                            <>
+                              <Form.Select
+                                aria-label="Default select example"
+                                className="m-1"
+                                value={leg.trialStopLossType}
+                                placeholder="Target Type"
+                                onChange={(e) =>
+                                  handleLegChange(
+                                    i,
+                                    "stopLossType",
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                {traiLStopLossOptions.map((option) => (
+                                  <option
+                                    key={option.value}
+                                    value={option.displayText}
+                                  >
+                                    {option.displayText}
+                                  </option>
+                                ))}
+                              </Form.Select>
+                              <input
+                                type="number"
+                                className="form-control"
+                                placeholder="lot-size"
+                                value={leg.traiLStopLossValue}
+                                onChange={(e) =>
+                                  handleLegChange(
+                                    i,
+                                    "trailStopLossValue",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </>
+                          ) : (
+                            <div />
+                          )}
+                        </span>
+                      </div>
+                      <div className="col">
+                        <Form.Group
+                          className="mb-3"
+                          controlId="formBasicCheckbox"
+                        >
+                          <Form.Check
+                            type="checkbox"
+                            label={leg.trialStopLoss ? "" : "wait and trade"}
+                            checked={leg.waitAndTrade}
+                            onChange={(e) =>
+                              handleLegChange(
+                                i,
+                                "waitAndTrade",
+                                e.target.checked
+                              )
+                            }
+                          />
+                        </Form.Group>
+                        <span>
+                          {leg.waitAndTrade ? (
+                            <>
+                              <Form.Select
+                                aria-label="Default select example"
+                                className="m-1"
+                                value={leg.waitAndTradeType}
+                                placeholder="Target Type"
+                                onChange={(e) =>
+                                  handleLegChange(
+                                    i,
+                                    "waitAndTradeType",
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                {waitAndTradeOptions.map((option) => (
+                                  <option
+                                    key={option.value}
+                                    value={option.displayText}
+                                  >
+                                    {option.displayText}
+                                  </option>
+                                ))}
+                              </Form.Select>
+                              <input
+                                type="number"
+                                className="form-control"
+                                placeholder="lot-size"
+                                value={leg.waitAndTradeValue}
+                                onChange={(e) =>
+                                  handleLegChange(
+                                    i,
+                                    "waitAndTradeValue",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </>
+                          ) : (
+                            <div />
+                          )}
+                        </span>
+                      </div>
+                      <div className="col">
+                        <Form.Label className="text-start">lots</Form.Label>
                         <input
                           type="number"
                           className="form-control"
@@ -517,7 +859,7 @@ const StemStrategyComponent = () => {
             ))}
           </>
         ) : (
-          <div></div>
+          <div />
         )}
 
         <div className="row">
@@ -560,9 +902,14 @@ const StemStrategyComponent = () => {
                         onClick={() => handleDayClick(dayName)}
                         variant={day[dayName] ? "light" : "outline-dark"}
                       >
-                        <span>{day[dayName] ? <FaRegCircleCheck className="text-success"/> : ""}</span>
+                        <span>
+                          {day[dayName] ? (
+                            <FaRegCircleCheck className="text-success" />
+                          ) : (
+                            ""
+                          )}
+                        </span>
                         {dayName.charAt(0).toUpperCase() + dayName.slice(1)}{" "}
-                         
                       </Button>
                     );
                   })}
