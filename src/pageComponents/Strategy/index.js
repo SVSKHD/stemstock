@@ -328,7 +328,7 @@ const StemStrategyComponent = () => {
               className="mb-3 stem-fin-input"
               controlId="exampleForm.ControlInput1"
             >
-              <Form.Label>Straddle Name</Form.Label>
+              <Form.Label className="mb-0">Straddle Name:</Form.Label>
               <Form.Control
                 type="email"
                 placeholder="Eg:Straddle Name"
@@ -343,8 +343,8 @@ const StemStrategyComponent = () => {
           <div className="col-md-6 col-lg-6 col-xs-12 col-sm-12">
             <div className="col">
               <div className="row">
-                <div className="col">
-                  <label>Start Date : </label>
+                <div className="col border-end">
+                  <label className="mb-0">Start Time: </label>
                   <input
                     type={strategy.immediate ? "text" : "time"}
                     placeholder="Start date"
@@ -359,8 +359,17 @@ const StemStrategyComponent = () => {
                     }
                   />
                   <div className="mt-2 text-start">
-                    <label className="font-weight-bold">Immediate</label>
-                    <label class="switch">
+                    {/* <label className="font-weight-bold">Immediate</label> */}
+                    <Form.Check // prettier-ignore
+                        type="switch"
+                        id="custom-switch"
+                        label="Immediate"
+                        checked={strategy.immediate}
+                        onChange={(e) =>
+                          updateStrategyAttribute("immediate", e.target.checked)
+                        }
+                      />
+                    {/* <label class="switch">
                       <input
                         type="checkbox"
                         checked={strategy.immediate}
@@ -368,12 +377,13 @@ const StemStrategyComponent = () => {
                           updateStrategyAttribute("immediate", e.target.checked)
                         }
                       />
+                      
                       <span class="slider round"></span>
-                    </label>
+                    </label> */}
                   </div>
                 </div>
                 <div className="col">
-                  <label>End Date : </label>
+                  <label className="mb-0">End Time: </label>
                   <input
                     type="time"
                     className="form-control"
@@ -387,12 +397,13 @@ const StemStrategyComponent = () => {
             </div>
           </div>
         </div>
-        <h2>Add Leg</h2>
-        <Card className="text-center shadow-lg mb-3 mt-3">
+        <hr/>
+        <h5 class="mb-0">Add Leg</h5>
+        <Card className="text-center shadow-none mb-3 mt-3 addleg-card">
           <Card.Body>
-            <div className="row">
+            <div className="row text-start">
               <div className="col">
-                <Form.Label className="text-start">Instrument</Form.Label>
+                <Form.Label className="text-start">Instrument:</Form.Label>
                 <Form.Select
                   aria-label="Default select example"
                   onChange={(e) => legStateManage("instrument", e)}
@@ -406,7 +417,7 @@ const StemStrategyComponent = () => {
                 </Form.Select>
               </div>
               <div className="col">
-                <Form.Label className="text-start">Segments</Form.Label>
+                <Form.Label className="text-start">Segments:</Form.Label>
                 <Form.Select
                   aria-label="Default select example"
                   value={Newleg.segment}
@@ -420,7 +431,7 @@ const StemStrategyComponent = () => {
                 </Form.Select>
               </div>
               <div className="col">
-                <Form.Label className="text-start">Position</Form.Label>
+                <Form.Label className="text-start">Position:</Form.Label>
                 <Form.Select
                   aria-label="Default select example"
                   value={Newleg.position}
@@ -434,7 +445,7 @@ const StemStrategyComponent = () => {
                 </Form.Select>
               </div>
               <div className="col">
-                <Form.Label className="text-start">Option Type</Form.Label>
+                <Form.Label className="text-start">Option Type:</Form.Label>
                 <Form.Select
                   aria-label="Default select example"
                   value={Newleg.instrumentType}
@@ -448,7 +459,7 @@ const StemStrategyComponent = () => {
                 </Form.Select>
               </div>
               <div className="col">
-                <Form.Label className="text-start">Strike Criteria</Form.Label>
+                <Form.Label className="text-start">Strike Criteria:</Form.Label>
                 <Form.Select
                   aria-label="Default select example"
                   value={Newleg.strike_value}
@@ -462,7 +473,7 @@ const StemStrategyComponent = () => {
                 </Form.Select>
               </div>
               <div className="col">
-                <Form.Label className="text-start">Strike Type</Form.Label>
+                <Form.Label className="text-start">Strike Type:</Form.Label>
                 <Form.Select
                   aria-label="Default select example"
                   value={Newleg.strike_type}
@@ -476,7 +487,7 @@ const StemStrategyComponent = () => {
                 </Form.Select>
               </div>
               <div className="col">
-                <Form.Label className="text-start">Total Lots</Form.Label>
+                <Form.Label className="text-start">Total Lots:</Form.Label>
                 <input
                   type="number"
                   className="form-control"
@@ -486,7 +497,7 @@ const StemStrategyComponent = () => {
                 />
               </div>
               <div className="col">
-                <Button onClick={addNewLeg}>Add-Leg</Button>
+                <Button onClick={addNewLeg} className="mt-3" >Add-Leg</Button>
               </div>
             </div>
           </Card.Body>
@@ -511,7 +522,7 @@ const StemStrategyComponent = () => {
                     <div className="row">
                       <div className="col">
                         <Form.Label className="text-start">
-                          Instrument
+                          Instrument:
                         </Form.Label>
                         <Form.Select
                           value={leg.instrument}
@@ -530,7 +541,7 @@ const StemStrategyComponent = () => {
                         </Form.Select>
                       </div>
                       <div className="col">
-                        <Form.Label className="text-start">Segments</Form.Label>
+                        <Form.Label className="text-start">Segments:</Form.Label>
                         <Form.Select
                           aria-label="Default select example"
                           value={leg.segment}
@@ -549,7 +560,7 @@ const StemStrategyComponent = () => {
                         </Form.Select>
                       </div>
                       <div className="col">
-                        <Form.Label className="text-start">Position</Form.Label>
+                        <Form.Label className="text-start">Position:</Form.Label>
                         <Form.Select
                           aria-label="Default select example"
                           value={leg.position}
@@ -569,7 +580,7 @@ const StemStrategyComponent = () => {
                       </div>
                       <div className="col">
                         <Form.Label className="text-start">
-                          Option Type
+                          Option Type:
                         </Form.Label>
                         <Form.Select
                           aria-label="Default select example"
@@ -903,12 +914,12 @@ const StemStrategyComponent = () => {
 
         <div className="row">
           <div className="col-md-5">
-            <h2>Overall MTM</h2>
+            <h5 className="mb-0">Overall MTM</h5>
             <Card className="">
               <Card.Body bg="light">
                 <div className="row">
                   <div className="col-md-6 col-lg-6">
-                    <Form.Label>Stop Loss</Form.Label>
+                    <Form.Label className="mb-0">Stop Loss:</Form.Label>
                     <Form.Select aria-label="Default select example">
                       <option>none</option>
                       <option value="1">MTM</option>
@@ -916,7 +927,7 @@ const StemStrategyComponent = () => {
                     </Form.Select>
                   </div>
                   <div className="col-md-6 col-lg-6">
-                    <Form.Label>Overall Target</Form.Label>
+                    <Form.Label className="mb-0">Overall Target:</Form.Label>
                     <Form.Select aria-label="Default select example">
                       <option>none</option>
                       <option value="1">MTM</option>
@@ -928,7 +939,7 @@ const StemStrategyComponent = () => {
             </Card>
           </div>
           <div className="col-md-7">
-            <h2>Days to Execute</h2>
+            <h5 className="mb-0">Days to Execute</h5>
             <Card bg="light">
               <Card.Body>
                 <div className="row">
@@ -957,8 +968,8 @@ const StemStrategyComponent = () => {
             </Card>
           </div>
         </div>
-        <div className="row mt-5">
-          <Button onClick={handleSaveStrategy}>Save Strategy</Button>
+        <div className="row mt-3 text-start me-auto">
+          <Button onClick={handleSaveStrategy} className="w-auto">Save Strategy</Button>
         </div>
       </StemLayout>
     </>
