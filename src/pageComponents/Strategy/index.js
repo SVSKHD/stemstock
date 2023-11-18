@@ -6,8 +6,12 @@ import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import StemToast from "@/components/reusables/js/toast";
 import { FaTrash, FaRegCircleCheck } from "react-icons/fa6";
+import moment from "moment/moment";
+import startegy from "@/pages/api/startegy/startegy";
+import StrategyOperations from "@/services/startegy";
 
 const StemStrategyComponent = () => {
+  let current_time = moment(new Date()).format("HH:mm a");
   const instrumenOptions = [
     { value: "1", displayText: "BankNifty" },
     { value: "2", displayText: "Nifty" },
@@ -78,6 +82,12 @@ const StemStrategyComponent = () => {
     ], // e.g., 30 (number of days),
     brokerSelected: "",
     status: "",
+    overAllStopLoss: false,
+    overAllStopLossType: "",
+    overAllStopLossValue: 0,
+    overAllMTM: false,
+    overAllMTMType: "",
+    overAllMTMValue: 0,
   };
 
   const [strategy, setStrategy] = useState(straddleStrategy);
@@ -282,8 +292,31 @@ const StemStrategyComponent = () => {
 
   const formatDate = () => {};
 
+  const { startegySave } = StrategyOperations();
+
   const handleSaveStrategy = () => {
     console.log("strategy", strategy);
+    if (!strategy.name) {
+      StemToast("Please fill the Strategy Name", "error");
+    }
+    else if (strategy.legs.length >= 9) {
+      StemToast("selected legs need to below or equal to 9", "error");
+    }
+    else if (moment(startegy.endTime).isBefore(startegy.entryTime)) {
+      StemToast("Please select valid end time", "error");
+    }
+    else if (moment(startegy.entryTime) < moment("08:00 ,HH:mm a")) {
+      StemToast("Stock order places after 8 am");
+    } 
+    // else {
+    //   startegySave(startegy)
+    //     .then((res) => {
+    //       console.log(res.data);
+    //     })
+    //     .catch((err) => {
+    //       StemToast("please try again", "error");
+    //     });
+    // }
   };
 
   return (
@@ -313,10 +346,14 @@ const StemStrategyComponent = () => {
                 <div className="col">
                   <label>Start Date : </label>
                   <input
-                    type="time"
+                    type={strategy.immediate ? "text" : "time"}
                     placeholder="Start date"
                     className="form-control"
-                    value={strategy.entryTime}
+                    value={
+                      strategy.immediate
+                        ? `${current_time} immediate`
+                        : strategy.entryTime
+                    }
                     onChange={(e) =>
                       updateStrategyAttribute("entryTime", e.target.value)
                     }
@@ -326,8 +363,10 @@ const StemStrategyComponent = () => {
                     <label class="switch">
                       <input
                         type="checkbox"
-                        onChange={(e) => console.log(e.target.value)}
-                        value={false}
+                        checked={strategy.immediate}
+                        onChange={(e) =>
+                          updateStrategyAttribute("immediate", e.target.checked)
+                        }
                       />
                       <span class="slider round"></span>
                     </label>

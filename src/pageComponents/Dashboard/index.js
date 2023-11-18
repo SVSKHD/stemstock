@@ -26,6 +26,7 @@ return(
                         </Card>
                     </Col>
                     <Col md={9}>
+                        {/* running strategy */}
                         <Card className="shadow-sm rounded-3 border-0">
                             <Card.Body>
                                 <Row>

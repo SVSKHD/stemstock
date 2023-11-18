@@ -1,41 +1,12 @@
 import StemIndexLayout from "@/Layout/indexLayout";
-import { Col, Row, Button, Container, Navbar, Nav } from "react-bootstrap";
+import { Col, Row, Button, Container } from "react-bootstrap";
 import Image from "next/image";
 import Landingimg from "../assets/images/stem-landing.svg";
 import {
   FaArrowRightLong,
-  FaArrowRightToBracket,
-  FaWpforms,
 } from "react-icons/fa6";
-import logo from "../assets/images/logo.svg";
-import { useDispatch, useSelector } from "react-redux";
-import StemAuthDialog from "@/components/Auth/AuthDialog";
 
 const StemHome = () => {
-  const dispatch = useDispatch();
-  const { authDialog, signupStatus } = useSelector((state) => ({ ...state }));
-
-  const handleSignupDialog = () => {
-    dispatch({
-      type: "SET_AUTH_DIALOG_VISIBLE",
-      payload: false,
-    });
-    dispatch({
-      type: "SET_AUTH_STATUS_VISIBLE",
-      payload: true,
-    });
-  };
-  const handleSigninDialog = () => {
-    dispatch({
-      type: "SET_AUTH_DIALOG_VISIBLE",
-      payload: false,
-    });
-    dispatch({
-      type: "SET_AUTH_STATUS_VISIBLE",
-      payload: false,
-    });
-  };
-
   return (
     <>
       <StemIndexLayout>
