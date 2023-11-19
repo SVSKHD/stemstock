@@ -16,7 +16,7 @@ const StemHome = () => {
             <Col md={5}>
               <h6 className="text-secondary mb-0">Welcome To</h6>
               <h1 className="display-1 display4 fw-bold text-uppercase text-theme">
-                Stem STock
+                Stem FIN
               </h1>
               <p className="mt-3">
                 Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do

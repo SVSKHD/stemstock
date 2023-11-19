@@ -27,17 +27,16 @@ const StemDashboardComponent = () => {
   const [strategy, setStrategy] = useState([]); // Corrected the typo in variable name
 
   useEffect(() => {
-    strategyFetch(userData.user.id)
+    strategyFetch(userData?userData.user.id :"")
       .then((res) => {
         // setStrategy([...res.data]); // Corrected the typo in function name
-        const updatedStrategy = setStrategy([...strategy, res.data])
+        const updatedStrategy = setStrategy([...strategy, res.data]);
         console.log(); // Log the updated data from the response
       })
       .catch((err) => {
         console.log("err", err);
       });
   }, [userData]);
-  
 
   return (
     <>
@@ -136,79 +135,88 @@ const StemDashboardComponent = () => {
 
         <section>
           <Container fluid className="ps-0">
-            <Card>
-              <Card.Body>
-                <Row>
-                  <Col md={4}>
-                    <div className="d-flex align-items-center justify-content-between">
-                      <span>
-                        <Form>
-                          {["checkbox"].map((type) => (
-                            <div key={`default-${type}`}>
-                              <Form.Check // prettier-ignore
-                                type={type}
-                                id={`default-${type}`}
-                                className="strategy-select"
-                              />
-                            </div>
-                          ))}
-                        </Form>
-                      </span>
-                      <span className="on-off-switch">
-                        <Form.Check // prettier-ignore
-                          type="switch"
-                          id="custom-switch"
-                          label=""
-                        />
-                      </span>
-                      <span className="pe-5">
-                        <p className="mb-0">
-                          <Badge pill bg="primary">
-                            New
-                          </Badge>
-                        </p>
-                      </span>
-                    </div>
-                  </Col>
-                  <Col md={4}>
-                    <div className="d-flex align-items-center justify-content-center">
-                      <span className="pe-3">
-                        <Button variant="primary" className="btn-sm">
-                          Add Broker
-                        </Button>
-                      </span>
-                      <span>
-                        <span className="border border-body px-2 py-2 rounded-start">
-                          MTM
-                        </span>
-                        <span className="border border-body px-3 py-2 bg-secondary text-white rounded-end">
-                          ---
-                        </span>
-                      </span>
-                    </div>
-                  </Col>
-                  <Col md={4}>
-                    <div className="d-flex align-items-center justify-content-end">
-                      <span className="pe-3">
-                        <Button
-                          variant="outline-success"
-                          disabled
-                          className="btn-sm"
-                        >
-                          Run
-                        </Button>
-                      </span>
-                      <span className="pe-3">
-                        <FaExpand className="text-theme" />
-                      </span>
-                      <span>
-                        <FaEllipsisVertical className="text-primary" />
-                      </span>
-                    </div>
-                  </Col>
-                </Row>
-              </Card.Body>
-            </Card>
+            {strategy.map((r, i) => (
+              <>
+                <Card key={i}>
+                  <Card.Body>
+                    <Row>
+                      <Col md={4}>
+                        <div className="d-flex align-items-center justify-content-between">
+                          <span>
+                            <Form>
+                              {["checkbox"].map((type) => (
+                                <div key={`default-${type}`}>
+                                  <Form.Check // prettier-ignore
+                                    type={type}
+                                    id={`default-${type}`}
+                                    className="strategy-select"
+                                  />
+                                </div>
+                              ))}
+                            </Form>
+                          </span>
+                          <span>{r.name}</span>
+                          <span className="on-off-switch">
+                            <Form.Check // prettier-ignore
+                              type="switch"
+                              id="custom-switch"
+                              label=""
+                            />
+                          </span>
+                          <span className="pe-5">
+                            <p className="mb-0">
+                              <Badge pill bg="primary">
+                                New
+                              </Badge>
+                            </p>
+                          </span>
+                        </div>
+                      </Col>
+                      <Col md={4}>
+                        <div className="d-flex align-items-center justify-content-center">
+                          <span className="pe-3">
+                            {r.broker ? (
+                              <span>{r.brokerName}</span>
+                            ) : (
+                              <Button variant="primary" className="btn-sm">
+                                Add Broker
+                              </Button>
+                            )}
+                          </span>
+                          <span>
+                            <span className="border border-body px-2 py-2 rounded-start">
+                              MTM
+                            </span>
+                            <span className="border border-body px-3 py-2 bg-secondary text-white rounded-end">
+                              ---
+                            </span>
+                          </span>
+                        </div>
+                      </Col>
+                      <Col md={4}>
+                        <div className="d-flex align-items-center justify-content-end">
+                          <span className="pe-3">
+                            <Button
+                              variant="outline-success"
+                              disabled
+                              className="btn-sm"
+                            >
+                              Run
+                            </Button>
+                          </span>
+                          <span className="pe-3">
+                            <FaExpand className="text-theme" />
+                          </span>
+                          <span>
+                            <FaEllipsisVertical className="text-primary" />
+                          </span>
+                        </div>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </Card>
+              </>
+            ))}
           </Container>
         </section>
       </StemLayout>

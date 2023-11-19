@@ -31,14 +31,10 @@ const StemSignin = () => {
           type: "LOGGED_IN_USER",
           payload: res.data,
         });
-        setTimeout(
-          () =>
-            dispatch({
-              type: "SET_AUTH_DIALOG_VISIBLE",
-              payload: false,
-            }),
-          5000
-        );
+        dispatch({
+          type: "SET_AUTH_DIALOG_VISIBLE",
+          payload: false,
+        });
         Router.push("/strategy");
       })
       .catch(() => {
@@ -91,11 +87,14 @@ const StemSignin = () => {
       ) : (
         <Row className="align-items-center">
           <Col md={6}>
-            <Image src={Signinimg} alt="Signin" className="w-100 h-auto"/>
+            <Image src={Signinimg} alt="Signin" className="w-100 h-auto" />
           </Col>
           <Col md={6}>
             <Form>
-              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlInput1"
+              >
                 <Form.Label className="mb-0">Email Address:</Form.Label>
                 <Form.Control
                   type="email"
@@ -104,19 +103,28 @@ const StemSignin = () => {
                   placeholder="Name@example.com"
                 />
               </Form.Group>
-              <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+              <Form.Group
+                className="mb-3"
+                controlId="exampleForm.ControlInput1"
+              >
                 <Form.Label className="mb-0">Password:</Form.Label>
                 <Form.Control
                   type="password"
                   value={data.password}
-                  onChange={(e) => setData({ ...data, password: e.target.value })}
+                  onChange={(e) =>
+                    setData({ ...data, password: e.target.value })
+                  }
                   placeholder="Enter your password"
                 />
               </Form.Group>
 
               <div className="d-grid gap-2">
-                <Button variant="success w-auto rounded-pill px-4 d-flex align-items-center me-auto mt-3" onClick={handleSubmit} size="md">
-                <FaUserShield /> &nbsp;
+                <Button
+                  variant="success w-auto rounded-pill px-4 d-flex align-items-center me-auto mt-3"
+                  onClick={handleSubmit}
+                  size="md"
+                >
+                  <FaUserShield /> &nbsp;
                   {loading ? (
                     <Spinner animation="border" variant="light" />
                   ) : (

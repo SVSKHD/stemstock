@@ -67,10 +67,13 @@ const tradingStrategySchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  // brokerSelected: {
-  //   type: mongoose.Schema.Types.ObjectId,
-  //   ref: "Broker",
-  // },
+  brokerName:{
+    type:String
+  },
+  brokerSelected: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Broker",
+  },
   status: String,
 });
 
