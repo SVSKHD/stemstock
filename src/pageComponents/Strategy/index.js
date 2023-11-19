@@ -7,7 +7,6 @@ import "react-clock/dist/Clock.css";
 import StemToast from "@/components/reusables/js/toast";
 import { FaTrash, FaRegCircleCheck } from "react-icons/fa6";
 import moment from "moment/moment";
-import startegy from "@/pages/api/strategy";
 import StrategyOperations from "@/services/startegy";
 import { useSelector } from "react-redux";
 

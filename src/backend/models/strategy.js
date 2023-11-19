@@ -62,23 +62,19 @@ const tradingStrategySchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
-    required: true,
   },
   broker: {
     type: Boolean,
     default: false,
   },
-  brokerSelected: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Broker",
-    required: true,
-  },
+  // brokerSelected: {
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "Broker",
+  // },
   status: String,
 });
 
 // Create a Mongoose model using the schema
-const TradingStrategy =
-  mongoose.model("TradingStrategy", tradingStrategySchema) ||
-  mongoose.models.TradingStrategy;
+const Strategy = mongoose.models.Strategy || mongoose.model('Strategy', tradingStrategySchema);
 
-export default TradingStrategy;
+export default Strategy;

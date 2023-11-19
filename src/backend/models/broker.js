@@ -18,6 +18,10 @@ const brokerSchema = new mongoose.Schema({
   ],
 });
 
-const Broker = mongoose.models.User || mongoose.model("Broker", brokerSchema);
+const Broker = mongoose.models.Broker || mongoose.model("Broker", brokerSchema);
 
 export default Broker;
+
+
+
+
