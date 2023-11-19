@@ -3,7 +3,7 @@ import KiteConnect from 'kiteconnect';
 
 // Initialize KiteConnect with your API key
 const kc = new KiteConnect({
-  api_key: process.env.
+  api_key: process.env.key
 });
 
 const router = createRouter();
