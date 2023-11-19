@@ -2,6 +2,8 @@ import axios from "axios";
 
 const startegySave = (data) => axios.post(`/api/strategy`, data);
 
+const strategyFetch = (id) => axios.get(`/api/strategy/fetch?id=${id}`)
+
 const strategyEdit = (id, data) => axios.put(`/api/startegy?id=${id}`, data);
 
 const startegyDelete = (id) => axios.delete * `/api/startegy?idel=${id}`;
@@ -14,6 +16,7 @@ const StrategyOperations = () => {
     strategyEdit,
     startegyEnable,
     startegyDelete,
+    strategyFetch
   };
 };
 

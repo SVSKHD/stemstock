@@ -432,3 +432,6 @@ input:checked + .slider:before {
 .addleg-card .card-body label{
   margin-bottom: 0px;
 }
+.strategy-select .form-check-input{
+  border: 1px solid var(--bs-dark);
+}
