@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const startegySave = (data) => axios.post(`/api/startegy`, data);
+const startegySave = (data) => axios.post(`/api/strategy`, data);
 
 const strategyEdit = (id, data) => axios.put(`/api/startegy?id=${id}`, data);
 

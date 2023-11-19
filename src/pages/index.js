@@ -10,9 +10,6 @@ const StemHome = () => {
   return (
     <>
       <StemIndexLayout>
-
-      
-     
       <section className="landing-sec py-5">
         <Container>
           <Row className="align-items-center">

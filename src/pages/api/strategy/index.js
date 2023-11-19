@@ -1,28 +1,37 @@
 import { createRouter } from "next-connect";
+import TradingStrategy from "../../../backend/models/strategy";
+import db from "@/backend/db/db";
 
 const App = createRouter();
 
 // Route to create a new trading strategy
 App.post(async (req, res) => {
   try {
+    db.connectDb();
     const newTradingStrategy = await TradingStrategy.create(req.body);
     res.status(201).json(newTradingStrategy);
+    db.disconnectDb();
   } catch (error) {
+    db.connectDb();
     console.error("Error creating trading strategy:", error);
     res.status(500).json({ error: "Error creating trading strategy" });
+    db.disconnectDb();
   }
 });
 
 // Route to retrieve all trading strategies
 App.get(async (req, res) => {
-  try {
-    const tradingStrategies = await TradingStrategy.find();
-    res.status(200).json(tradingStrategies);
-  } catch (error) {
-    console.error("Error retrieving trading strategies:", error);
-    res.status(500).json({ error: "Error retrieving trading strategies" });
-  }
+  res.json({ startegy: "get the startegy" });
 });
+// App.get(async (req, res) => {
+//   try {
+//     const tradingStrategies = await TradingStrategy.find();
+//     res.status(200).json(tradingStrategies);
+//   } catch (error) {
+//     console.error("Error retrieving trading strategies:", error);
+//     res.status(500).json({ error: "Error retrieving trading strategies" });
+//   }
+// });
 
 // Route to retrieve a specific trading strategy by ID
 App.get(async (req, res) => {

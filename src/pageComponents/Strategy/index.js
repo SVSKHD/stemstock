@@ -7,11 +7,13 @@ import "react-clock/dist/Clock.css";
 import StemToast from "@/components/reusables/js/toast";
 import { FaTrash, FaRegCircleCheck } from "react-icons/fa6";
 import moment from "moment/moment";
-import startegy from "@/pages/api/startegy/startegy";
+import startegy from "@/pages/api/strategy";
 import StrategyOperations from "@/services/startegy";
+import { useSelector } from "react-redux";
 
 const StemStrategyComponent = () => {
   let current_time = moment(new Date()).format("HH:mm a");
+  const { userData } = useSelector((state) => ({ ...state }));
   const instrumenOptions = [
     { value: "1", displayText: "BankNifty" },
     { value: "2", displayText: "Nifty" },
@@ -88,6 +90,7 @@ const StemStrategyComponent = () => {
     overAllMTM: false,
     overAllMTMType: "",
     overAllMTMValue: 0,
+    user: userData ? userData.user.id : "",
   };
 
   const [strategy, setStrategy] = useState(straddleStrategy);
@@ -114,7 +117,7 @@ const StemStrategyComponent = () => {
     stopLossType: "",
     stopLossValue: 0,
     trialStopLoss: false,
-    trialStopLossType: 0,
+    trialStopLossType: "",
     traiLStopLossValue: { x: 0, y: 0 },
     waitAndTrade: false,
     waitAndTradeType: "",
@@ -186,8 +189,23 @@ const StemStrategyComponent = () => {
       // Clone the legs array
       const updatedLegs = [...prevStrategy.legs];
 
-      // Update the specified leg
-      updatedLegs[legIndex] = { ...updatedLegs[legIndex], [key]: value };
+      // Check if the key is for updating x or y in triaLStopLoss
+      if (key === "triaLStopLossValueX" || key === "triaLStopLossValueY") {
+        const axis = key === "triaLStopLossValueX" ? "x" : "y";
+        value = Number(value); // Assuming x and y values are numbers
+
+        // Update the triaLStopLoss object in the specific leg
+        updatedLegs[legIndex] = {
+          ...updatedLegs[legIndex],
+          triaLStopLoss: {
+            ...updatedLegs[legIndex].triaLStopLoss,
+            [axis]: value,
+          },
+        };
+      } else {
+        // Handle other keys
+        updatedLegs[legIndex] = { ...updatedLegs[legIndex], [key]: value };
+      }
 
       // Return the updated strategy
       return { ...prevStrategy, legs: updatedLegs };
@@ -298,25 +316,21 @@ const StemStrategyComponent = () => {
     console.log("strategy", strategy);
     if (!strategy.name) {
       StemToast("Please fill the Strategy Name", "error");
-    }
-    else if (strategy.legs.length >= 9) {
+    } else if (strategy.legs.length >= 9) {
       StemToast("selected legs need to below or equal to 9", "error");
-    }
-    else if (moment(startegy.endTime).isBefore(startegy.entryTime)) {
+    } else if (moment(startegy.endTime).isBefore(startegy.entryTime)) {
       StemToast("Please select valid end time", "error");
-    }
-    else if (moment(startegy.entryTime) < moment("08:00 ,HH:mm a")) {
+    } else if (moment(startegy.entryTime) < moment("08:00 ,HH:mm a")) {
       StemToast("Stock order places after 8 am");
-    } 
-    // else {
-    //   startegySave(startegy)
-    //     .then((res) => {
-    //       console.log(res.data);
-    //     })
-    //     .catch((err) => {
-    //       StemToast("please try again", "error");
-    //     });
-    // }
+    } else {
+      startegySave(startegy)
+        .then((res) => {
+          console.log(res.data);
+        })
+        .catch(() => {
+          StemToast("please try again", "error");
+        });
+    }
   };
 
   return (
@@ -573,9 +587,9 @@ const StemStrategyComponent = () => {
                         </Form.Label>
                         <Form.Select
                           aria-label="Default select example"
-                          value={Newleg.instrumentType}
+                          value={leg.instrumentType}
                           onChange={(e) =>
-                            handleLegChange(i, "instrumentType", e)
+                            handleLegChange(i, "instrumentType", e.target.value)
                           }
                         >
                           {optionTypeOptions.map((option) => (
@@ -773,7 +787,7 @@ const StemStrategyComponent = () => {
                                 onChange={(e) =>
                                   handleLegChange(
                                     i,
-                                    "stopLossType",
+                                    "trialStopLossType",
                                     e.target.value
                                   )
                                 }
@@ -787,19 +801,40 @@ const StemStrategyComponent = () => {
                                   </option>
                                 ))}
                               </Form.Select>
-                              <input
-                                type="number"
-                                className="form-control"
-                                placeholder="lot-size"
-                                value={leg.traiLStopLossValue}
-                                onChange={(e) =>
-                                  handleLegChange(
-                                    i,
-                                    "trailStopLossValue",
-                                    e.target.value
-                                  )
-                                }
-                              />
+                              <div className="row m-1">
+                                <div className="col">
+                                  <input
+                                    type="number"
+                                    className="form-control"
+                                    placeholder="X"
+                                    value={leg.traiLStopLossValue.x} // Correct reference to leg.trialStopLossValue.x
+                                    onChange={(e) =>
+                                      handleLegChange(
+                                        i,
+                                        "trialStopLossValueX", // Correct key name
+                                        e.target.value
+                                      )
+                                    }
+                                  />
+                                </div>
+                                <div className="col">
+                                  <input
+                                    type="number"
+                                    className="form-control"
+                                    placeholder="Y"
+                                    value={leg.traiLStopLossValue.y} // Correct reference to leg.trialStopLossValue.y
+                                    onChange={(e) =>
+                                      handleLegChange(
+                                        i,
+                                        "trialStopLossValueY", // Correct key name
+                                        e.target.value
+                                      )
+                                    }
+                                  />
+                                </div>
+                              </div>
+
+                              {/* Input field for 'y' value of trialStopLossValue in a leg */}
                             </>
                           ) : (
                             <div />
@@ -813,7 +848,7 @@ const StemStrategyComponent = () => {
                         >
                           <Form.Check
                             type="checkbox"
-                            label={leg.trialStopLoss ? "" : "wait and trade"}
+                            label={leg.waitAndTrade ? "" : "wait and trade"}
                             checked={leg.waitAndTrade}
                             onChange={(e) =>
                               handleLegChange(
