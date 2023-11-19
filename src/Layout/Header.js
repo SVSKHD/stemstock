@@ -39,7 +39,7 @@ const StemNavBar = () => {
       <Navbar bg="light" data-bs-theme="light" className="py-0 shadow-sm">
         <Container fluid>
           <Navbar.Brand href="/" className="border-end border-light-subtle">
-            <Image src={logo} className="w-100" />
+            <Image src={logo} className="w-100"  alt="Stem Fin"/>
           </Navbar.Brand>
           {userData ? (
             <>
@@ -50,7 +50,7 @@ const StemNavBar = () => {
               <Dropdown>
                 <Dropdown.Toggle variant="transparent" id="dropdown-basic">
                   <span className="user-image me-3">
-                    <Image src={user} width="50px" />
+                    <Image src={user} width="50px" alt="Stem Fin" />
                     <span className="username fw-semibolds ms-3 text-start">
                       <span class="text-secondary small d-block">Welcome</span>
                       {userData.user.firstname}

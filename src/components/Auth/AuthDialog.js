@@ -30,9 +30,9 @@ const StemAuthDialog = () => {
           }}
         >
           {signupStatus ? (
-            <span className="d-flex align-items-center justify-content-end text-dark"><span>Already Have An Account..?</span> &nbsp;<span class="text-theme">Signin</span></span>
+            <span className="d-flex align-items-center justify-content-end text-dark"><span>Already Have An Account..?</span>  <span class="text-theme">Signin</span></span>
           ) : (
-            <span className="d-flex align-items-center justify-content-end text-dark"><span>Don't Have Account?</span> &nbsp;<span class="text-theme">Signup</span></span>
+            <span className="d-flex align-items-center justify-content-end text-dark"><span>Don't Have Account?</span>  <span class="text-theme">Signup</span></span>
           )}
         </span>
       </StemReusableDialog>

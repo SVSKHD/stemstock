@@ -1,6 +1,6 @@
 import { createRouter } from "next-connect";
-import TradingStrategy from "../../../backend/models/strategy";
 import db from "@/backend/db/db";
+import TradingStrategy from "@/backend/models/strategy";
 
 const App = createRouter();
 
@@ -8,14 +8,12 @@ const App = createRouter();
 App.post(async (req, res) => {
   try {
     db.connectDb();
-    const newTradingStrategy = await TradingStrategy.create(req.body);
-    res.status(201).json(newTradingStrategy);
+    const newStrategy = new TradingStrategy(req.body);
+    await newStrategy.save();
+    res.status(200).json(newStrategy);
     db.disconnectDb();
   } catch (error) {
-    db.connectDb();
-    console.error("Error creating trading strategy:", error);
-    res.status(500).json({ error: "Error creating trading strategy" });
-    db.disconnectDb();
+    res.status(400).json({ message: "Please try again later" });
   }
 });
 
