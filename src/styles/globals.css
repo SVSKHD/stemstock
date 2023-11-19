@@ -41,6 +41,10 @@
 
 body{
   font-family: 'Mulish', sans-serif!important;
+  font-size: 14px;
+}
+.form-select, .form-control{
+  font-size: 14px;
 }
 .text-theme{
   color:  var(--color-theme)!important;
@@ -424,4 +428,7 @@ input:checked + .slider:before {
   font-size: 64%;
   text-align: center;
   text-transform: uppercase;
+}
+.addleg-card .card-body label{
+  margin-bottom: 0px;
 }
