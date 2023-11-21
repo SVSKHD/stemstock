@@ -117,7 +117,7 @@ const StemStrategyComponent = () => {
     stopLossValue: 0,
     trialStopLoss: false,
     trialStopLossType: "",
-    traiLStopLossValue: { x: 0, y: 0 },
+    trialStopLossValue: { x: "", y: "" },
     waitAndTrade: false,
     waitAndTradeType: "",
     waitAndTradeValue: 0,
@@ -205,6 +205,28 @@ const StemStrategyComponent = () => {
         // Handle other keys
         updatedLegs[legIndex] = { ...updatedLegs[legIndex], [key]: value };
       }
+
+      // Return the updated strategy
+      return { ...prevStrategy, legs: updatedLegs };
+    });
+  };
+
+  const handleTrialStopLossChange = (legIndex, axis, value) => {
+    setStrategy((prevStrategy) => {
+      // Clone the legs array
+      const updatedLegs = [...prevStrategy.legs];
+
+      // Convert value to number if necessary
+      const numericValue = Number(value);
+
+      // Update the specific leg's trialStopLossValue
+      updatedLegs[legIndex] = {
+        ...updatedLegs[legIndex],
+        trialStopLossValue: {
+          ...updatedLegs[legIndex].trialStopLossValue, // Corrected property name here
+          [axis]: numericValue,
+        },
+      };
 
       // Return the updated strategy
       return { ...prevStrategy, legs: updatedLegs };
@@ -836,17 +858,17 @@ const StemStrategyComponent = () => {
                                   </option>
                                 ))}
                               </Form.Select>
-                              <div className="row m-1">
+                              <div className="row">
                                 <div className="col">
                                   <input
                                     type="number"
                                     className="form-control"
-                                    placeholder="X"
-                                    value={leg.traiLStopLossValue.x} // Correct reference to leg.trialStopLossValue.x
+                                    placeholder="X value"
+                                    value={leg.trialStopLossValue.x}
                                     onChange={(e) =>
-                                      handleLegChange(
+                                      handleTrialStopLossChange(
                                         i,
-                                        "trialStopLossValueX", // Correct key name
+                                        "x",
                                         e.target.value
                                       )
                                     }
@@ -856,12 +878,12 @@ const StemStrategyComponent = () => {
                                   <input
                                     type="number"
                                     className="form-control"
-                                    placeholder="Y"
-                                    value={leg.traiLStopLossValue.y} // Correct reference to leg.trialStopLossValue.y
+                                    placeholder="Y value"
+                                    value={leg.trialStopLossValue.y}
                                     onChange={(e) =>
-                                      handleLegChange(
+                                      handleTrialStopLossChange(
                                         i,
-                                        "trialStopLossValueY", // Correct key name
+                                        "y",
                                         e.target.value
                                       )
                                     }
@@ -1029,6 +1051,7 @@ const StemStrategyComponent = () => {
             </Card>
           </div>
         </div>
+
         <div className="row mt-3 text-start me-auto">
           <Button onClick={handleSaveStrategy} className="w-auto">
             Save Strategy

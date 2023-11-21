@@ -22,6 +22,7 @@ import {
 } from "react-icons/fa6";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/router";
+import io from "socket.io-client"
 
 const StemDashboardComponent = () => {
   const { strategyFetch } = StrategyOperations();
@@ -60,6 +61,11 @@ const StemDashboardComponent = () => {
   useEffect(() => {
     console.log("zerodha query", query);
   }, [query]);
+
+
+  // const socketInitilizer = async() =>{
+    
+  // }
 
   // socket
 //   useEffect(() => {
