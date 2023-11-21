@@ -52,6 +52,11 @@ const StemDashboardComponent = () => {
       });
   }, [userData]);
 
+  const zerodhaLogin = () => {
+    const apiKey = process.env.NEXT_PUBLIC_API_ZERODHA_KEY;
+    const redirectUrl = encodeURIComponent(process.env.NEXT_PUBLIC_API_ZERODHA_REDIRECT);
+    window.location.href = `https://kite.trade/connect/login?api_key=${apiKey}&redirect_uri=${redirectUrl}`;
+  };
   return (
     <>
       <StemLayout>
@@ -192,7 +197,7 @@ const StemDashboardComponent = () => {
                             {zerodhaUser ? (
                               <span>{r.brokerName}</span>
                             ) : (
-                              <Button variant="primary" className="btn-sm">
+                              <Button variant="primary" className="btn-sm" onClick={zerodhaLogin}>
                                 Login With Zerodha
                               </Button>
                             )}
