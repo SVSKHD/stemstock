@@ -44,7 +44,7 @@ const StemIndexLayout = (props) => {
   };
   return (
     <>
-     <StemAuthDialog/>
+      <StemAuthDialog />
       {/* <Navbar bg="dark" data-bs-theme="dark">
         <StemAuthDialog />
         <Navbar bg="white" data-bs-theme="light" className="shadow-sm py-0">
@@ -108,24 +108,30 @@ const StemIndexLayout = (props) => {
       </Navbar> */}
       <Navbar bg="white" data-bs-theme="light" className="shadow-sm py-0">
         <Container>
-          <Navbar.Brand href="#home">
+          <Navbar.Brand href="/">
             <Image src={logo} className="w-100" alt="logo" />
           </Navbar.Brand>
           <Nav className="ms-auto">
-            <Button
-              variant="outline-info"
-              className="px-4 rounded-pill shoadow-sm"
-              onClick={() =>handleSigninDialog()}
-            >
-              <FaArrowRightToBracket /> Login
-            </Button>
-            <Button
-              variant="info"
-              className="px-4 rounded-pill shoadow-sm ms-3"
-              onClick={() =>handleSignupDialog()}
-            >
-              <FaWpforms /> Signup
-            </Button>
+            {userData ? (
+              <></>
+            ) : (
+              <>
+                <Button
+                  variant="outline-info"
+                  className="px-4 rounded-pill shoadow-sm"
+                  onClick={() => handleSigninDialog()}
+                >
+                  <FaArrowRightToBracket /> Login
+                </Button>
+                <Button
+                  variant="info"
+                  className="px-4 rounded-pill shoadow-sm ms-3"
+                  onClick={() => handleSignupDialog()}
+                >
+                  <FaWpforms /> Signup
+                </Button>
+              </>
+            )}
 
             <Nav.Link href="#features"></Nav.Link>
           </Nav>

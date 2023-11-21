@@ -1,7 +1,7 @@
 import StemLayout from "@/Layout/Layout";
 import StrategyOperations from "@/services/startegy";
 import { useEffect, useState } from "react";
-import { KiteTicker } from "kiteconnect";
+// import { KiteTicker } from "kiteconnect";
 import {
   Container,
   Row,
