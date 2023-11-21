@@ -23,15 +23,29 @@ import { useSelector } from "react-redux";
 
 const StemDashboardComponent = () => {
   const { strategyFetch } = StrategyOperations();
-  const { userData } = useSelector((state) => ({ ...state }));
+  const { userData, zerodhaUser } = useSelector((state) => ({ ...state }));
   const [strategy, setStrategy] = useState([]); // Corrected the typo in variable name
 
   useEffect(() => {
-    strategyFetch(userData?userData.user.id :"")
+    strategyFetch(userData ? userData.user.id : "")
       .then((res) => {
-        // setStrategy([...res.data]); // Corrected the typo in function name
-        const updatedStrategy = setStrategy([...strategy, res.data]);
-        console.log(); // Log the updated data from the response
+        const fetchedData = res.data;
+
+        // Check if the strategy state already contains an item with the same ID
+        const exists = strategy.find((item) => item._id === fetchedData._id);
+
+        if (!exists) {
+          // If it doesn't exist, add it to the state
+          setStrategy(() => [fetchedData]);
+        } else {
+          // If it exists, you might want to update it or do nothing
+          // For example, to update the existing item:
+          setStrategy((prevStrategy) =>
+            prevStrategy.map((item) =>
+              item._id === fetchedData._id ? fetchedData : item
+            )
+          );
+        }
       })
       .catch((err) => {
         console.log("err", err);
@@ -175,11 +189,11 @@ const StemDashboardComponent = () => {
                       <Col md={4}>
                         <div className="d-flex align-items-center justify-content-center">
                           <span className="pe-3">
-                            {r.broker ? (
+                            {zerodhaUser ? (
                               <span>{r.brokerName}</span>
                             ) : (
                               <Button variant="primary" className="btn-sm">
-                                Add Broker
+                                Login With Zerodha
                               </Button>
                             )}
                           </span>

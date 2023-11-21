@@ -67,7 +67,7 @@ const StemStrategyComponent = () => {
   ];
   let straddleStrategy = {
     name: "",
-    entryTime: "",
+    entryTime: "9:15",
     endTime: "",
     immediate: false,
     legs: [],
@@ -317,12 +317,12 @@ const StemStrategyComponent = () => {
       StemToast("Please fill the Strategy Name", "error");
     } else if (strategy.legs.length >= 9) {
       StemToast("selected legs need to below or equal to 9", "error");
-    } else if (moment(startegy.endTime).isBefore(startegy.entryTime)) {
+    } else if (moment(strategy.endTime).isBefore(strategy.entryTime)) {
       StemToast("Please select valid end time", "error");
-    } else if (moment(startegy.entryTime) < moment("08:00 ,HH:mm a")) {
+    } else if (moment(strategy.entryTime) < moment("08:00 ,HH:mm a")) {
       StemToast("Stock order places after 8 am");
     } else {
-      startegySave(startegy)
+      startegySave(strategy)
         .then((res) => {
           console.log(res.data);
         })
@@ -365,23 +365,34 @@ const StemStrategyComponent = () => {
                     value={
                       strategy.immediate
                         ? `${current_time} immediate`
-                        : strategy.entryTime
+                        : strategy.entryTime || "9:15"
                     }
-                    onChange={(e) =>
-                      updateStrategyAttribute("entryTime", e.target.value)
-                    }
+                    min="09:15"
+                    max="16:00"
+                    onChange={(e) => {
+                      // Validate the time to ensure it's within the allowed range
+                      const time = e.target.value;
+                      if (time >= "09:15" && time <= "15:59") {
+                        updateStrategyAttribute("entryTime", time);
+                      } else {
+                        // Optionally, reset the value or provide feedback to the user
+                        updateStrategyAttribute("entryTime", "09:15");
+                        // You might want to alert the user that the entered time is out of bounds
+                      }
+                    }}
+                    disabled={strategy.immediate}
                   />
                   <div className="mt-2 text-start">
                     {/* <label className="font-weight-bold">Immediate</label> */}
                     <Form.Check // prettier-ignore
-                        type="switch"
-                        id="custom-switch"
-                        label="Immediate"
-                        checked={strategy.immediate}
-                        onChange={(e) =>
-                          updateStrategyAttribute("immediate", e.target.checked)
-                        }
-                      />
+                      type="switch"
+                      id="custom-switch"
+                      label="Immediate"
+                      checked={strategy.immediate}
+                      onChange={(e) =>
+                        updateStrategyAttribute("immediate", e.target.checked)
+                      }
+                    />
                     {/* <label class="switch">
                       <input
                         type="checkbox"
@@ -401,16 +412,24 @@ const StemStrategyComponent = () => {
                     type="time"
                     className="form-control"
                     value={strategy.endTime}
-                    onChange={(e) =>
-                      updateStrategyAttribute("endTime", e.target.value)
-                    }
+                    onChange={(e) => {
+                      // Validate the time to ensure it's within the allowed range
+                      const time = e.target.value;
+                      if (time >= "09:15" && time <= "15:59") {
+                        updateStrategyAttribute("endTime", time);
+                      } else {
+                        // Optionally, reset the value or provide feedback to the user
+                        updateStrategyAttribute("endTime", "15:59");
+                        // You might want to alert the user that the entered time is out of bounds
+                      }
+                    }}
                   />
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <hr/>
+        <hr />
         <h5 class="mb-0">Add Leg</h5>
         <Card className="text-center shadow-none mb-3 mt-3 addleg-card">
           <Card.Body>
@@ -510,7 +529,9 @@ const StemStrategyComponent = () => {
                 />
               </div>
               <div className="col">
-                <Button onClick={addNewLeg} className="mt-3" >Add-Leg</Button>
+                <Button onClick={addNewLeg} className="mt-3">
+                  Add-Leg
+                </Button>
               </div>
             </div>
           </Card.Body>
@@ -554,7 +575,9 @@ const StemStrategyComponent = () => {
                         </Form.Select>
                       </div>
                       <div className="col">
-                        <Form.Label className="text-start">Segments:</Form.Label>
+                        <Form.Label className="text-start">
+                          Segments:
+                        </Form.Label>
                         <Form.Select
                           aria-label="Default select example"
                           value={leg.segment}
@@ -573,7 +596,9 @@ const StemStrategyComponent = () => {
                         </Form.Select>
                       </div>
                       <div className="col">
-                        <Form.Label className="text-start">Position:</Form.Label>
+                        <Form.Label className="text-start">
+                          Position:
+                        </Form.Label>
                         <Form.Select
                           aria-label="Default select example"
                           value={leg.position}
@@ -947,7 +972,7 @@ const StemStrategyComponent = () => {
         )}
 
         <div className="row">
-          <div className="col-md-5">
+          <div className="col-md-4">
             <h5 className="mb-0">Overall MTM</h5>
             <Card className="">
               <Card.Body bg="light">
@@ -972,7 +997,7 @@ const StemStrategyComponent = () => {
               </Card.Body>
             </Card>
           </div>
-          <div className="col-md-7">
+          <div className="col-md-8">
             <h5 className="mb-0">Days to Execute</h5>
             <Card bg="light">
               <Card.Body>
@@ -982,7 +1007,7 @@ const StemStrategyComponent = () => {
                     return (
                       <Button
                         key={index}
-                        className="col m-2"
+                        className="col m-2 d-flex align-items-center"
                         onClick={() => handleDayClick(dayName)}
                         variant={day[dayName] ? "light" : "outline-dark"}
                       >
@@ -993,7 +1018,9 @@ const StemStrategyComponent = () => {
                             ""
                           )}
                         </span>
-                        {dayName.charAt(0).toUpperCase() + dayName.slice(1)}{" "}
+                        <span>
+                          {dayName.charAt(0).toUpperCase() + dayName.slice(1)}{" "}
+                        </span>
                       </Button>
                     );
                   })}
@@ -1003,7 +1030,9 @@ const StemStrategyComponent = () => {
           </div>
         </div>
         <div className="row mt-3 text-start me-auto">
-          <Button onClick={handleSaveStrategy} className="w-auto">Save Strategy</Button>
+          <Button onClick={handleSaveStrategy} className="w-auto">
+            Save Strategy
+          </Button>
         </div>
       </StemLayout>
     </>
