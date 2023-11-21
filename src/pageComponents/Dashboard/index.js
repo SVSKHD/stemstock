@@ -20,11 +20,15 @@ import {
   FaExpand,
 } from "react-icons/fa6";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 const StemDashboardComponent = () => {
   const { strategyFetch } = StrategyOperations();
   const { userData, zerodhaUser } = useSelector((state) => ({ ...state }));
   const [strategy, setStrategy] = useState([]); // Corrected the typo in variable name
+
+  const router = useRouter();
+  const { query } = router;
 
   useEffect(() => {
     strategyFetch(userData ? userData.user.id : "")
@@ -52,11 +56,20 @@ const StemDashboardComponent = () => {
       });
   }, [userData]);
 
+  useEffect(() => {
+    console.log("zerodha query", query);
+  }, [query]);
+
   const zerodhaLogin = () => {
     const apiKey = process.env.NEXT_PUBLIC_API_ZERODHA_KEY;
-    const redirectUrl = encodeURIComponent(process.env.NEXT_PUBLIC_API_ZERODHA_REDIRECT);
+    const redirectUrl = encodeURIComponent(
+      process.env.NEXT_PUBLIC_API_ZERODHA_REDIRECT
+    );
     window.location.href = `https://kite.trade/connect/login?api_key=${apiKey}&redirect_uri=${redirectUrl}`;
   };
+
+  const zerdodhaAccessTokenCapture = () => {};
+
   return (
     <>
       <StemLayout>
@@ -197,7 +210,11 @@ const StemDashboardComponent = () => {
                             {zerodhaUser ? (
                               <span>{r.brokerName}</span>
                             ) : (
-                              <Button variant="primary" className="btn-sm" onClick={zerodhaLogin}>
+                              <Button
+                                variant="primary"
+                                className="btn-sm"
+                                onClick={zerodhaLogin}
+                              >
                                 Login With Zerodha
                               </Button>
                             )}
