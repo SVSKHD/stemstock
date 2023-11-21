@@ -1,6 +1,7 @@
 import StemLayout from "@/Layout/Layout";
 import StrategyOperations from "@/services/startegy";
 import { useEffect, useState } from "react";
+import { KiteTicker } from "kiteconnect";
 import {
   Container,
   Row,
@@ -59,6 +60,38 @@ const StemDashboardComponent = () => {
   useEffect(() => {
     console.log("zerodha query", query);
   }, [query]);
+
+  // socket
+//   useEffect(() => {
+//     // Your Zerodha API Key
+//     const apiKey = 'your_api_key';
+//     // The access token you received after login
+//     const accessToken = 'your_access_token';
+
+//     const ticker = new KiteTicker({ api_key: apiKey, access_token: accessToken });
+
+//     ticker.connect();
+//     ticker.on('ticks', (ticks) => {
+//         console.log('Ticks:', ticks);
+//     });
+//     ticker.on('connect', () => {
+//         console.log('Connected');
+//         // Subscribe to instruments here
+//         ticker.subscribe([738561]); // Replace with your instrument tokens
+//         ticker.setMode(ticker.modeFull, [738561]); // Set the mode for the instruments
+//     });
+//     ticker.on('error', (error) => {
+//         console.log('WebSocket error:', error);
+//     });
+//     ticker.on('close', (reason) => {
+//         console.log('WebSocket connection closed:', reason);
+//     });
+
+//     return () => {
+//         ticker.disconnect();
+//     };
+// }, []);
+
 
   const zerodhaLogin = () => {
     const apiKey = process.env.NEXT_PUBLIC_API_ZERODHA_KEY;
