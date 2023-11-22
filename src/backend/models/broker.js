@@ -1,9 +1,13 @@
+
+
+
 import mongoose from "mongoose";
 
 const brokerSchema = new mongoose.Schema({
   BrokerName: {
     type: String,
     required: true,
+    unique: true,  // Ensures BrokerName is unique across the collection
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
@@ -12,8 +16,8 @@ const brokerSchema = new mongoose.Schema({
   },
   apikeys: [
     {
-      keyName: { type: String },
-      KeyValue: { type: String },
+      name: { type: String },
+      value: { type: String },
     },
   ],
 });
@@ -21,7 +25,3 @@ const brokerSchema = new mongoose.Schema({
 const Broker = mongoose.models.Broker || mongoose.model("Broker", brokerSchema);
 
 export default Broker;
-
-
-
-
