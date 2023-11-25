@@ -1,4 +1,4 @@
-import { Navbar, Button, Container, Nav } from "react-bootstrap";
+import { Navbar, Button, Container, Nav, Dropdown } from "react-bootstrap";
 import { FaUserAlt } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import StemAuthDialog from "@/components/Auth/AuthDialog";
@@ -9,7 +9,7 @@ import {
   FaWpforms,
 } from "react-icons/fa6";
 import Image from "next/image";
-
+import user from "../assets/images/profile.png";
 import logo from "../assets/images/logo.svg";
 
 const StemIndexLayout = (props) => {
@@ -113,7 +113,24 @@ const StemIndexLayout = (props) => {
           </Navbar.Brand>
           <Nav className="ms-auto">
             {userData ? (
-              <></>
+              <Dropdown>
+                <Dropdown.Toggle variant="transparent" id="dropdown-basic">
+                  <span className="user-image me-3">
+                    <Image src={user} width="50px" alt="Stem Fin" />
+                    <span className="username fw-semibolds ms-3 text-start">
+                      <span class="text-secondary small d-block">Welcome</span>
+                      {userData.user.firstname}
+                    </span>
+                  </span>
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu>
+                  <Dropdown.Item href="/dashboard">Dashboard</Dropdown.Item>
+                  <Dropdown.Item href="/settings">Settings</Dropdown.Item>
+                  <Dropdown.Item href="/help">Help</Dropdown.Item>
+                  <Dropdown.Item onClick={StemLogout}>Logout</Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             ) : (
               <>
                 <Button
@@ -132,8 +149,6 @@ const StemIndexLayout = (props) => {
                 </Button>
               </>
             )}
-
-            <Nav.Link href="#features"></Nav.Link>
           </Nav>
         </Container>
       </Navbar>

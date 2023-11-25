@@ -20,9 +20,11 @@ import {
   FaEllipsisVertical,
   FaExpand,
 } from "react-icons/fa6";
-import { useSelector } from "react-redux";
+import { FaCheck } from "react-icons/fa";
+import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
-import io from "socket.io-client"
+import io from "socket.io-client";
+
 
 const StemDashboardComponent = () => {
   const { strategyFetch } = StrategyOperations();
@@ -31,6 +33,18 @@ const StemDashboardComponent = () => {
 
   const router = useRouter();
   const { query } = router;
+  const dispatch = useDispatch();
+  const Router = useRouter();
+
+  useEffect(() => {
+    if (!userData) {
+      Router.push("/");
+      dispatch({
+        type: "SET_AUTH_DIALOG_VISIBLE",
+        payload: true,
+      });
+    }
+  }, [userData]);
 
   useEffect(() => {
     strategyFetch(userData ? userData.user.id : "")
@@ -59,45 +73,49 @@ const StemDashboardComponent = () => {
   }, [userData]);
 
   useEffect(() => {
-    console.log("zerodha query", query);
+    console.log("hello zerodha request", query.request_token);
+    if (query.request_token) {
+      dispatch({
+        type: "LOGGED_IN_ZERODHA",
+        payload: query.request_token,
+      });
+    }
   }, [query]);
 
-
   // const socketInitilizer = async() =>{
-    
+
   // }
 
   // socket
-//   useEffect(() => {
-//     // Your Zerodha API Key
-//     const apiKey = 'your_api_key';
-//     // The access token you received after login
-//     const accessToken = 'your_access_token';
+  //   useEffect(() => {
+  //     // Your Zerodha API Key
+  //     const apiKey = 'your_api_key';
+  //     // The access token you received after login
+  //     const accessToken = 'your_access_token';
 
-//     const ticker = new KiteTicker({ api_key: apiKey, access_token: accessToken });
+  //     const ticker = new KiteTicker({ api_key: apiKey, access_token: accessToken });
 
-//     ticker.connect();
-//     ticker.on('ticks', (ticks) => {
-//         console.log('Ticks:', ticks);
-//     });
-//     ticker.on('connect', () => {
-//         console.log('Connected');
-//         // Subscribe to instruments here
-//         ticker.subscribe([738561]); // Replace with your instrument tokens
-//         ticker.setMode(ticker.modeFull, [738561]); // Set the mode for the instruments
-//     });
-//     ticker.on('error', (error) => {
-//         console.log('WebSocket error:', error);
-//     });
-//     ticker.on('close', (reason) => {
-//         console.log('WebSocket connection closed:', reason);
-//     });
+  //     ticker.connect();
+  //     ticker.on('ticks', (ticks) => {
+  //         console.log('Ticks:', ticks);
+  //     });
+  //     ticker.on('connect', () => {
+  //         console.log('Connected');
+  //         // Subscribe to instruments here
+  //         ticker.subscribe([738561]); // Replace with your instrument tokens
+  //         ticker.setMode(ticker.modeFull, [738561]); // Set the mode for the instruments
+  //     });
+  //     ticker.on('error', (error) => {
+  //         console.log('WebSocket error:', error);
+  //     });
+  //     ticker.on('close', (reason) => {
+  //         console.log('WebSocket connection closed:', reason);
+  //     });
 
-//     return () => {
-//         ticker.disconnect();
-//     };
-// }, []);
-
+  //     return () => {
+  //         ticker.disconnect();
+  //     };
+  // }, []);
 
   const zerodhaLogin = () => {
     const apiKey = process.env.NEXT_PUBLIC_API_ZERODHA_KEY;
@@ -247,7 +265,9 @@ const StemDashboardComponent = () => {
                         <div className="d-flex align-items-center justify-content-center">
                           <span className="pe-3">
                             {zerodhaUser ? (
-                              <span>{r.brokerName}</span>
+                              <Button variant="success">
+                                <FaCheck />
+                              </Button>
                             ) : (
                               <Button
                                 variant="primary"

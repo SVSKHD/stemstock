@@ -1,23 +1,24 @@
-
-
-
 import mongoose from "mongoose";
 
 const brokerSchema = new mongoose.Schema({
   BrokerName: {
     type: String,
     required: true,
-    unique: true,  // Ensures BrokerName is unique across the collection
+    unique: true, // Ensures BrokerName is unique across the collection
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User", 
+    ref: "User",
     required: true,
+  },
+  clientId: {
+    type: String,
+    unique: true,
   },
   apikeys: [
     {
-      name: { type: String },
-      value: { type: String },
+      name: { type: String, unique: true },
+      value: { type: String , unique:true},
     },
   ],
 });
