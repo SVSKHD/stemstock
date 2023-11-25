@@ -25,7 +25,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import io from "socket.io-client";
 
-
 const StemDashboardComponent = () => {
   const { strategyFetch } = StrategyOperations();
   const { userData, zerodhaUser } = useSelector((state) => ({ ...state }));

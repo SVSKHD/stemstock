@@ -1,11 +1,6 @@
 import mongoose from "mongoose";
 
-const brokerSchema = new mongoose.Schema({
-  BrokerName: {
-    type: String,
-    required: true,
-    unique: true, // Ensures BrokerName is unique across the collection
-  },
+const zerodhaBrokerSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -15,14 +10,12 @@ const brokerSchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
-  apikeys: [
-    {
-      name: { type: String, unique: true },
-      value: { type: String , unique:true},
-    },
-  ],
+  apiKey: { type: String, unique: true },
+  apiSecret: { type: String, unique: true },
 });
 
-const Broker = mongoose.models.Broker || mongoose.model("Broker", brokerSchema);
+const ZerodhaBroker =
+  mongoose.models.ZerodhaBroker ||
+  mongoose.model("ZerodhaBroker", zerodhaBrokerSchema);
 
-export default Broker;
+export default ZerodhaBroker;

@@ -8,7 +8,7 @@ App.get(async (req, res) => {
   const { id } = req.query;
   try {
     db.connectDb();
-    const BrokerByUser = await Broker.findOne({user:id})
+    const BrokerByUser = await Broker.findOne({ user: id });
     res.status(200).json(BrokerByUser);
     db.disconnectDb();
   } catch (error) {

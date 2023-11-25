@@ -11,11 +11,14 @@ import {
 import Image from "next/image";
 import user from "../assets/images/profile.png";
 import logo from "../assets/images/logo.svg";
+import { useRouter } from "next/router";
 
 const StemIndexLayout = (props) => {
   const dispatch = useDispatch();
+  const Router = useRouter();
   const { userData } = useSelector((state) => ({ ...state }));
   const StemLogout = () => {
+    Router.push("/");
     dispatch({
       type: "LOGOUT",
       payload: null,
