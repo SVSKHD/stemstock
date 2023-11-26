@@ -18,4 +18,3 @@ App.post(async (req, res) => {
   }
 });
 
-export default App.handler();
