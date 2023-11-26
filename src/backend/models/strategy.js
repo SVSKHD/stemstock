@@ -25,26 +25,29 @@ const tradingStrategySchema = new mongoose.Schema({
       strike_value: String,
       position: String,
       quantity: String,
+      // target
       takeProfit: Boolean,
       takeProfitType: String,
       takeProfitValue: Number,
+      // stoploss
       stopLoss: Boolean,
       stopLossType: String,
       stopLossValue: Number,
+      // trailstoploss
       trialStopLoss: Boolean,
-      trialStopLossType: Number,
+      trialStopLossType: String,
       trialStopLossValue: {
         x: Number,
         y: Number,
       },
+      // wait and trade
       waitAndTrade: Boolean,
       waitAndTradeType: String,
       waitAndTradeValue: Number,
-      Recost: Boolean,
-      RecostType: String,
-      RecostSubType: String,
-      RecostValue: String,
-      Re_Entry: String,
+      // reentry
+      reEntry: Boolean,
+      reEntryType: String,
+      reEntryValue:Number
     },
   ],
   stopLoss: Number, // You can specify the type as 'Number' if it's a currency amount or percentage

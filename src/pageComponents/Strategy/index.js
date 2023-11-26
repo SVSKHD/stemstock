@@ -65,6 +65,10 @@ const StemStrategyComponent = () => {
     { value: "5", displayText: "Spot % ⬆️" },
     { value: "6", displayText: "Spot % ⬇️" },
   ];
+  const reEntryOptions = [
+    { value: "1", displayText: "Re-Cost" },
+    { value: "2", displayText: "Re-Execute" },
+  ];
   let straddleStrategy = {
     name: "",
     entryTime: "9:15",
@@ -168,7 +172,9 @@ const StemStrategyComponent = () => {
     waitAndTrade: false,
     waitAndTradeType: "",
     waitAndTradeValue: 0,
-    Re_Entry: "",
+    reEntry: false,
+    reEntryType: "",
+    reEntryValue: 0,
   };
 
   const [Newleg, setNewleg] = useState(newLegTemplate);
@@ -394,7 +400,7 @@ const StemStrategyComponent = () => {
       startegySave(strategy)
         .then((res) => {
           console.log(res.data);
-          StemToast("Succesfully Submitted")
+          StemToast("Succesfully Submitted");
         })
         .catch(() => {
           StemToast("please try again", "error");
@@ -1008,6 +1014,68 @@ const StemStrategyComponent = () => {
                           )}
                         </span>
                       </div>
+
+                      {/* reentry */}
+                      <div className="col">
+                        <Form.Group
+                          className="mb-3"
+                          controlId="formBasicCheckbox"
+                        >
+                          <Form.Check
+                            type="checkbox"
+                            label={leg.reEntry ? "" : "Re-Entry"}
+                            checked={leg.reEntry}
+                            disabled={!leg.stopLoss}
+                            onChange={(e) =>
+                              handleLegChange(i, "reEntry", e.target.checked)
+                            }
+                          />
+                        </Form.Group>
+                        <span>
+                          {leg.reEntry ? (
+                            <>
+                              <Form.Select
+                                aria-label="Default select example"
+                                className="m-1"
+                                value={leg.reEntryType}
+                                placeholder="Target Type"
+                                onChange={(e) =>
+                                  handleLegChange(
+                                    i,
+                                    "reEntryType",
+                                    e.target.value
+                                  )
+                                }
+                              >
+                                {reEntryOptions.map((option) => (
+                                  <option
+                                    key={option.value}
+                                    value={option.displayText}
+                                  >
+                                    {option.displayText}
+                                  </option>
+                                ))}
+                              </Form.Select>
+                              <input
+                                type="number"
+                                className="form-control"
+                                placeholder="lot-size"
+                                value={leg.reEntryValue}
+                                onChange={(e) =>
+                                  handleLegChange(
+                                    i,
+                                    "reEntryValue",
+                                    e.target.value
+                                  )
+                                }
+                              />
+                            </>
+                          ) : (
+                            <div />
+                          )}
+                        </span>
+                      </div>
+                      {/* renetry end */}
                       <div className="col">
                         <Form.Label className="text-start">lots</Form.Label>
                         <input
