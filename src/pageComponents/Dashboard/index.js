@@ -38,10 +38,6 @@ const StemDashboardComponent = () => {
   useEffect(() => {
     if (!userData) {
       Router.push("/");
-      dispatch({
-        type: "SET_AUTH_DIALOG_VISIBLE",
-        payload: true,
-      });
     }
   }, [userData]);
 

@@ -12,6 +12,7 @@ const StemNavBar = () => {
   const dispatch = useDispatch();
   const { userData } = useSelector((state) => ({ ...state }));
   const router = useRouter();
+  
   const StemLogout = () => {
     dispatch({
       type: "LOGOUT",

@@ -35,7 +35,7 @@ const StemSignin = () => {
           type: "SET_AUTH_DIALOG_VISIBLE",
           payload: false,
         });
-        Router.push("/strategy");
+        Router.push("/dashboard");
       })
       .catch(() => {
         StemToast("Sorry please try again", "error");
