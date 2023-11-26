@@ -48,28 +48,28 @@ const StemDashboardComponent = () => {
   useEffect(() => {
     strategyFetch(userData ? userData.user.id : "")
       .then((res) => {
-        const fetchedData = res.data;
-
-        // Check if the strategy state already contains an item with the same ID
-        const exists = strategy.find((item) => item._id === fetchedData._id);
-
-        if (!exists) {
-          // If it doesn't exist, add it to the state
-          setStrategy(() => [fetchedData]);
-        } else {
-          // If it exists, you might want to update it or do nothing
-          // For example, to update the existing item:
-          setStrategy((prevStrategy) =>
-            prevStrategy.map((item) =>
-              item._id === fetchedData._id ? fetchedData : item
-            )
-          );
-        }
+        const fetchedData = res.data; // assuming this is an array of strategies
+  
+        // Update the state with the new data, merging it with existing data
+        setStrategy((prevStrategy) => {
+          // Create a map of existing strategies by their _id for quick access
+          const existingStrategies = new Map(prevStrategy.map(item => [item._id, item]));
+  
+          // Merge the fetched strategies into the existing ones
+          fetchedData.forEach(strategy => {
+            existingStrategies.set(strategy._id, strategy);
+          });
+  
+          // Convert the map back into an array
+          return Array.from(existingStrategies.values());
+        });
       })
       .catch((err) => {
         console.log("err", err);
       });
+      console.log("strategies", strategy)
   }, [userData]);
+  
 
   useEffect(() => {
     console.log("hello zerodha request", query.request_token);
@@ -225,7 +225,7 @@ const StemDashboardComponent = () => {
           <Container fluid className="ps-0">
             {strategy.map((r, i) => (
               <>
-                <Card key={i}>
+                <Card className="m-1" key={i}>
                   <Card.Body>
                     <Row>
                       <Col md={4}>

@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const startegySave = (data) => axios.post(`/api/strategy`, data);
+const startegySave = (data) => axios.post(`/api/strategy/create`, data);
 
 const strategyFetch = (id) => axios.get(`/api/strategy/fetch?id=${id}`)
 

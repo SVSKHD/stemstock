@@ -81,7 +81,6 @@ const StemStrategyComponent = () => {
       { thursday: false },
       { friday: false },
     ], // e.g., 30 (number of days),
-    brokerSelected: "",
     status: "",
     overAllStopLoss: false,
     overAllStopLossType: "",
@@ -91,6 +90,54 @@ const StemStrategyComponent = () => {
     overAllMTMValue: 0,
     user: userData ? userData.user.id : "",
   };
+
+  //   {
+  //     "name": "Sample Strategy",
+  //     "entryTime": "2023-11-18T09:00:00Z",
+  //     "endTime": "2023-11-18T15:00:00Z",
+  //     "immediate": false,
+  //     "legs": [
+  //         {
+  //             "instrument": "XYZ",
+  //             "instrumentType": "Equity",
+  //             "entry_type": "time",
+  //             "expiry": "current",
+  //             "index": 1,
+  //             "segment": "Nifty",
+  //             "strike_type": "Call",
+  //             "strike_value": "15000",
+  //             "position": "Long",
+  //             "quantity": "100",
+  //             "takeProfit": true,
+  //             "takeProfitType": "Limit",
+  //             "takeProfitValue": 200,
+  //             "stopLoss": true,
+  //             "stopLossType": "Market",
+  //             "stopLossValue": 100,
+  //             "trialStopLoss": false,
+  //             "trialStopLossType": 0,
+  //             "trialStopLossValue": {
+  //                 "x": 0,
+  //                 "y": 0
+  //             },
+  //             "waitAndTrade": false,
+  //             "waitAndTradeType": "",
+  //             "waitAndTradeValue": 0,
+  //             "Recost": false,
+  //             "RecostType": "",
+  //             "RecostSubType": "",
+  //             "RecostValue": "",
+  //             "Re_Entry": "None"
+  //         }
+  //     ],
+  //     "stopLoss": 1000,
+  //     "overallMTM": 5000,
+
+  //     "user": "654bdeb5750869adb35e6977",
+  //     "broker": true,
+  //     "brokerSelected": "",
+  //     "status": "Active"
+  // }
 
   const [strategy, setStrategy] = useState(straddleStrategy);
   const [toggle, setTooglle] = useState({
@@ -347,6 +394,7 @@ const StemStrategyComponent = () => {
       startegySave(strategy)
         .then((res) => {
           console.log(res.data);
+          StemToast("Succesfully Submitted")
         })
         .catch(() => {
           StemToast("please try again", "error");
