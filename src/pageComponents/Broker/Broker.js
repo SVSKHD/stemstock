@@ -17,7 +17,7 @@ const StemBrokerComponent = () => {
   });
   const [id, setId] = useState(false);
   const [data, setData] = useState({});
-  const [mode, setMode] = useState("");
+  const [mode, setMode] = useState("create");
 
   const { BrokerCreate, BrokerFetch, BrokerUpdate } = BrokerOperations();
 
@@ -68,7 +68,7 @@ const StemBrokerComponent = () => {
         .catch((err) => {
           StemToast(err.message, "error");
         });
-    } else {
+    } else if (mode === "create") {
       BrokerCreate(brokerDetails)
         .then((res) => {
           setId(true);

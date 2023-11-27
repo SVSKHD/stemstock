@@ -45,17 +45,19 @@ const StemDashboardComponent = () => {
     strategyFetch(userData ? userData.user.id : "")
       .then((res) => {
         const fetchedData = res.data; // assuming this is an array of strategies
-  
+
         // Update the state with the new data, merging it with existing data
         setStrategy((prevStrategy) => {
           // Create a map of existing strategies by their _id for quick access
-          const existingStrategies = new Map(prevStrategy.map(item => [item._id, item]));
-  
+          const existingStrategies = new Map(
+            prevStrategy.map((item) => [item._id, item])
+          );
+
           // Merge the fetched strategies into the existing ones
-          fetchedData.forEach(strategy => {
+          fetchedData.forEach((strategy) => {
             existingStrategies.set(strategy._id, strategy);
           });
-  
+
           // Convert the map back into an array
           return Array.from(existingStrategies.values());
         });
@@ -63,9 +65,8 @@ const StemDashboardComponent = () => {
       .catch((err) => {
         console.log("err", err);
       });
-      console.log("strategies", strategy)
+    console.log("strategies", strategy);
   }, [userData]);
-  
 
   useEffect(() => {
     console.log("hello zerodha request", query.request_token);
@@ -76,6 +77,8 @@ const StemDashboardComponent = () => {
       });
     }
   }, [query]);
+
+
 
   // const socketInitilizer = async() =>{
 
@@ -120,11 +123,13 @@ const StemDashboardComponent = () => {
     window.location.href = `https://kite.trade/connect/login?api_key=${apiKey}&redirect_uri=${redirectUrl}`;
   };
 
-  const zerdodhaAccessTokenCapture = () => {};
-
+  const handleStartegyRun = (data) =>{
+    console.log("r" , data.legs)
+  }
   return (
     <>
       <StemLayout>
+        {/* dashboard head section */}
         <section className="dashboard-sec1 mt-3">
           <Container fluid className="ps-0">
             <Row>
@@ -217,6 +222,7 @@ const StemDashboardComponent = () => {
         </section>
         <hr />
 
+        {/* startegies map */}
         <section>
           <Container fluid className="ps-0">
             {strategy.map((r, i) => (
@@ -278,7 +284,7 @@ const StemDashboardComponent = () => {
                               MTM
                             </span>
                             <span className="border border-body px-3 py-2 bg-secondary text-white rounded-end">
-                              ---
+                              {r.overallMTM}
                             </span>
                           </span>
                         </div>
@@ -288,8 +294,9 @@ const StemDashboardComponent = () => {
                           <span className="pe-3">
                             <Button
                               variant="outline-success"
-                              disabled
+                              disabled={!r.status}
                               className="btn-sm"
+                              onClick={()=>handleStartegyRun(r)}
                             >
                               Run
                             </Button>
