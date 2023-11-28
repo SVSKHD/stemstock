@@ -24,11 +24,13 @@ import { FaCheck } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import io from "socket.io-client";
+import zerodhaOperations from "@/services/zerdoha";
 
 const StemDashboardComponent = () => {
   const { strategyFetch } = StrategyOperations();
   const { userData, zerodhaUser } = useSelector((state) => ({ ...state }));
   const [strategy, setStrategy] = useState([]); // Corrected the typo in variable name
+  const { zerodhaPlaceOrder } = zerodhaOperations();
 
   const router = useRouter();
   const { query } = router;
@@ -69,7 +71,7 @@ const StemDashboardComponent = () => {
   }, [userData]);
 
   useEffect(() => {
-    console.log("hello zerodha request", query.request_token);
+    console.log("hello zerodha request", query.request_token, zerodhaUser);
     if (query.request_token) {
       dispatch({
         type: "LOGGED_IN_ZERODHA",
@@ -77,8 +79,6 @@ const StemDashboardComponent = () => {
       });
     }
   }, [query]);
-
-
 
   // const socketInitilizer = async() =>{
 
@@ -123,9 +123,14 @@ const StemDashboardComponent = () => {
     window.location.href = `https://kite.trade/connect/login?api_key=${apiKey}&redirect_uri=${redirectUrl}`;
   };
 
-  const handleStartegyRun = (data) =>{
-    console.log("r" , data.legs)
-  }
+  const handleStartegyRun = async(data) => {
+    console.log("r", data.legs);
+    const placeOrder = {
+      requestToken: zerodhaUser,
+      legs: data.legs,
+    };
+    await zerodhaPlaceOrder(placeOrder);
+  };
   return (
     <>
       <StemLayout>
@@ -227,12 +232,12 @@ const StemDashboardComponent = () => {
           <Container fluid className="ps-0">
             {strategy.map((r, i) => (
               <>
-                <Card className="m-1" key={i}>
+                <Card key={i} className="m-1" key={i}>
                   <Card.Body>
                     <Row>
                       <Col md={4}>
                         <div className="d-flex align-items-center justify-content-between">
-                          <span>
+                          <span className="d-flex select-strategy">
                             <Form>
                               {["checkbox"].map((type) => (
                                 <div key={`default-${type}`}>
@@ -244,8 +249,9 @@ const StemDashboardComponent = () => {
                                 </div>
                               ))}
                             </Form>
+                            <span className="text-start ms-2">{r.name}</span>
                           </span>
-                          <span>{r.name}</span>
+
                           <span className="on-off-switch">
                             <Form.Check // prettier-ignore
                               type="switch"
@@ -294,9 +300,11 @@ const StemDashboardComponent = () => {
                           <span className="pe-3">
                             <Button
                               variant="outline-success"
-                              disabled={!r.status}
+                              disabled={
+                                zerodhaUser === null || r.status === false
+                              }
                               className="btn-sm"
-                              onClick={()=>handleStartegyRun(r)}
+                              onClick={() => handleStartegyRun(r)}
                             >
                               Run
                             </Button>

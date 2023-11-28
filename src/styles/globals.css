@@ -435,3 +435,8 @@ input:checked + .slider:before {
 .strategy-select .form-check-input{
   border: 1px solid var(--bs-dark);
 }
+
+
+.select-strategy{
+  max-width: 16%;
+}
