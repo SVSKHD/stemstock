@@ -25,6 +25,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
 import io from "socket.io-client";
 import zerodhaOperations from "@/services/zerdoha";
+import StemToast from "@/components/reusables/js/toast";
 
 const StemDashboardComponent = () => {
   const { strategyFetch } = StrategyOperations();
@@ -41,7 +42,7 @@ const StemDashboardComponent = () => {
     if (!userData) {
       Router.push("/");
     }
-  }, [userData , Router]);
+  }, [userData, Router]);
 
   useEffect(() => {
     strategyFetch(userData ? userData.user.id : "")
@@ -68,7 +69,7 @@ const StemDashboardComponent = () => {
         console.log("err", err);
       });
     console.log("strategies", strategy);
-  }, [userData , setStrategy]);
+  }, [userData, setStrategy]);
 
   useEffect(() => {
     console.log("hello zerodha request", query.request_token, zerodhaUser);
@@ -78,7 +79,7 @@ const StemDashboardComponent = () => {
         payload: query.request_token,
       });
     }
-  }, [query , dispatch , zerodhaUser]);
+  }, [query, dispatch, zerodhaUser]);
 
   // const socketInitilizer = async() =>{
 
@@ -123,13 +124,19 @@ const StemDashboardComponent = () => {
     window.location.href = `https://kite.trade/connect/login?api_key=${apiKey}&redirect_uri=${redirectUrl}`;
   };
 
-  const handleStartegyRun = async(data) => {
+  const handleStartegyRun = async (data) => {
     console.log("r", data.legs);
     const placeOrder = {
       requestToken: zerodhaUser,
       legs: data.legs,
     };
-    await zerodhaPlaceOrder(placeOrder);
+    await zerodhaPlaceOrder(placeOrder)
+      .then((res) => {
+        console.log("fetched", res);
+      })
+      .catch((err) => {
+        StemToast(err, "error");
+      });
   };
   return (
     <>
@@ -232,7 +239,7 @@ const StemDashboardComponent = () => {
           <Container fluid className="ps-0">
             {strategy.map((r, i) => (
               <>
-                <Card key={i} className="m-1" >
+                <Card key={i} className="m-1">
                   <Card.Body>
                     <Row>
                       <Col md={4}>
