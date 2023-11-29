@@ -50,7 +50,7 @@
 
 // File: /pages/api/placeOrders.js
 import { createRouter } from "next-connect";
-import  KiteConnect  from "kiteconnect";
+import  {KiteConnect}  from "kiteconnect";
 
 
 const router = createRouter();
