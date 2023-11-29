@@ -68,7 +68,7 @@ const StemDashboardComponent = () => {
         console.log("err", err);
       });
     console.log("strategies", strategy);
-  }, [userData , strategyFetch , strategy]);
+  }, [userData , setStrategy]);
 
   useEffect(() => {
     console.log("hello zerodha request", query.request_token, zerodhaUser);
