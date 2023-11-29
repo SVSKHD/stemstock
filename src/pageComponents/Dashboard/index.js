@@ -41,7 +41,7 @@ const StemDashboardComponent = () => {
     if (!userData) {
       Router.push("/");
     }
-  }, [userData]);
+  }, [userData , Router]);
 
   useEffect(() => {
     strategyFetch(userData ? userData.user.id : "")

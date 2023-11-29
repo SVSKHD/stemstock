@@ -37,7 +37,7 @@ const StemBrokerComponent = () => {
           console.log("err", err);
         });
     }
-  }, [BrokerFetch]);
+  }, [BrokerFetch , userData]);
 
   const handleChange = (e) => {
     setBrokerDetails({
