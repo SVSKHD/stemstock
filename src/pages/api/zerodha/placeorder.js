@@ -75,7 +75,7 @@ router.post(async (req, res) => {
         for (const leg of legs) {
             try {
                 const orderParams = {
-                    exchange: leg.exchange || "NSE", // Default to NSE if not specified
+                    exchange: "NSE", // Default to NSE if not specified
                     tradingsymbol: leg.instrument,
                     transaction_type: leg.position === "SELL" ? "SELL" : "BUY", // Adjust based on leg position
                     quantity: parseInt(leg.quantity),
@@ -85,6 +85,7 @@ router.post(async (req, res) => {
                 };
 
                 const response = await kite.placeOrder("regular", orderParams);
+                console.log("Order placed successfully", response.order_id);
                 orderResponses.push({ legId: leg._id, orderId: response.order_id, status: "success" });
             } catch (orderError) {
                 orderResponses.push({ legId: leg._id, status: "failed", error: orderError.message });

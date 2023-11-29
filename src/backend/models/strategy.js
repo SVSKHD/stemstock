@@ -50,8 +50,14 @@ const tradingStrategySchema = new mongoose.Schema({
       reEntryValue:Number
     },
   ],
-  stopLoss: Number, // You can specify the type as 'Number' if it's a currency amount or percentage
-  overallMTM: Number, // You can specify the type as 'Number' if it's a currency amount or percentage
+  overAllStopLossType:String,
+  overAllStopLossValue: Number, // You can specify the type as 'Number' if it's a currency amount or percentage
+  overAllMTMType:String,
+  overAllMTMValue: Number, // You can specify the type as 'Number' if it's a currency amount or percentage
+  stopLossReEntry:Boolean,
+  stopLossReEntryValue:Number,
+  targetReEntry:Boolean,
+  targetReEntryValue:Number,
   daysToExecute: [
     {
       all: Boolean,
@@ -70,7 +76,7 @@ const tradingStrategySchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
-  status: String,
+  status: Boolean,
 });
 
 // Create a Mongoose model using the schema

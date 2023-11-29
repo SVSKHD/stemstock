@@ -17,8 +17,7 @@ import {
   FaCirclePlus,
   FaMagnifyingGlass,
   FaBarsProgress,
-  FaEllipsisVertical,
-  FaExpand,
+  FaPencil
 } from "react-icons/fa6";
 import { FaCheck } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
@@ -181,7 +180,7 @@ const StemDashboardComponent = () => {
           <Container fluid className="ps-0">
             <Row>
               <Col md={3}>
-                <Card className="shadow-sm rounded-3 border-0">
+                <Card className="shadow-sm rounded-3 border-0 bg-success-subtle">
                   <Card.Body className="px-2">
                     <Row>
                       <Col
@@ -205,9 +204,9 @@ const StemDashboardComponent = () => {
               </Col>
               <Col md={9}>
                 {/* running strategy */}
-                <Card className="shadow-sm rounded-3 border-0">
+                <Card className="shadow-sm rounded-3 border-0 py-1 bg-light">
                   <Card.Body>
-                    <Row>
+                    <Row className="align-items-center">
                       <Col md={4}>
                         <div className="d-flex align-items-center">
                           <Dropdown>
@@ -238,7 +237,7 @@ const StemDashboardComponent = () => {
                       </Col>
                       <Col md={5}>
                         <Form>
-                          <InputGroup className="mb-3">
+                          <InputGroup>
                             <Form.Control
                               placeholder="Search Strategy"
                               aria-label="Search Strategy"
@@ -274,39 +273,42 @@ const StemDashboardComponent = () => {
           <Container fluid className="ps-0">
             {strategy.map((r, i) => (
               <>
-                <Card key={i} className="m-1">
-                  <Card.Body>
+                <Card key={i} className="mb-4 shadow-sm bg-light">
+                  <Card.Body className="pb-1">
                     <Row>
                       <Col md={4}>
-                        <div className="d-flex align-items-center justify-content-between">
-                          <span className="d-flex select-strategy">
+                        <div className="row">
+                          <span className="col-6">
                             <Form>
-                              {["checkbox"].map((type) => (
-                                <div key={`default-${type}`}>
+                            
+                                <div>
                                   <Form.Check // prettier-ignore
-                                    type={type}
-                                    id={`default-${type}`}
+                                    type={"checkbox"}
                                     className="strategy-select"
+                                    label={r.name}
                                   />
                                 </div>
-                              ))}
+                          
                             </Form>
-                            <span className="text-start ms-2">{r.name}</span>
                           </span>
-
-                          <span className="on-off-switch">
-                            <Form.Check // prettier-ignore
-                              type="switch"
-                              id="custom-switch"
-                              label=""
-                            />
+                          
+                          <span className="col-3">
+                            <span className="on-off-switch">
+                              <Form.Check // prettier-ignore
+                                type="switch"
+                                id="custom-switch"
+                                label=""
+                              />
+                            </span>
                           </span>
-                          <span className="pe-5">
-                            <p className="mb-0">
-                              <Badge pill bg="primary">
-                                New
-                              </Badge>
-                            </p>
+                          <span className="col-3 text-center">
+                            <span className="pe-5">
+                              <p className="mb-0">
+                                <Badge pill bg="primary">
+                                  New
+                                </Badge>
+                              </p>
+                            </span>
                           </span>
                         </div>
                       </Col>
@@ -314,9 +316,10 @@ const StemDashboardComponent = () => {
                         <div className="d-flex align-items-center justify-content-center">
                           <span className="pe-3">
                             {zerodhaUser ? (
-                              <Button variant="success">
-                                <FaCheck />
-                              </Button>
+                              // <Button variant="success">
+                              //   <FaCheck />
+                              // </Button>
+                               <span></span>
                             ) : (
                               <Button
                                 variant="primary"
@@ -351,11 +354,11 @@ const StemDashboardComponent = () => {
                               Run
                             </Button>
                           </span>
-                          <span className="pe-3">
+                          {/* <span className="pe-3">
                             <FaExpand className="text-theme" />
-                          </span>
-                          <span>
-                            <FaEllipsisVertical className="text-primary" />
+                          </span> */}
+                          <span className="ps-3 cursor-pointer">
+                            <FaPencil className="text-secondary" />
                           </span>
                         </div>
                       </Col>

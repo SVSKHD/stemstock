@@ -1,5 +1,13 @@
 import StemLayout from "@/Layout/Layout";
-import { Form, Card, Button, Row, Col, InputGroup } from "react-bootstrap";
+import {
+  Form,
+  Card,
+  Button,
+  Row,
+  Col,
+  InputGroup,
+  CardBody,
+} from "react-bootstrap";
 import { useState, useEffect } from "react";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
@@ -69,14 +77,17 @@ const StemStrategyComponent = () => {
     { value: "1", displayText: "Re-Cost" },
     { value: "2", displayText: "Re-Execute" },
   ];
+  const overAllOptions = [
+    { value: "1", displayText: "None" },
+    { value: "2", displayText: "MTM" },
+    { value: "3", displayText: "Premium %" },
+  ];
   let straddleStrategy = {
     name: "",
     entryTime: "9:15",
     endTime: "",
     immediate: false,
     legs: [],
-    stopLoss: 0, // e.g., 1000 (currency amount or percentage)
-    overallMTM: 0, // e.g., 5000 (currency amount or percentage)
     daysToExecute: [
       { all: false },
       { monday: false },
@@ -85,13 +96,17 @@ const StemStrategyComponent = () => {
       { thursday: false },
       { friday: false },
     ], // e.g., 30 (number of days),
-    status: "",
-    overAllStopLoss: false,
+    status: false,
+    // overall mtms and renteries
     overAllStopLossType: "",
     overAllStopLossValue: 0,
-    overAllMTM: false,
     overAllMTMType: "",
     overAllMTMValue: 0,
+    // rentries
+    stopLossReEntry: false,
+    stopLossReEntryValue: 0,
+    targetReEntry: false,
+    targetReEntryValue: 0,
     user: userData ? userData.user.id : "",
   };
 
@@ -627,7 +642,7 @@ const StemStrategyComponent = () => {
             {strategy.legs.map((leg, i) => (
               <div key={i}>
                 {/* Example: Dropdown for selecting instrument */}
-                <Card className="shadow-lg mt-2">
+                <Card className="shadow-sm mb-4">
                   <Card.Body>
                     <div className="row">
                       <div className="col">
@@ -1111,11 +1126,21 @@ const StemStrategyComponent = () => {
 
         <div className="row">
           <div className="col-md-4">
-            <h5 className="mb-0">Overall MTM</h5>
-            <Card className="">
+            <h5 className="">Overall MTM</h5>
+            {/* <Card className="">
               <Card.Body bg="light">
                 <div className="row">
+
                   <div className="col-md-6 col-lg-6">
+                  <Form.Check
+                            type="checkbox"
+                            label="Stop-Loss"
+                            checked={Newleg.}
+                            disabled={!leg.stopLoss}
+                            onChange={(e) =>
+                              handleLegChange(i, "reEntry", e.target.checked)
+                            }
+                          />
                     <Form.Label className="mb-0">Stop Loss:</Form.Label>
                     <Form.Select aria-label="Default select example">
                       <option>none</option>
@@ -1133,10 +1158,157 @@ const StemStrategyComponent = () => {
                   </div>
                 </div>
               </Card.Body>
+            </Card> */}
+            <Card>
+              <CardBody>
+                <div className="row">
+                  <div className="col">
+                    <div className="mb-1">
+                      <Form.Label className="text-start">Stop Loss</Form.Label>
+                      <Form.Select
+                        aria-label="Default select example"
+                        value={strategy.overAllStopLossType}
+                        onChange={(e) =>
+                          updateStrategyAttribute(
+                            "overAllStopLossType",
+                            e.target.value
+                          )
+                        }
+                      >
+                        {overAllOptions.map((option) => (
+                          <option key={option.value} value={option.displayText}>
+                            {option.displayText}
+                          </option>
+                        ))}
+                      </Form.Select>
+                    </div>
+                    <input
+                      className="form-control mb-1"
+                      disabled={
+                        !strategy.overAllStopLossType ||
+                        strategy.overAllStopLossType === "None"
+                      }
+                      type="number"
+                      placeholder="OverAll Type Stop Loss"
+                      value={strategy.stopLossValue}
+                      onChange={(e) =>
+                        updateStrategyAttribute("stopLossValue", e.target.value)
+                      }
+                    />
+                    <div className="row">
+                      <div className="col">
+                        <Form.Group
+                          className="mb-3"
+                          controlId="formBasicCheckbox"
+                        >
+                          <Form.Check
+                            type="checkbox"
+                            label={"SL ReEntry"}
+                            checked={strategy.stopLossReEntry}
+                            onChange={(e) =>
+                              updateStrategyAttribute(
+                                "stopLossReEntry",
+                                e.target.checked
+                              )
+                            }
+                          />
+                        </Form.Group>
+                      </div>
+                      <div className="col">
+                        <input
+                          className="form-control"
+                          disabled={!strategy.stopLossReEntry}
+                          value={strategy.stopLossReEntryValue}
+                          type="number"
+                          onChange={(e) =>
+                            updateStrategyAttribute(
+                              "stopLossReEntryValue",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="col">
+                    <div className="mb-1">
+                      <Form.Label className="text-start">
+                        Over All Target
+                      </Form.Label>
+                      <Form.Select
+                        aria-label="Default select example"
+                        value={strategy.overAllMTMType}
+                        onChange={(e) =>
+                          updateStrategyAttribute(
+                            "overAllMTMType",
+                            e.target.value
+                          )
+                        }
+                      >
+                        {overAllOptions.map((option) => (
+                          <option key={option.value} value={option.displayText}>
+                            {option.displayText}
+                          </option>
+                        ))}
+                      </Form.Select>
+                    </div>
+                    <input
+                      className="form-control mb-1"
+                      disabled={
+                        !strategy.overAllMTMType ||
+                        strategy.overAllMTMType === "None"
+                      }
+                      placeholder="OverAll MTM Type"
+                      value={strategy.overAllMTMValue}
+                      type="number"
+                      onChange={(e) =>
+                        updateStrategyAttribute(
+                          "overAllMTMValue",
+                          e.target.value
+                        )
+                      }
+                    />
+                    <div className="row">
+                      <div className="col">
+                        <Form.Group
+                          className="mb-3"
+                          controlId="formBasicCheckbox"
+                        >
+                          <Form.Check
+                            type="checkbox"
+                            label={"Target ReEntry"}
+                            checked={strategy.targetReEntry}
+                            onChange={(e) =>
+                              updateStrategyAttribute(
+                                "targetReEntry",
+                                e.target.checked
+                              )
+                            }
+                          />
+                        </Form.Group>
+                      </div>
+                      <div className="col">
+                        <input
+                          className="form-control"
+                          disabled={!strategy.targetReEntry}
+                          value={strategy.targetReEntryValue}
+                          type="number"
+                          onChange={(e) =>
+                            updateStrategyAttribute(
+                              "targetReEntryValue",
+                              e.target.value
+                            )
+                          }
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardBody>
             </Card>
           </div>
           <div className="col-md-8">
-            <h5 className="mb-0">Days to Execute</h5>
+            <h5 className="">Days to Execute</h5>
             <Card bg="light">
               <Card.Body>
                 <div className="row">
@@ -1149,7 +1321,7 @@ const StemStrategyComponent = () => {
                         onClick={() => handleDayClick(dayName)}
                         variant={day[dayName] ? "light" : "outline-dark"}
                       >
-                        <span>
+                        <span className="pe-1">
                           {day[dayName] ? (
                             <FaRegCircleCheck className="text-success" />
                           ) : (
@@ -1169,7 +1341,7 @@ const StemStrategyComponent = () => {
         </div>
 
         <div className="row mt-3 text-start me-auto">
-          <Button onClick={handleSaveStrategy} className="w-auto">
+          <Button onClick={handleSaveStrategy} className="w-auto ms-2">
             Save Strategy
           </Button>
         </div>
