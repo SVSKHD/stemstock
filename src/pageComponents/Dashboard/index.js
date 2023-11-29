@@ -135,7 +135,7 @@ const StemDashboardComponent = () => {
         console.log("fetched", res);
       })
       .catch((err) => {
-        StemToast(err, "error");
+        StemToast(JSON.stringify(err), "error");
       });
   };
   return (
