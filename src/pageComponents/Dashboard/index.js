@@ -130,12 +130,47 @@ const StemDashboardComponent = () => {
       requestToken: zerodhaUser,
       legs: data.legs,
     };
-    await zerodhaPlaceOrder(placeOrder)
+    await zerodhaPlaceOrder({
+      requestToken: "Ff04xa5qqMATdDVMcRsVkPqFkI71cYWh",
+      legs: [
+        {
+          trialStopLossValue: {
+            x: 1,
+            y: 5,
+          },
+          instrument: "Nifty",
+          instrumentType: "Nifty",
+          entry_type: "time",
+          expiry: "current",
+          index: 1,
+          segment: "Nifty",
+          strike_type: "Call",
+          strike_value: "15000",
+          position: "Long",
+          quantity: "100",
+          takeProfit: true,
+          takeProfitType: "Limit",
+          takeProfitValue: 200,
+          stopLoss: true,
+          stopLossType: "Market",
+          stopLossValue: 100,
+          trialStopLoss: false,
+          trialStopLossType: "pts",
+          waitAndTrade: false,
+          waitAndTradeType: "hello",
+          waitAndTradeValue: 0,
+          reEntry: true,
+          reEntryType: "re-cost",
+          reEntryValue: 0,
+          _id: "656394794280e92f8c34e683",
+        },
+      ],
+    })
       .then((res) => {
         console.log("fetched", res);
       })
       .catch((err) => {
-        StemToast(JSON.stringify(err), "error");
+        StemToast("please try agian", "error");
       });
   };
   return (
