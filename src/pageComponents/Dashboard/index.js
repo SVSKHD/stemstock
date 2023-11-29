@@ -68,7 +68,7 @@ const StemDashboardComponent = () => {
         console.log("err", err);
       });
     console.log("strategies", strategy);
-  }, [userData]);
+  }, [userData , strategyFetch , strategy]);
 
   useEffect(() => {
     console.log("hello zerodha request", query.request_token, zerodhaUser);
@@ -78,7 +78,7 @@ const StemDashboardComponent = () => {
         payload: query.request_token,
       });
     }
-  }, [query]);
+  }, [query , dispatch , zerodhaUser]);
 
   // const socketInitilizer = async() =>{
 
