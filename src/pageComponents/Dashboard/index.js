@@ -232,7 +232,7 @@ const StemDashboardComponent = () => {
           <Container fluid className="ps-0">
             {strategy.map((r, i) => (
               <>
-                <Card key={i} className="m-1" key={i}>
+                <Card key={i} className="m-1" >
                   <Card.Body>
                     <Row>
                       <Col md={4}>
