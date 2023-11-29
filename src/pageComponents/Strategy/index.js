@@ -173,6 +173,7 @@ const StemStrategyComponent = () => {
     segment: "",
     strike_type: "",
     strike_value: "",
+    strike_Closest_Value: 0,
     position: "",
     quantity: "",
     takeProfit: false,
@@ -484,17 +485,6 @@ const StemStrategyComponent = () => {
                         updateStrategyAttribute("immediate", e.target.checked)
                       }
                     />
-                    {/* <label class="switch">
-                      <input
-                        type="checkbox"
-                        checked={strategy.immediate}
-                        onChange={(e) =>
-                          updateStrategyAttribute("immediate", e.target.checked)
-                        }
-                      />
-                      
-                      <span class="slider round"></span>
-                    </label> */}
                   </div>
                 </div>
                 <div className="col">
@@ -582,33 +572,56 @@ const StemStrategyComponent = () => {
                 </Form.Select>
               </div>
               <div className="col">
-                <Form.Label className="text-start">Strike Criteria:</Form.Label>
-                <Form.Select
-                  aria-label="Default select example"
-                  value={Newleg.strike_value}
-                  onChange={(e) => legStateManage("strike_value", e)}
-                >
-                  {strikeCriteriaOptions.map((option) => (
-                    <option key={option.value} value={option.displayText}>
-                      {option.displayText}
-                    </option>
-                  ))}
-                </Form.Select>
+                <div className="mb-1">
+                  <Form.Label className="text-start">
+                    Strike Criteria:
+                  </Form.Label>
+                  <Form.Select
+                    aria-label="Default select example"
+                    value={Newleg.strike_type}
+                    onChange={(e) => legStateManage("strike_type", e)}
+                  >
+                    {strikeCriteriaOptions.map((option) => (
+                      <option key={option.value} value={option.displayText}>
+                        {option.displayText}
+                      </option>
+                    ))}
+                  </Form.Select>
+                </div>
+                {Newleg.strike_type === "Closest Premium" ? (
+                  <>
+                    <input
+                      className="form-control"
+                      type="number"
+                      placeholder="closest premium"
+                      value={Newleg.strike_Closest_Value}
+                      onChange={(e) =>
+                        legStateManage("strike_Closest_Value", e)
+                      }
+                    />
+                  </>
+                ) : (
+                  <>
+                    <div className="col">
+                      <Form.Label className="text-start">
+                        Strike Type:
+                      </Form.Label>
+                      <Form.Select
+                        aria-label="Default select example"
+                        value={Newleg.strike_value}
+                        onChange={(e) => legStateManage("strike_value", e)}
+                      >
+                        {strikeTypeOptions.map((option) => (
+                          <option key={option.value} value={option.displayText}>
+                            {option.displayText}
+                          </option>
+                        ))}
+                      </Form.Select>
+                    </div>
+                  </>
+                )}
               </div>
-              <div className="col">
-                <Form.Label className="text-start">Strike Type:</Form.Label>
-                <Form.Select
-                  aria-label="Default select example"
-                  value={Newleg.strike_type}
-                  onChange={(e) => legStateManage("strike_type", e)}
-                >
-                  {strikeTypeOptions.map((option) => (
-                    <option key={option.value} value={option.displayText}>
-                      {option.displayText}
-                    </option>
-                  ))}
-                </Form.Select>
-              </div>
+
               <div className="col">
                 <Form.Label className="text-start">Total Lots:</Form.Label>
                 <input
@@ -748,25 +761,49 @@ const StemStrategyComponent = () => {
                             ))}
                           </Form.Select>
                         </div>
-                        <div>
-                          <Form.Select
-                            aria-label="Default select example"
-                            value={leg.strike_value}
-                            placeholder="Strike Type"
-                            onChange={(e) =>
-                              handleLegChange(i, "stirke_value", e.target.value)
-                            }
-                          >
-                            {strikeTypeOptions.map((option) => (
-                              <option
-                                key={option.value}
-                                value={option.displayText}
+
+                        {leg.strike_type === "Closest Premium" ? (
+                          <>
+                            <input
+                              className="form-control"
+                              value={leg.strike_Closest_Value}
+                              type="number"
+                              onChange={(e) =>
+                                handleLegChange(
+                                  i,
+                                  "strike_Closest_Value",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <div>
+                              <Form.Select
+                                aria-label="Default select example"
+                                value={leg.strike_value}
+                                placeholder="Strike Type"
+                                onChange={(e) =>
+                                  handleLegChange(
+                                    i,
+                                    "stirke_value",
+                                    e.target.value
+                                  )
+                                }
                               >
-                                {option.displayText}
-                              </option>
-                            ))}
-                          </Form.Select>
-                        </div>
+                                {strikeTypeOptions.map((option) => (
+                                  <option
+                                    key={option.value}
+                                    value={option.displayText}
+                                  >
+                                    {option.displayText}
+                                  </option>
+                                ))}
+                              </Form.Select>
+                            </div>
+                          </>
+                        )}
                       </div>
                       <div className="col">
                         <Form.Group
@@ -1112,11 +1149,6 @@ const StemStrategyComponent = () => {
                     </div>
                   </Card.Body>
                 </Card>
-
-                {/* Additional inputs for other properties... */}
-                {/* Example: Input for quantity */}
-
-                {/* Button to remove this leg */}
               </div>
             ))}
           </>
@@ -1127,38 +1159,6 @@ const StemStrategyComponent = () => {
         <div className="row">
           <div className="col-md-4">
             <h5 className="">Overall MTM</h5>
-            {/* <Card className="">
-              <Card.Body bg="light">
-                <div className="row">
-
-                  <div className="col-md-6 col-lg-6">
-                  <Form.Check
-                            type="checkbox"
-                            label="Stop-Loss"
-                            checked={Newleg.}
-                            disabled={!leg.stopLoss}
-                            onChange={(e) =>
-                              handleLegChange(i, "reEntry", e.target.checked)
-                            }
-                          />
-                    <Form.Label className="mb-0">Stop Loss:</Form.Label>
-                    <Form.Select aria-label="Default select example">
-                      <option>none</option>
-                      <option value="1">MTM</option>
-                      <option value="2">Premium %</option>
-                    </Form.Select>
-                  </div>
-                  <div className="col-md-6 col-lg-6">
-                    <Form.Label className="mb-0">Overall Target:</Form.Label>
-                    <Form.Select aria-label="Default select example">
-                      <option>none</option>
-                      <option value="1">MTM</option>
-                      <option value="2">Premium %</option>
-                    </Form.Select>
-                  </div>
-                </div>
-              </Card.Body>
-            </Card> */}
             <Card>
               <CardBody>
                 <div className="row">

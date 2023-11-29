@@ -22,7 +22,8 @@ const tradingStrategySchema = new mongoose.Schema({
       index: Number,
       segment: String,
       strike_type: String,
-      strike_value: String,
+      strike_value:String,
+      strike_Closest_Value: Number,
       position: String,
       quantity: String,
       // target
