@@ -17,7 +17,7 @@ import {
   FaCirclePlus,
   FaMagnifyingGlass,
   FaBarsProgress,
-  FaPencil
+  FaPencil,
 } from "react-icons/fa6";
 import { FaCheck } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
@@ -25,6 +25,7 @@ import { useRouter } from "next/router";
 import io from "socket.io-client";
 import zerodhaOperations from "@/services/zerdoha";
 import StemToast from "@/components/reusables/js/toast";
+import axios from "axios";
 
 const StemDashboardComponent = () => {
   const { strategyFetch } = StrategyOperations();
@@ -42,6 +43,31 @@ const StemDashboardComponent = () => {
       Router.push("/");
     }
   }, [userData, Router]);
+
+  const LivePrice = () => {
+    const exchange = "NSE";
+    const tradingsymbol = "NIFTY";
+
+    axios
+      .get("https://api.kite.trade/instruments", {
+        params: {
+          exchange,
+          tradingsymbol,
+        },
+      })
+      .then((response) => {
+        if (response.data.length > 0) {
+          const instrument = response.data[0]; // Assuming you want the first instrument in the list.
+          const instrumentToken = instrument.instrument_token;
+          console.log("Instrument Token:", instrumentToken);
+        } else {
+          console.log("Instrument not found.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
 
   useEffect(() => {
     strategyFetch(userData ? userData.user.id : "")
@@ -68,7 +94,8 @@ const StemDashboardComponent = () => {
         console.log("err", err);
       });
     console.log("strategies", strategy);
-  }, [userData, setStrategy]);
+    LivePrice()
+  }, [userData, setStrategy ]);
 
   useEffect(() => {
     console.log("hello zerodha request", query.request_token, zerodhaUser);
@@ -126,7 +153,7 @@ const StemDashboardComponent = () => {
   const handleStartegyRun = async (data) => {
     console.log("r", data.legs);
     const placeOrder = {
-      requestToken: zerodhaUser,
+      requestToken: "",
       legs: data.legs,
     };
     await zerodhaPlaceOrder({
@@ -280,18 +307,16 @@ const StemDashboardComponent = () => {
                         <div className="row">
                           <span className="col-6">
                             <Form>
-                            
-                                <div>
-                                  <Form.Check // prettier-ignore
-                                    type={"checkbox"}
-                                    className="strategy-select"
-                                    label={r.name}
-                                  />
-                                </div>
-                          
+                              <div>
+                                <Form.Check // prettier-ignore
+                                  type={"checkbox"}
+                                  className="strategy-select"
+                                  label={r.name}
+                                />
+                              </div>
                             </Form>
                           </span>
-                          
+
                           <span className="col-3">
                             <span className="on-off-switch">
                               <Form.Check // prettier-ignore
@@ -319,7 +344,7 @@ const StemDashboardComponent = () => {
                               // <Button variant="success">
                               //   <FaCheck />
                               // </Button>
-                               <span></span>
+                              <span></span>
                             ) : (
                               <Button
                                 variant="primary"
@@ -345,9 +370,7 @@ const StemDashboardComponent = () => {
                           <span className="pe-3">
                             <Button
                               variant="outline-success"
-                              disabled={
-                                zerodhaUser === null || r.status === false
-                              }
+                              disabled={zerodhaUser === null}
                               className="btn-sm"
                               onClick={() => handleStartegyRun(r)}
                             >
