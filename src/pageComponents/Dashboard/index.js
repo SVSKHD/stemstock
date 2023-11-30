@@ -99,13 +99,16 @@ const StemDashboardComponent = () => {
 
   useEffect(() => {
     console.log("hello zerodha request", query.request_token, zerodhaUser);
-    if (query.request_token) {
+    if(!userData){
+      router.push("/")
+    }
+    else if (userData && query.request_token) {
       dispatch({
         type: "LOGGED_IN_ZERODHA",
         payload: query.request_token,
       });
     }
-  }, [query, dispatch, zerodhaUser]);
+  }, [query, dispatch, zerodhaUser , userData]);
 
   // const socketInitilizer = async() =>{
 
