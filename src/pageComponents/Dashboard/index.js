@@ -181,7 +181,7 @@ const StemDashboardComponent = () => {
       .then((res) => {
         if (res.data) {
           // Redirect the user to Zerodha login page
-          window.location.href = res.data;
+          window.location.href = res.data.loginUrl;
         } else {
           console.error("Failed to get Zerodha login URL");
           // Handle the error appropriately (e.g., show an error message to the user)
@@ -189,7 +189,7 @@ const StemDashboardComponent = () => {
       })
       .catch((error) => {
         console.error("Error fetching Zerodha login URL:", error);
-        // Handle the error appropriately
+        StemToast(error.message, "error");
       });
   };
 
