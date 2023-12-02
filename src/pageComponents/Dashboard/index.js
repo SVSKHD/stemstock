@@ -94,21 +94,40 @@ const StemDashboardComponent = () => {
         console.log("err", err);
       });
     console.log("strategies", strategy);
-    LivePrice()
-  }, [userData, setStrategy ]);
+    LivePrice();
+  }, [userData, setStrategy]);
 
   useEffect(() => {
     console.log("hello zerodha request", query.request_token, zerodhaUser);
-    if(!userData){
-      router.push("/")
-    }
-    else if (userData && query.request_token) {
+    if (!userData) {
+      router.push("/");
+    } else if (userData && query.request_token) {
       dispatch({
         type: "LOGGED_IN_ZERODHA",
         payload: query.request_token,
       });
+      const exchangeToken = async () => {
+        try {
+          const response = await axios.post("/api/zerodha-callback", {
+            request_token: query.request_token,
+          });
+          const accessToken = response.data.accessToken;
+
+          // Dispatch the access token to the store
+          dispatch({
+            type: "LOGGED_IN_ZERODHA",
+            payload: accessToken,
+          });
+        } catch (error) {
+          console.error("Error in exchanging token:", error);
+          // Handle error appropriately
+          StemToast("Sorry Zerodha Login Failed");
+        }
+      };
+
+      exchangeToken();
     }
-  }, [query, dispatch, zerodhaUser , userData]);
+  }, [query, dispatch, zerodhaUser, userData]);
 
   // const socketInitilizer = async() =>{
 
@@ -145,12 +164,33 @@ const StemDashboardComponent = () => {
   //     };
   // }, []);
 
+  // const zerodhaLogin = () => {
+  //   axios.get("/api/zerodha/login").then((res) => {
+  //     console.log("url", res);
+  //   });
+  //   // const apiKey = process.env.NEXT_PUBLIC_API_ZERODHA_KEY;
+  //   // const redirectUrl = encodeURIComponent(
+  //   //   process.env.NEXT_PUBLIC_API_ZERODHA_REDIRECT
+  //   // );
+  //   // window.location.href = `https://kite.trade/connect/login?api_key=${apiKey}&redirect_uri=${redirectUrl}`;
+  // };
+
   const zerodhaLogin = () => {
-    const apiKey = process.env.NEXT_PUBLIC_API_ZERODHA_KEY;
-    const redirectUrl = encodeURIComponent(
-      process.env.NEXT_PUBLIC_API_ZERODHA_REDIRECT
-    );
-    window.location.href = `https://kite.trade/connect/login?api_key=${apiKey}&redirect_uri=${redirectUrl}`;
+    axios
+      .get(`/api/zerodha/login?id=${userData.user.id}`)
+      .then((res) => {
+        if (res.data) {
+          // Redirect the user to Zerodha login page
+          window.location.href = res.data;
+        } else {
+          console.error("Failed to get Zerodha login URL");
+          // Handle the error appropriately (e.g., show an error message to the user)
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching Zerodha login URL:", error);
+        // Handle the error appropriately
+      });
   };
 
   const handleStartegyRun = async (data) => {
