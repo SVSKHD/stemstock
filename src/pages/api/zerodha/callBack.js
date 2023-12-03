@@ -23,6 +23,7 @@ App.post(async (req, res) => {
     });
 
     const Access = await kite.generateSession(requestToken, SECRET);
+    const AccessToken = Access.access_token
 
     // Fetch the access token using the request token
     // const userData = await kite.generateSession(requestToken, SECRET);
@@ -35,7 +36,8 @@ App.post(async (req, res) => {
       APIKEY,
       SECRET,
       requestToken,
-      Access,
+      AccessToken,
+      Access
     });
 
     db.disconnectDb();

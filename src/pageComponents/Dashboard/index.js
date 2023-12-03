@@ -106,10 +106,14 @@ const StemDashboardComponent = () => {
     if (userData && query.request_token) {
       const exchangeToken = async () => {
         try {
+          dispatch({
+            type: "STORE_REQUEST_TOKEN",
+            payload: query.request_token,
+          });
           const response = await axios.post(
             `api/zerodha/callBack?id=${
               userData ? userData.user.id : ""
-            }&requestToken=${query.request_token}`
+            }&requestToken=${zerodhaUser.requestToken}`
           );
           const accessToken = response.data.accessToken;
 
@@ -384,7 +388,7 @@ const StemDashboardComponent = () => {
                       <Col md={4}>
                         <div className="d-flex align-items-center justify-content-center">
                           <span className="pe-3">
-                            {zerodhaUser.accessToken===null ? (
+                            {zerodhaUser.accessToken === null ? (
                               // <Button variant="success">
                               //   <FaCheck />
                               // </Button>
