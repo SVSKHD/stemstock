@@ -65,8 +65,13 @@ router.post(async (req, res) => {
   });
 
   try {
-    const session = await kite.generateSession(requestToken, apiSecret);
-    kite.setAccessToken(session.access_token);
+    const {id} = req.query
+    const keys = await ZerodhaBroker.findOne({ user: id });
+    const APIKEY = keys.apiKey;
+    const SECRET = keys.apiSecret;
+    const ACCESS = keys.accessToken
+
+    kite.setAccessToken(ACCESS)
 
     const orderResponses = [];
 
