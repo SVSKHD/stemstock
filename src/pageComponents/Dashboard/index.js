@@ -113,7 +113,7 @@ const StemDashboardComponent = () => {
           const response = await axios.post(
             `api/zerodha/callBack?id=${
               userData ? userData.user.id : ""
-            }&requestToken=${zerodhaUser.requestToken}`
+            }&requestToken=${query.request_token}`
           );
           const accessToken = response.data.accessToken;
 
