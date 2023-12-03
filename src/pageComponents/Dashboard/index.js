@@ -205,7 +205,6 @@ const StemDashboardComponent = () => {
       legs: data.legs,
     };
     await zerodhaPlaceOrder({
-      requestToken: "Ff04xa5qqMATdDVMcRsVkPqFkI71cYWh",
       legs: [
         {
           trialStopLossValue: {

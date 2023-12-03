@@ -50,6 +50,8 @@
 // File: /pages/api/placeOrders.js
 import { createRouter } from "next-connect";
 import { KiteConnect } from "kiteconnect";
+import db from "@/backend/db/db";
+import ZerodhaBroker from "@/backend/models/broker";
 
 const router = createRouter();
 
@@ -65,13 +67,14 @@ router.post(async (req, res) => {
   });
 
   try {
-    const {id} = req.query
+    db.connectDb();
+    const { id } = req.query;
     const keys = await ZerodhaBroker.findOne({ user: id });
     const APIKEY = keys.apiKey;
     const SECRET = keys.apiSecret;
-    const ACCESS = keys.accessToken
+    const ACCESS = keys.accessToken;
 
-    kite.setAccessToken(ACCESS)
+    kite.setAccessToken(ACCESS);
 
     const orderResponses = [];
 
@@ -103,10 +106,12 @@ router.post(async (req, res) => {
         });
       }
     }
-    console.log("trades", legs);
+    console.log("trades", legs , orderResponses);
+    db.disconnectDb();
     res.status(200).json(orderResponses);
   } catch (error) {
     res.status(500).json({ error: error.message, legs: legs });
+    db.disconnectDb();
   }
 });
 
