@@ -23,12 +23,16 @@ App.post(async (req, res) => {
     });
 
     const Access = await kite.generateSession(requestToken, SECRET);
-    const AccessToken = Access.access_token
+    const accessToken = Access.access_token
 
     // Fetch the access token using the request token
     // const userData = await kite.generateSession(requestToken, SECRET);
     // const accessToken = userData.access_token;
-    const Broker = await ZerodhaBroker.findByIdAndUpdate(user, AccessToken);
+    const updatedBroker = await ZerodhaBroker.findOneAndUpdate(
+        { user: id },
+        { accessToken },
+        { new: true }
+      );
 
     res.status(200).json({
       Success: true,
@@ -36,9 +40,9 @@ App.post(async (req, res) => {
       APIKEY,
       SECRET,
       requestToken,
-      AccessToken,
+      accessToken,
       Access,
-      Broker
+      updatedBroker
     });
 
     db.disconnectDb();
