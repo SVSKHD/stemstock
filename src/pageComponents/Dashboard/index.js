@@ -1,7 +1,6 @@
 import StemLayout from "@/Layout/Layout";
 import StrategyOperations from "@/services/startegy";
 import { useEffect, useState } from "react";
-// import { KiteTicker } from "kiteconnect";
 import {
   Container,
   Row,
@@ -98,36 +97,38 @@ const StemDashboardComponent = () => {
   }, [userData, setStrategy]);
 
   useEffect(() => {
-    console.log("hello zerodha request", query.request_token, zerodhaUser);
     if (!userData) {
       router.push("/");
-    } else if (userData && query.request_token) {
-      dispatch({
-        type: "LOGGED_IN_ZERODHA",
-        payload: query.request_token,
-      });
+    }
+  }, [userData, router]);
+
+  useEffect(() => {
+    if (userData && query.request_token) {
       const exchangeToken = async () => {
         try {
-          const response = await axios.post("/api/zerodha-callback", {
-            request_token: query.request_token,
-          });
+          const response = await axios.post(
+            `api/zerodha/callBack?id=${
+              userData ? userData.user.id : ""
+            }&requestToken=${query.request_token}`
+          );
           const accessToken = response.data.accessToken;
 
-          // Dispatch the access token to the store
+          StemToast("Successfully logged in", "success");
+
+          // Dispatch once to avoid loop
           dispatch({
             type: "LOGGED_IN_ZERODHA",
             payload: accessToken,
           });
         } catch (error) {
           console.error("Error in exchanging token:", error);
-          // Handle error appropriately
-          StemToast("Sorry Zerodha Login Failed");
+          StemToast("Sorry Zerodha Login Failed", "error");
         }
       };
 
       exchangeToken();
     }
-  }, [query, dispatch, zerodhaUser, userData]);
+  }, [userData, query.request_token, dispatch]);
 
   // const socketInitilizer = async() =>{
 
@@ -383,7 +384,7 @@ const StemDashboardComponent = () => {
                       <Col md={4}>
                         <div className="d-flex align-items-center justify-content-center">
                           <span className="pe-3">
-                            {zerodhaUser ? (
+                            {zerodhaUser.accessToken===null ? (
                               // <Button variant="success">
                               //   <FaCheck />
                               // </Button>
