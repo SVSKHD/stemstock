@@ -82,13 +82,12 @@ router.post(async (req, res) => {
       try {
         const orderParams = {
           exchange: "NSE", // Default to NSE if not specified
-          tradingsymbol: leg.instrument,
-          transaction_type: leg.position === "SELL" ? "SELL" : "BUY", // Adjust based on leg position
-          quantity: parseInt(leg.quantity),
+          tradingsymbol: "NIFTY23DEC19000PE",
+          transaction_type: leg.position === "SELL" ? "SELL" : "BUY" || "BUY", // Adjust based on leg position
+          quantity: parseInt(leg.quantity) || 50,
           order_type: leg.order_type || "MARKET", // Default to MARKET if not specified
           validity: "DAY",
-          product: leg.product || "CNC", // Default to CNC if not specified
-          price: parseFloat(leg.price) || 0, // Default to 0 if not specified
+          product: leg.product || "CNC", // Default to CNC if not specified, // Default to 0 if not specified
         };
 
         const response = await kite.placeOrder("regular", orderParams);

@@ -417,7 +417,7 @@ const StemDashboardComponent = () => {
                           <span className="pe-3">
                             <Button
                               variant="outline-success"
-                              disabled={zerodhaUser === null}
+                              
                               className="btn-sm"
                               onClick={() => handleStartegyRun(r)}
                             >
