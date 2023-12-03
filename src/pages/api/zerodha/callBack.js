@@ -1,38 +1,41 @@
 // pages/api/zerodha-callback.js
 import { createRouter } from "next-connect";
 import { KiteConnect } from "kiteconnect";
+import db from "@/backend/db/db";
+import ZerodhaBroker from "@/backend/models/broker";
 
 const App = createRouter();
 
-App.post(async function handler(req, res) {
-  const requestToken = req.body.request_token;
-
-  if (!requestToken) {
-    return res.status(400).json({ error: "No request token provided" });
-  }
-
+App.post(async (req, res) => {
   try {
-    const apiKey = process.env.NEXT_PUBLIC_API_ZERODHA_KEY;
-    const apiSecret = process.env.API_ZERODHA_SECRET;
-
-    const kc = new KiteConnect({ api_key: apiKey });
-
-    // Exchange request token for access token using KiteConnect
-    const session = await kc.generateSession(requestToken, apiSecret);
-    const accessToken = session.access_token;
-
-    // Store access token securely
-    // TODO: Implement secure storage for the access token
-
-    res.json({ accessToken });
-  } catch (error) {
-    // Improved error handling
-    console.error("Error in generating session: ", error);
-    if (error.status) {
-      res.status(error.status).json({ error: error.message });
-    } else {
-      res.status(500).json({ error: "Internal Server Error" });
+    db.connectDb();
+    const { id, requestToken } = req.query;
+    const keys = ZerodhaBroker.findOne({ user: id });
+    const APIKEY = keys.apiKey;
+    const SECRET = keys.apiSecret;
+    if (!requestToken) {
+      return res.status(400).json({ error: "Request token is missing" });
     }
+
+    const kite = new KiteConnect({
+      api_key: APIKEY,
+    });
+
+    // Fetch the access token using the request token
+    const userData = await kite.generateSession(requestToken, SECRET);
+    const accessToken = userData.access_token;
+    await ZerodhaBroker.findByIdAndUpdate(user, accessToken);
+
+    res
+      .status(200)
+      .json({ Success: true, message: "Access token saved successfully" });
+
+    db.disconnectDb();
+  } catch (error) {
+    res
+      .status(400)
+      .json({ success: false, message: "Sorry couldn't perform the action" });
+    db.disconnectDb();
   }
 });
 
