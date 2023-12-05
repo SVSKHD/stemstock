@@ -204,7 +204,7 @@ const StemDashboardComponent = () => {
       requestToken: "",
       legs: data.legs,
     };
-    await zerodhaPlaceOrder(userData.user.id,{
+    await zerodhaPlaceOrder(userData.user.id, {
       legs: [
         {
           trialStopLossValue: {
@@ -246,6 +246,9 @@ const StemDashboardComponent = () => {
         StemToast("please try agian", "error");
       });
   };
+
+  const handleEdit = () => {};
+
   return (
     <>
       <StemLayout>
@@ -387,11 +390,9 @@ const StemDashboardComponent = () => {
                       <Col md={4}>
                         <div className="d-flex align-items-center justify-content-center">
                           <span className="pe-3">
-                            {zerodhaUser.accessToken === null ? (
-                              // <Button variant="success">
-                              //   <FaCheck />
-                              // </Button>
-                              <span></span>
+                            {zerodhaUser.requestToken &&
+                            zerodhaUser.accessToken ? (
+                              <Button variant="danger">Logout</Button>
                             ) : (
                               <Button
                                 variant="primary"
@@ -417,7 +418,6 @@ const StemDashboardComponent = () => {
                           <span className="pe-3">
                             <Button
                               variant="outline-success"
-                              
                               className="btn-sm"
                               onClick={() => handleStartegyRun(r)}
                             >
@@ -427,7 +427,10 @@ const StemDashboardComponent = () => {
                           {/* <span className="pe-3">
                             <FaExpand className="text-theme" />
                           </span> */}
-                          <span className="ps-3 cursor-pointer">
+                          <span
+                            className="ps-3 cursor-pointer"
+                            onClick={handleEdit}
+                          >
                             <FaPencil className="text-secondary" />
                           </span>
                         </div>
