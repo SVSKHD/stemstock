@@ -420,6 +420,7 @@ const StemDashboardComponent = () => {
                               variant="outline-success"
                               className="btn-sm"
                               onClick={() => handleStartegyRun(r)}
+                              disabled={zerodhaUser.requestToken === null}
                             >
                               Run
                             </Button>
