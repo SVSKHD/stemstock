@@ -26,12 +26,10 @@ const StemToast = (message, type) => {
   toast(message, {
     icon,
     style: {
-      border: '1px solid #713200',
-      padding: '10px',
       color: '#FFFFFF',
       backgroundColor,
-      width:'350px',
-      fontSize:'1.2rem'
+      width:'30px',
+      fontSize:'1rem'
     },
     duration: 2000,
   });

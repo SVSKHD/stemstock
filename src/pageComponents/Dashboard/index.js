@@ -30,6 +30,7 @@ const StemDashboardComponent = () => {
   const { strategyFetch } = StrategyOperations();
   const { userData, zerodhaUser } = useSelector((state) => ({ ...state }));
   const [strategy, setStrategy] = useState([]); // Corrected the typo in variable name
+  const [strategySearch, setStrategySeacrh] = useState("");
   const { zerodhaPlaceOrder } = zerodhaOperations();
 
   const router = useRouter();
@@ -134,51 +135,19 @@ const StemDashboardComponent = () => {
     }
   }, [userData, query.request_token, dispatch]);
 
-  // const socketInitilizer = async() =>{
+  //filtering strategies
+  const handleSearchChange = (e) => {
+    setStrategySeacrh(e.target.value.toLowerCase());
+  };
 
-  // }
+  const filteredStrategies = strategy.filter((s) =>
+    s.name.toLowerCase().includes(strategySearch)
+  );
 
-  // socket
-  //   useEffect(() => {
-  //     // Your Zerodha API Key
-  //     const apiKey = 'your_api_key';
-  //     // The access token you received after login
-  //     const accessToken = 'your_access_token';
+  // strategy active and non active count
+  const NotActiveStrategy = strategy.filter((item) => !item.status);
 
-  //     const ticker = new KiteTicker({ api_key: apiKey, access_token: accessToken });
-
-  //     ticker.connect();
-  //     ticker.on('ticks', (ticks) => {
-  //         console.log('Ticks:', ticks);
-  //     });
-  //     ticker.on('connect', () => {
-  //         console.log('Connected');
-  //         // Subscribe to instruments here
-  //         ticker.subscribe([738561]); // Replace with your instrument tokens
-  //         ticker.setMode(ticker.modeFull, [738561]); // Set the mode for the instruments
-  //     });
-  //     ticker.on('error', (error) => {
-  //         console.log('WebSocket error:', error);
-  //     });
-  //     ticker.on('close', (reason) => {
-  //         console.log('WebSocket connection closed:', reason);
-  //     });
-
-  //     return () => {
-  //         ticker.disconnect();
-  //     };
-  // }, []);
-
-  // const zerodhaLogin = () => {
-  //   axios.get("/api/zerodha/login").then((res) => {
-  //     console.log("url", res);
-  //   });
-  //   // const apiKey = process.env.NEXT_PUBLIC_API_ZERODHA_KEY;
-  //   // const redirectUrl = encodeURIComponent(
-  //   //   process.env.NEXT_PUBLIC_API_ZERODHA_REDIRECT
-  //   // );
-  //   // window.location.href = `https://kite.trade/connect/login?api_key=${apiKey}&redirect_uri=${redirectUrl}`;
-  // };
+  const runningStrategy = strategy.filter((item) => item.status === true);
 
   const zerodhaLogin = () => {
     axios
@@ -247,7 +216,9 @@ const StemDashboardComponent = () => {
       });
   };
 
-  const handleEdit = () => {};
+  const handleEdit = (data) => {
+    console.log("element", data);
+  };
 
   return (
     <>
@@ -296,11 +267,13 @@ const StemDashboardComponent = () => {
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu>
-                              <Dropdown.Item href="#/action-1">
-                                Active Strategies <span bg="secondary">0</span>
+                            <Dropdown.Item href="#/action-1">
+                                Non-Active Strategies{" "}
+                                <span bg="secondary">{NotActiveStrategy.length}</span>
                               </Dropdown.Item>
                               <Dropdown.Item href="#/action-2">
-                                Running Strategies <span bg="secondary">0</span>
+                                Running Strategies{" "}
+                                <span bg="secondary">{runningStrategy.length}</span>
                               </Dropdown.Item>
                             </Dropdown.Menu>
                           </Dropdown>
@@ -319,6 +292,8 @@ const StemDashboardComponent = () => {
                               placeholder="Search Strategy"
                               aria-label="Search Strategy"
                               aria-describedby="basic-addon2"
+                              value={strategySearch}
+                              onChange={handleSearchChange}
                             />
                             <Button
                               variant="outline-secondary"
@@ -348,7 +323,7 @@ const StemDashboardComponent = () => {
         {/* startegies map */}
         <section>
           <Container fluid className="ps-0">
-            {strategy.map((r, i) => (
+            {filteredStrategies.map((r, i) => (
               <>
                 <Card key={i} className="mb-4 shadow-sm bg-light">
                   <Card.Body className="pb-1">
@@ -430,7 +405,7 @@ const StemDashboardComponent = () => {
                           </span> */}
                           <span
                             className="ps-3 cursor-pointer"
-                            onClick={handleEdit}
+                            onClick={() => handleEdit(r)}
                           >
                             <FaPencil className="text-secondary" />
                           </span>
