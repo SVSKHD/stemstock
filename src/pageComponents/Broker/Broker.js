@@ -13,6 +13,7 @@ const StemBrokerComponent = () => {
     clientId: "",
     apiKey: "",
     apiSecret: "",
+    accessToken:"",
     user: userData ? userData.user.id : "",
   });
   const [id, setId] = useState(false);

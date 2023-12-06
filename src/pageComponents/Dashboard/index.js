@@ -2,6 +2,7 @@ import StemLayout from "@/Layout/Layout";
 import StrategyOperations from "@/services/startegy";
 import { useEffect, useState } from "react";
 import {
+  Accordion,
   Container,
   Row,
   Col,
@@ -220,6 +221,10 @@ const StemDashboardComponent = () => {
     console.log("element", data);
   };
 
+  // const StrategyDetail = useAccordionButton(eventKey, () =>
+  //   console.log("totally custom!")
+  // );
+
   return (
     <>
       <StemLayout>
@@ -267,13 +272,17 @@ const StemDashboardComponent = () => {
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu>
-                            <Dropdown.Item href="#/action-1">
+                              <Dropdown.Item href="#/action-1">
                                 Non-Active Strategies{" "}
-                                <span bg="secondary">{NotActiveStrategy.length}</span>
+                                <span bg="secondary">
+                                  {NotActiveStrategy.length}
+                                </span>
                               </Dropdown.Item>
                               <Dropdown.Item href="#/action-2">
                                 Running Strategies{" "}
-                                <span bg="secondary">{runningStrategy.length}</span>
+                                <span bg="secondary">
+                                  {runningStrategy.length}
+                                </span>
                               </Dropdown.Item>
                             </Dropdown.Menu>
                           </Dropdown>
@@ -403,6 +412,7 @@ const StemDashboardComponent = () => {
                           {/* <span className="pe-3">
                             <FaExpand className="text-theme" />
                           </span> */}
+                        
                           <span
                             className="ps-3 cursor-pointer"
                             onClick={() => handleEdit(r)}
