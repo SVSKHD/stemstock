@@ -19,10 +19,10 @@ import {
   FaBarsProgress,
   FaPencil,
 } from "react-icons/fa6";
-import { FaCheck } from "react-icons/fa";
+
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
-import io from "socket.io-client";
+
 import zerodhaOperations from "@/services/zerdoha";
 import StemToast from "@/components/reusables/js/toast";
 import axios from "axios";
@@ -412,7 +412,7 @@ const StemDashboardComponent = () => {
                           {/* <span className="pe-3">
                             <FaExpand className="text-theme" />
                           </span> */}
-                        
+
                           <span
                             className="ps-3 cursor-pointer"
                             onClick={() => handleEdit(r)}

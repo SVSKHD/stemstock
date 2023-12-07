@@ -25,9 +25,6 @@ App.post(async (req, res) => {
     const Access = await kite.generateSession(requestToken, SECRET);
     const accessToken = Access.access_token
 
-    // Fetch the access token using the request token
-    // const userData = await kite.generateSession(requestToken, SECRET);
-    // const accessToken = userData.access_token;
     const updatedBroker = await ZerodhaBroker.findOneAndUpdate(
         { user: id },
         { accessToken },
