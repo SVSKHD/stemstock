@@ -1,0 +1,703 @@
+import { useState, useEffect } from "react";
+import {
+  Form,
+  Card,
+  Button,
+  Row,
+  Col,
+  InputGroup,
+  CardBody,
+} from "react-bootstrap";
+import StemInput from "../reusables/input";
+import StemSelect from "../reusables/select";
+import StemPlaceHolderInput from "../reusables/placeHolderInput";
+import StemToast from "../reusables/js/toast";
+import StemCheckBox from "../reusables/checkBox";
+import { FaTrash } from "react-icons/fa6";
+const StrategyForm = ({ data, legData, onSave, mode }) => {
+  //select options
+  const instrumenOptions = [
+    { value: "1", displayText: "BankNifty" },
+    { value: "2", displayText: "Nifty" },
+    { value: "3", displayText: "Finnifty" },
+  ];
+  const segmentOptions = [
+    { value: "1", displayText: "OPT" },
+    { value: "2", displayText: "FUT" },
+  ];
+  const positionOptions = [
+    { value: "1", displayText: "BUY" },
+    { value: "2", displayText: "SELL" },
+  ];
+  const optionTypeOptions = [
+    { value: "1", displayText: "CE" },
+    { value: "2", displayText: "PE" },
+  ];
+  const strikeTypeOptions = [
+    { value: "1", displayText: "ATM-100" },
+    { value: "2", displayText: "ATM-50" },
+    { value: "3", displayText: "ATM" },
+    { value: "4", displayText: "ATM+50" },
+    { value: "5", displayText: "ATM+50" },
+  ];
+  const strikeCriteriaOptions = [
+    { value: "1", displayText: "ATM Type" },
+    { value: "2", displayText: "Closest Premium" },
+  ];
+  const takeProfitOptions = [
+    { value: "1", displayText: "TP %" },
+    { value: "2", displayText: "TP Pts" },
+    { value: "3", displayText: "TP Spot Pts" },
+    { value: "4", displayText: "TP Spot %" },
+  ];
+  const stopLossOptions = [
+    { value: "1", displayText: "SL %" },
+    { value: "2", displayText: "SL Pts" },
+    { value: "3", displayText: "SL Spot Pts" },
+    { value: "4", displayText: "SL Spot %" },
+  ];
+  const traiLStopLossOptions = [
+    { value: "1", displayText: "TSL %" },
+    { value: "2", displayText: "TSL Pts" },
+  ];
+  const waitAndTradeOptions = [
+    { value: "1", displayText: "% ⬆️" },
+    { value: "2", displayText: "% ⬇️" },
+    { value: "3", displayText: "Pts ⬆️" },
+    { value: "4", displayText: "Pts ⬇️" },
+    { value: "5", displayText: "Spot % ⬆️" },
+    { value: "6", displayText: "Spot % ⬇️" },
+  ];
+  const reEntryOptions = [
+    { value: "1", displayText: "Re-Cost" },
+    { value: "2", displayText: "Re-Execute" },
+  ];
+  const overAllOptions = [
+    { value: "1", displayText: "None" },
+    { value: "2", displayText: "MTM" },
+    { value: "3", displayText: "Premium %" },
+  ];
+  const [strategy, setStrategy] = useState(data);
+  const [Newleg, setNewleg] = useState(legData);
+
+  const legStateManage = (key, e) => {
+    const value = key === "quantity" ? Number(e.target.value) : e.target.value;
+    setNewleg({ ...Newleg, [key]: e.target.value });
+  };
+
+  const updateStrategyAttribute = (property, newValue) => {
+    setStrategy((prevStrategy) => ({
+      ...prevStrategy,
+      [property]: newValue,
+    }));
+  };
+
+  const handleSubmit = () => {
+    console.log("save", strategy);
+  };
+
+  const addNewLeg = () => {
+    console.log("legs", Newleg, strategy);
+
+    setStrategy((prevStrategy) => {
+      // Check if the maximum number of legs (9 in this case) has been reached
+      if (prevStrategy.legs.length < 9) {
+        // Create a new leg object with updated index
+        const updatedNewLeg = {
+          ...Newleg,
+          index: prevStrategy.legs.length,
+        };
+
+        // Return the updated strategy with the new leg added
+        return {
+          ...prevStrategy,
+          legs: [...prevStrategy.legs, updatedNewLeg],
+        };
+      } else {
+        // Handle the case where there are already 9 legs
+        StemToast("we can allow only 9 legs", "error");
+        return prevStrategy;
+      }
+    });
+  };
+
+  const handleTrialStopLossChange = (legIndex, axis, value) => {
+    setStrategy((prevStrategy) => {
+      // Clone the legs array
+      const updatedLegs = [...prevStrategy.legs];
+
+      // Convert value to number if necessary
+      const numericValue = Number(value);
+
+      // Update the specific leg's trialStopLossValue
+      updatedLegs[legIndex] = {
+        ...updatedLegs[legIndex],
+        trialStopLossValue: {
+          ...updatedLegs[legIndex].trialStopLossValue, // Corrected property name here
+          [axis]: numericValue,
+        },
+      };
+
+      // Return the updated strategy
+      return { ...prevStrategy, legs: updatedLegs };
+    });
+  };
+
+  const handleLegChange = (legIndex, key, value) => {
+    console.log("legs", strategy.legs);
+    setStrategy((prevStrategy) => {
+      // Clone the legs array
+      const updatedLegs = [...prevStrategy.legs];
+
+      // Check if the key is for updating x or y in triaLStopLoss
+      if (key === "triaLStopLossValueX" || key === "triaLStopLossValueY") {
+        const axis = key === "triaLStopLossValueX" ? "x" : "y";
+        value = Number(value); // Assuming x and y values are numbers
+
+        // Update the triaLStopLoss object in the specific leg
+        updatedLegs[legIndex] = {
+          ...updatedLegs[legIndex],
+          triaLStopLoss: {
+            ...updatedLegs[legIndex].triaLStopLoss,
+            [axis]: value,
+          },
+        };
+      } else {
+        // Handle other keys
+        updatedLegs[legIndex] = { ...updatedLegs[legIndex], [key]: value };
+      }
+
+      // Return the updated strategy
+      return { ...prevStrategy, legs: updatedLegs };
+    });
+  };
+
+  const removeLeg = (legIndex) => {
+    setStrategy((prevStrategy) => ({
+      ...prevStrategy,
+      legs: prevStrategy.legs.filter((_, index) => index !== legIndex),
+    }));
+  };
+
+  return (
+    <>
+      {JSON.stringify(strategy)}
+
+      <div className="row">
+        <div className="col-md-6 col-lg-6 col-xs-12 col-sm-12">
+          <StemInput
+            label={"Straddle Name:"}
+            placeholder={"Straddle Name:"}
+            value={strategy.name}
+            handleChange={(e) =>
+              updateStrategyAttribute("name", e.target.value)
+            }
+          />
+        </div>
+        <div className="col-md-6 col-lg-6 col-xs-12 col-sm-12">
+          <div className="col">
+            <div className="row">
+              <div className="col border-end">
+                <label className="mb-0">Start Time: </label>
+                <input
+                  type={strategy.immediate ? "text" : "time"}
+                  placeholder="Start date"
+                  className="form-control"
+                  value={
+                    strategy.immediate
+                      ? `${current_time} immediate`
+                      : strategy.entryTime || "9:15"
+                  }
+                  min="09:15"
+                  max="16:00"
+                  onChange={(e) => {
+                    // Validate the time to ensure it's within the allowed range
+                    const time = e.target.value;
+                    if (time >= "09:15" && time <= "15:59") {
+                      updateStrategyAttribute("entryTime", time);
+                    } else {
+                      // Optionally, reset the value or provide feedback to the user
+                      updateStrategyAttribute("entryTime", "09:15");
+                      // You might want to alert the user that the entered time is out of bounds
+                    }
+                  }}
+                  disabled={strategy.immediate}
+                />
+                <div className="mt-2 text-start">
+                  {/* <label className="font-weight-bold">Immediate</label> */}
+                  <Form.Check // prettier-ignore
+                    type="switch"
+                    id="custom-switch"
+                    label="Immediate"
+                    checked={strategy.immediate}
+                    onChange={(e) =>
+                      updateStrategyAttribute("immediate", e.target.checked)
+                    }
+                  />
+                </div>
+              </div>
+              <div className="col">
+                <label className="mb-0">End Time: </label>
+                <input
+                  type="time"
+                  className="form-control"
+                  value={strategy.endTime}
+                  onChange={(e) => {
+                    // Validate the time to ensure it's within the allowed range
+                    const time = e.target.value;
+                    if (time >= "09:15" && time <= "15:59") {
+                      updateStrategyAttribute("endTime", time);
+                    } else {
+                      // Optionally, reset the value or provide feedback to the user
+                      updateStrategyAttribute("endTime", "15:59");
+                      // You might want to alert the user that the entered time is out of bounds
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <Card className="text-center shadow-none mb-3 mt-3 addleg-card">
+        <Card.Body>
+          <div className="row text-start">
+            <div className="col">
+              <StemSelect
+                label={"Instrument:"}
+                value={Newleg.instrument}
+                handleChange={(e) => legStateManage("instrument", e)}
+                options={instrumenOptions}
+              />
+            </div>
+            <div className="col">
+              <StemSelect
+                label={"Segments:"}
+                value={Newleg.segment}
+                handleChange={(e) => legStateManage("segment", e)}
+                options={segmentOptions}
+              />
+            </div>
+            <div className="col">
+              <StemSelect
+                label={"Position:"}
+                value={Newleg.position}
+                handleChange={(e) => legStateManage("position", e)}
+                options={positionOptions}
+              />
+            </div>
+            <div className="col">
+              <StemSelect
+                label={"Option Type:"}
+                value={Newleg.instrumentType}
+                handleChange={(e) => legStateManage("instrumentType", e)}
+                options={optionTypeOptions}
+              />
+            </div>
+            <div className="col">
+              <div className="mb-1">
+                <StemSelect
+                  label={"Strike Criteria:"}
+                  value={Newleg.strike_type}
+                  handleChange={(e) => legStateManage("strike_type", e)}
+                  options={strikeCriteriaOptions}
+                />
+              </div>
+              {Newleg.strike_type === "Closest Premium" ? (
+                <>
+                  <StemPlaceHolderInput
+                    className="form-control"
+                    type="number"
+                    placeholder="closest premium"
+                    value={Newleg.strike_Closest_Value}
+                    handleChange={(e) =>
+                      legStateManage("strike_Closest_Value", e)
+                    }
+                  />
+                </>
+              ) : (
+                <>
+                  <div className="col">
+                    <StemSelect
+                      label={"Strike Type:"}
+                      value={Newleg.strike_value}
+                      handleChange={(e) => legStateManage("strike_value", e)}
+                      options={strikeTypeOptions}
+                    />
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="col">
+              <StemInput
+                label={"Total Lots:"}
+                value={Newleg.quantity}
+                handleChange={(e) => legStateManage("quantity", e)}
+                placeholder={"lot-Size"}
+              />
+            </div>
+            <div className="col">
+              <Button onClick={addNewLeg} className="mt-3">
+                Add-Leg
+              </Button>
+            </div>
+          </div>
+        </Card.Body>
+      </Card>
+
+      {strategy.legs.length > 0 ? (
+        <>
+          <>
+            <div className="row">
+              <div className="col"></div>
+              <div className="col text-end">
+                <div className="fw-bolder">Legs:{strategy.legs.length}</div>
+              </div>
+            </div>
+          </>
+          {strategy.legs.map((leg, i) => (
+            <>
+              <div key={i}>
+                <Card className="shadow-sm mb-4">
+                  <Card.Body>
+                    <div className="row">
+                      <div className="col">
+                        <StemSelect
+                          label={"Instruments:"}
+                          value={leg.instrument}
+                          handleChange={(e) =>
+                            handleLegChange(i, "instrument", e.target.value)
+                          }
+                          options={instrumenOptions}
+                        />
+                      </div>
+                      <div className="col">
+                        <StemSelect
+                          label={"Segments:"}
+                          value={leg.segment}
+                          handleChange={(e) =>
+                            handleLegChange(i, "segment", e.target.value)
+                          }
+                          options={segmentOptions}
+                        />
+                      </div>
+                      <div className="col">
+                        <StemSelect
+                          label={"Positions:"}
+                          value={leg.position}
+                          handleChange={(e) =>
+                            handleLegChange(i, "position", e.target.value)
+                          }
+                          options={positionOptions}
+                        />
+                      </div>
+                      <div className="col">
+                        <StemSelect
+                          label={"Option Type:"}
+                          value={leg.instrumentType}
+                          handleChange={(e) =>
+                            handleLegChange(i, "instrumentType", e.target.value)
+                          }
+                          options={optionTypeOptions}
+                        />
+                      </div>
+                      <div className="col">
+                        <StemSelect
+                          label={"Strike Criteria "}
+                          value={leg.strike_type}
+                          handleChange={(e) =>
+                            handleLegChange(i, "strike_type", e.target.value)
+                          }
+                          options={strikeCriteriaOptions}
+                        />
+                        {leg.strike_type === "Closest Premium" ? (
+                          <>
+                            <StemInput
+                              type="number"
+                              value={leg.strike_Closest_Value}
+                              handleChange={(e) =>
+                                handleLegChange(
+                                  i,
+                                  "strike_Closest_Value",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </>
+                        ) : (
+                          <>
+                            <StemSelect
+                              options={strikeTypeOptions}
+                              value={leg.strike_value}
+                              handleChange={(e) =>
+                                handleLegChange(
+                                  i,
+                                  "stirke_value",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </>
+                        )}
+                      </div>
+                      {/* takeprfit */}
+                      <div className="col">
+                        <StemCheckBox
+                          label={leg.takeProfit ? "" : "Target"}
+                          checked={leg.takeProfit}
+                          handleChange={(e) =>
+                            handleLegChange(i, "takeProfit", e.target.checked)
+                          }
+                        />
+                        {leg.takeProfit ? (
+                          <>
+                            <StemSelect
+                              value={leg.takeProfitType}
+                              placeholder="Target Type"
+                              handleChange={(e) =>
+                                handleLegChange(
+                                  i,
+                                  "takeProfitType",
+                                  e.target.value
+                                )
+                              }
+                              options={takeProfitOptions}
+                            />
+                            <StemInput
+                              type="number"
+                              placeholder="lot-size"
+                              value={leg.takeProfitValue}
+                              handleChange={(e) =>
+                                handleLegChange(
+                                  i,
+                                  "takeProfitValue",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </>
+                        ) : (
+                          <div />
+                        )}
+                      </div>
+                      {/* stoploss */}
+                      <div className="col">
+                        <StemCheckBox
+                          label={leg.stopLoss ? "" : "Stop-Loss"}
+                          checked={leg.stopLoss}
+                          handleChange={(e) =>
+                            handleLegChange(i, "stopLoss", e.target.checked)
+                          }
+                        />
+                        {leg.stopLoss ? (
+                          <>
+                            <StemSelect
+                              value={leg.stopLossType}
+                              placeholder="Stop Loss Type"
+                              handleChange={(e) =>
+                                handleLegChange(
+                                  i,
+                                  "stopLossType",
+                                  e.target.value
+                                )
+                              }
+                              options={stopLossOptions}
+                            />
+                            <StemInput
+                              type="number"
+                              placeholder="lot-size"
+                              value={leg.stopLossValue}
+                              handleChange={(e) =>
+                                handleLegChange(
+                                  i,
+                                  "stopLossValue",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </>
+                        ) : (
+                          <div />
+                        )}
+                      </div>
+                      {/* trailingStopLoss */}
+                      <div className="col">
+                        <StemCheckBox
+                          label={leg.trialStopLoss ? "" : "Trail-Stop-Loss"}
+                          checked={leg.trialStopLoss}
+                          handleChange={(e) =>
+                            handleLegChange(
+                              i,
+                              "trialStopLoss",
+                              e.target.checked
+                            )
+                          }
+                        />
+                        {leg.trialStopLoss ? (
+                          <>
+                            <StemSelect
+                              value={leg.trialStopLossType}
+                              placeholder="Stop Loss Type"
+                              handleChange={(e) =>
+                                handleLegChange(
+                                  i,
+                                  "trialStopLossType",
+                                  e.target.value
+                                )
+                              }
+                              options={traiLStopLossOptions}
+                            />
+                            <div className="row">
+                              <div className="col">
+                                <StemPlaceHolderInput
+                                  type="number"
+                                  placeholder="X value"
+                                  value={leg.trialStopLossValue.x}
+                                  handleChange={(e) =>
+                                    handleTrialStopLossChange(
+                                      i,
+                                      "x",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </div>
+                              <div className="col">
+                                <StemPlaceHolderInput
+                                  type="number"
+                                  placeholder="Y value"
+                                  value={leg.trialStopLossValue.y}
+                                  handleChange={(e) =>
+                                    handleTrialStopLossChange(
+                                      i,
+                                      "y",
+                                      e.target.value
+                                    )
+                                  }
+                                />
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          <div />
+                        )}
+                      </div>
+                      {/* wait and trade */}
+                      <div className="col">
+                        <StemCheckBox
+                          label={leg.waitAndTrade ? "" : "wait and trade"}
+                          checked={leg.waitAndTrade}
+                          handleChange={(e) =>
+                            handleLegChange(i, "waitAndTrade", e.target.checked)
+                          }
+                        />
+                        {leg.waitAndTrade ? (
+                          <>
+                            <StemSelect
+                              value={leg.waitAndTradeType}
+                              placeholder="Target Type"
+                              handleChange={(e) =>
+                                handleLegChange(
+                                  i,
+                                  "waitAndTradeType",
+                                  e.target.value
+                                )
+                              }
+                              options={waitAndTradeOptions}
+                            />
+                            <input
+                              type="number"
+                              className="form-control"
+                              placeholder="lot-size"
+                              value={leg.waitAndTradeValue}
+                              handleChange={(e) =>
+                                handleLegChange(
+                                  i,
+                                  "waitAndTradeValue",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </>
+                        ) : (
+                          <div />
+                        )}
+                      </div>
+                      {/* renenrty */}
+                      <div className="col">
+                        <StemCheckBox
+                          label={leg.reEntry ? "" : "Re-Entry"}
+                          checked={leg.reEntry}
+                          disabled={!leg.stopLoss}
+                          handleChange={(e) =>
+                            handleLegChange(i, "reEntry", e.target.checked)
+                          }
+                        />
+                        {leg.reEntry ? (
+                          <>
+                            <StemSelect
+                              value={leg.reEntryType}
+                              placeholder="Target Type"
+                              handleChange={(e) =>
+                                handleLegChange(
+                                  i,
+                                  "reEntryType",
+                                  e.target.value
+                                )
+                              }
+                              options={reEntryOptions}
+                            />
+                            <StemInput
+                              type="number"
+                              className="form-control"
+                              placeholder="lot-size"
+                              value={leg.reEntryValue}
+                              handleChange={(e) =>
+                                handleLegChange(
+                                  i,
+                                  "reEntryValue",
+                                  e.target.value
+                                )
+                              }
+                            />
+                          </>
+                        ) : (
+                          <div />
+                        )}
+                      </div>
+                      {/* lots */}
+                      <div className="col">
+                        <StemInput
+                          label="Lots"
+                          placeholder="lot-size"
+                          value={leg.quantity}
+                          handleChange={(e) =>
+                            handleLegChange(i, "quantity", e.target.value)
+                          }
+                        />
+                      </div>
+                      <div className="col">
+                        <Button variant="primary" onClick={() => removeLeg(i)}>
+                          <FaTrash size={25} />
+                        </Button>
+                      </div>
+                    </div>
+                  </Card.Body>
+                </Card>
+              </div>
+            </>
+          ))}
+        </>
+      ) : (
+        <div />
+      )}
+      <Button onClick={handleSubmit}>
+        {mode === "EDIT" ? "Update Strategy" : "Create Strategy"}
+      </Button>
+    </>
+  );
+};
+
+export default StrategyForm;

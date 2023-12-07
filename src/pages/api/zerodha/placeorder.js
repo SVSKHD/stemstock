@@ -6,9 +6,14 @@ import ZerodhaBroker from "@/backend/models/broker";
 
 const router = createRouter();
 
-const createInstrument = () =>{
-  
-}
+const createInstrument = (instrument , type ) => {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = ("0" + (currentDate.getMonth() + 1)).slice(-2); // Month is zero-based
+  const day = ("0" + currentDate.getDate()).slice(-2);
+  const tradingSymbol = `${instrument.toUpperCase()}${year.toString().slice(-2)}D${month}${day}0850${type.toUpperCase()}`;
+  return tradingSymbol
+};
 
 router.post(async (req, res) => {
   const { legs } = req.body; // Assuming 'legs' is part of the request body
@@ -25,9 +30,9 @@ router.post(async (req, res) => {
     const placeOrderForLeg = async (leg) => {
       const orderDetails = {
         exchange: "NFO",
-        tradingsymbol: "NIFTY23DEC19000CE",
+        tradingsymbol: createInstrument(leg.instrument),
         transaction_type: "BUY", // or "SELL" depending on your strategy
-        quantity: 1, // The number of contracts you wish to buy/sell
+        quantity: leg.quantity * 50, // The number of contracts you wish to buy/sell
         order_type: "MARKET", // or "LIMIT" if you want to specify a price
         product: "MIS", // or "MIS" for intraday trades, "CNC" for equities
       };

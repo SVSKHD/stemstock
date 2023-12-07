@@ -16,8 +16,6 @@ const StemSignup = () => {
     phoneNo: "",
     retypePassword: "",
   });
-  const [error, setError] = useState({ type: false, messages: [] });
-  const [success, setSuccess] = useState({ type: false, message: "" });
   const { StemUserSignup } = StemUserOperations();
   const dispatch = useDispatch();
 

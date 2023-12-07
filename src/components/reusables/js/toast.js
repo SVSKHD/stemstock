@@ -28,10 +28,10 @@ const StemToast = (message, type) => {
     style: {
       color: '#FFFFFF',
       backgroundColor,
-      width:'30px',
-      fontSize:'1rem'
+      width:'300px',
+      fontSize:'0.9rem'
     },
-    duration: 2000,
+    duration: 4000,
   });
 };
 

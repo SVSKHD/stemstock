@@ -17,6 +17,7 @@ import { FaTrash, FaRegCircleCheck } from "react-icons/fa6";
 import moment from "moment/moment";
 import StrategyOperations from "@/services/startegy";
 import { useSelector } from "react-redux";
+import StrategyForm from "@/components/forms/strategyForm";
 
 const StemStrategyComponent = () => {
   let current_time = moment(new Date()).format("HH:mm a");
@@ -371,34 +372,17 @@ const StemStrategyComponent = () => {
     setLegs(updatedLegs);
   };
 
-  // useEffect(() => {
-  //   // Automatically select or deselect "All" based on other days
-  //   const weekdays = days.slice(1);
-  //   if (weekdays.every((day) => selectedDays.includes(day))) {
-  //     setSelectedDays([...weekdays, "All"]);
-  //   } else {
-  //     setSelectedDays(selectedDays.filter((day) => day !== "All"));
-  //   }
-  // }, [selectedDays]);
-
-  // handle days
-  // const handleDayClick = (day) => {
-  //   if (day === "All") {
-  //     setSelectedDays(selectedDays.includes("All") ? [] : [...days]);
-  //   } else {
-  //     setSelectedDays(
-  //       selectedDays.includes(day)
-  //         ? selectedDays.filter((d) => d !== day)
-  //         : [...selectedDays, day]
-  //     );
-  //   }
-  // };
+ 
 
   const isDaySelected = (day) => {
     return selectedDays.includes(day);
   };
 
   const formatDate = () => {};
+
+  const HandleSubmit = () =>{
+    console.log("handle" , strategy)
+  }
 
   const { startegySave } = StrategyOperations();
 
@@ -1345,6 +1329,8 @@ const StemStrategyComponent = () => {
             Save Strategy
           </Button>
         </div>
+
+        <StrategyForm data={strategy} legData={newLegTemplate}/>
       </StemLayout>
     </>
   );
