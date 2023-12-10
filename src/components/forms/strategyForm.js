@@ -338,19 +338,19 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
                   <StemSelect
                     label={"Strike Criteria:"}
                     value={Newleg.strike_type}
-                    handleChange={(e) => legStateManage("strike_type", e)}
+                    handleChange={(e) => legStateManage("strikeType", e)}
                     options={strikeCriteriaOptions}
                   />
                 </div>
-                {Newleg.strike_type === "Closest Premium" ? (
+                {Newleg.strikeType === "Closest Premium" ? (
                   <>
                     <StemPlaceHolderInput
                       className="form-control"
                       type="number"
                       placeholder="closest premium"
-                      value={Newleg.strike_Closest_Value}
+                      value={Newleg.strikeClosestValue}
                       handleChange={(e) =>
-                        legStateManage("strike_Closest_Value", e)
+                        legStateManage("strikeClosestValue", e)
                       }
                     />
                   </>
@@ -370,6 +370,7 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
 
               <div className="col">
                 <StemInput
+                type="number"
                   label={"Total Lots:"}
                   value={Newleg.quantity}
                   handleChange={(e) => legStateManage("quantity", e)}
@@ -447,18 +448,18 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
                         </div>
                         <div className="col">
                           <StemSelect
-                            label={"Strike Criteria "}
-                            value={leg.strike_type}
+                            label={"Strike Criteria"}
+                            value={leg.strikeType}
                             handleChange={(e) =>
-                              handleLegChange(i, "strike_type", e.target.value)
+                              handleLegChange(i, "strikeType", e.target.value)
                             }
                             options={strikeCriteriaOptions}
                           />
-                          {leg.strike_type === "Closest Premium" ? (
+                          {leg.strikeType === "Closest Premium" ? (
                             <>
                               <StemInput
                                 type="number"
-                                value={leg.strike_Closest_Value}
+                                value={leg.strikeClosestValue}
                                 handleChange={(e) =>
                                   handleLegChange(
                                     i,
@@ -472,11 +473,11 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
                             <>
                               <StemSelect
                                 options={strikeTypeOptions}
-                                value={leg.strike_value}
+                                value={leg.strikeValue}
                                 handleChange={(e) =>
                                   handleLegChange(
                                     i,
-                                    "stirke_value",
+                                    "stirkeValue",
                                     e.target.value
                                   )
                                 }
@@ -653,7 +654,7 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
                                 }
                                 options={waitAndTradeOptions}
                               />
-                              <input
+                              <StemInput
                                 type="number"
                                 className="form-control"
                                 placeholder="lot-size"
@@ -716,6 +717,7 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
                         {/* lots */}
                         <div className="col">
                           <StemInput
+                            type="number"
                             label="Lots"
                             placeholder="lot-size"
                             value={leg.quantity}
@@ -817,7 +819,7 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
                       <StemSelect
                         label="Over All Target"
                         value={strategy.overAllMTMType}
-                        handleChangeChange={(e) =>
+                        handleChange={(e) =>
                           updateStrategyAttribute(
                             "overAllMTMType",
                             e.target.value
@@ -846,7 +848,7 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
                     </div>
                     <div className="row">
                       <div className="col">
-                        <Form.Check
+                        <StemCheckBox
                           type="checkbox"
                           label={"Target ReEntry"}
                           checked={strategy.targetReEntry}
@@ -911,7 +913,7 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
           </div>
         </div>
       </div>
-      <Button onClick={()=>onSave(strategy)}>
+      <Button onClick={() => onSave(strategy)}>
         {mode === "EDIT" ? "Update Strategy" : "Create Strategy"}
       </Button>
     </>

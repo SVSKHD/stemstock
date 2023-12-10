@@ -2,7 +2,6 @@ import StemLayout from "@/Layout/Layout";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import StemToast from "@/components/reusables/js/toast";
-
 import moment from "moment/moment";
 import StrategyOperations from "@/services/startegy";
 import { useSelector } from "react-redux";
@@ -46,9 +45,9 @@ const StemStrategyComponent = () => {
     expiry: "current",
     index: 0,
     segment: "",
-    strike_type: "",
-    strike_value: "",
-    strike_Closest_Value: 0,
+    strikeType: "",
+    strikeValue: "",
+    strikeClosestValue: 0,
     position: "",
     quantity: "",
     takeProfit: false,

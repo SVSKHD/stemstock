@@ -33,7 +33,11 @@ const UserSchema = new mongoose.Schema({
   },
   lastPasswordUpdated: {
     type: Date,
-  }
+  },
+  role: {
+    type: Number,
+    default: 2,
+  },
 });
 
 const User = mongoose.models.User || mongoose.model("User", UserSchema);

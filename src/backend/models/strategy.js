@@ -1,64 +1,48 @@
 import mongoose from "mongoose";
 
-const tradingStrategySchema = new mongoose.Schema({
+const legSchema = new mongoose.Schema({
+  instrument: String,
+  instrumentType: String,
+  entry_type: { type: String, default: "time" },
+  expiry: { type: String, default: "current" },
+  index: Number,
+  segment: String,
+  // strike tyep and value
+  strikeType: String,
+  strikeValue: String,
+  strikeClosestValue: Number,
+  // position buy and sell
+  position: String,
+  // lot size
+  quantity: String,
+  // take profit
+  takeProfit: Boolean,
+  takeProfitType: String,
+  takeProfitValue: Number,
+  // stoploss
+  stopLoss: Boolean,
+  stopLossType: String,
+  stopLossValue: Number,
+  // trail stop loss
+  trialStopLoss: Boolean,
+  trialStopLossType: String,
+  trialStopLossValue: { x: String, y: String },
+  // wait and trade
+  waitAndTrade: Boolean,
+  waitAndTradeType: String,
+  waitAndTradeValue: Number,
+  //rentry
+  reEntry: Boolean,
+  reEntryType: String,
+  reEntryValue: Number,
+});
+
+const StrategySchema = new mongoose.Schema({
   name: String,
-  entryTime: String, // You might want to use a more appropriate data type like Date
-  endTime: String, // You might want to use a more appropriate data type like Date
+  entryTime: String,
+  endTime: String,
   immediate: Boolean,
-  legs: [
-    {
-      instrument: String,
-      instrumentType: String,
-      entry_type: {
-        type: String,
-        enum: ["time", "other_entry_types"], // Add other valid entry types if needed
-        default: "time", // Set a default value if needed
-      },
-      expiry: {
-        type: String,
-        enum: ["current", "other_expiry_options"], // Add other valid expiry options if needed
-        default: "current", // Set a default value if needed
-      },
-      index: Number,
-      segment: String,
-      strike_type: String,
-      strike_value:String,
-      strike_Closest_Value: Number,
-      position: String,
-      quantity: String,
-      // target
-      takeProfit: Boolean,
-      takeProfitType: String,
-      takeProfitValue: Number,
-      // stoploss
-      stopLoss: Boolean,
-      stopLossType: String,
-      stopLossValue: Number,
-      // trailstoploss
-      trialStopLoss: Boolean,
-      trialStopLossType: String,
-      trialStopLossValue: {
-        x: Number,
-        y: Number,
-      },
-      // wait and trade
-      waitAndTrade: Boolean,
-      waitAndTradeType: String,
-      waitAndTradeValue: Number,
-      // reentry
-      reEntry: Boolean,
-      reEntryType: String,
-      reEntryValue:Number
-    },
-  ],
-  overAllStopLossType:String,
-  overAllStopLossValue: Number, // You can specify the type as 'Number' if it's a currency amount or percentage
-  overAllMTMType:String,
-  overAllMTMValue: Number, // You can specify the type as 'Number' if it's a currency amount or percentage
-  stopLossReEntry:Boolean,
-  stopLossReEntryValue:Number,
-  targetReEntry:Boolean,
-  targetReEntryValue:Number,
+  legs: [legSchema],
   daysToExecute: [
     {
       all: Boolean,
@@ -69,18 +53,24 @@ const tradingStrategySchema = new mongoose.Schema({
       friday: Boolean,
     },
   ],
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-  },
-  broker: {
-    type: Boolean,
-    default: false,
-  },
   status: Boolean,
+  // overAllStopLoss
+  overAllStopLossType: String,
+  overAllStopLossValue: Number,
+  // overAllMTMTYpe
+  overAllMTMType: String,
+  overAllMTMValue: Number,
+  // stoplossrentry
+  stopLossReEntry: Boolean,
+  stopLossReEntryValue: Number,
+  // target rentry
+  targetReEntry: Boolean,
+  targetReEntryValue: Number,
+  status: Boolean,
+  user: mongoose.Schema.Types.ObjectId,
 });
 
-// Create a Mongoose model using the schema
-const Strategy = mongoose.models.Strategy || mongoose.model('Strategy', tradingStrategySchema);
+const Strategy =
+  mongoose.models.Strategy || mongoose.model("Strategy", StrategySchema);
 
 export default Strategy;

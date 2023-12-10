@@ -6,13 +6,99 @@ import ZerodhaBroker from "@/backend/models/broker";
 
 const router = createRouter();
 
-const createInstrument = (instrument , type ) => {
+const kite = new KiteConnect({
+  api_key: keys.apiKey,
+});
+
+// Assuming kc is an instance of KiteConnect
+const getInstrumentPrice = async (instrumentSymbol) => {
+  try {
+    const instruments = await kc.getInstruments();
+    const instrument = instruments.find(
+      (inst) => inst.tradingsymbol === instrumentSymbol
+    );
+
+    if (!instrument) {
+      throw new Error(`Instrument ${instrumentSymbol} not found`);
+    }
+
+    const quote = await kc.quote([instrument.instrument_token]);
+    return quote[instrument.instrument_token].last_price;
+  } catch (err) {
+    console.error(err);
+    throw err;
+  }
+};
+
+const calculateStrikePrice = (currentPrice, offset) => {
+  return currentPrice + offset;
+};
+
+const getLastThursdayOfMonth = (date) => {
+  const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+  return new Date(
+    lastDay.setDate(lastDay.getDate() - ((lastDay.getDay() + 3) % 7))
+  );
+};
+
+const getNextThursday = (date) => {
+  return new Date(date.setDate(date.getDate() + ((7 - date.getDay() + 4) % 7)));
+};
+
+const createOptionSymbol = (
+  instrument,
+  strikePrice,
+  optionType,
+  expiryDate
+) => {
+  const year = expiryDate.getFullYear().toString().slice(-2);
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
   const currentDate = new Date();
-  const year = currentDate.getFullYear();
-  const month = ("0" + (currentDate.getMonth() + 1)).slice(-2); // Month is zero-based
-  const day = ("0" + currentDate.getDate()).slice(-2);
-  const tradingSymbol = `${instrument.toUpperCase()}${year.toString().slice(-2)}D${month}${day}0850${type.toUpperCase()}`;
-  return tradingSymbol
+  const day = ("0" + expiryDate.getDate()).slice(-2);
+
+  return `${instrument.toUpperCase()}${year}${monthNames[currentDate.getMonth()]
+    .toUpperCase()
+    .substring(0, 3)}${day}${strikePrice}${optionType}`;
+};
+
+const generateOptionSymbol = async (
+  instrument,
+  optionType,
+  offset,
+  isMonthlyExpiry
+) => {
+  try {
+    const currentPrice = await getInstrumentPrice(instrument);
+    const adjustedStrikePrice = calculateStrikePrice(currentPrice, offset);
+
+    const today = new Date();
+    const expiryDate = isMonthlyExpiry
+      ? getLastThursdayOfMonth(today)
+      : getNextThursday(today);
+
+    return createOptionSymbol(
+      instrument,
+      adjustedStrikePrice,
+      optionType,
+      expiryDate
+    );
+  } catch (err) {
+    console.error(err);
+    return null;
+  }
 };
 
 router.post(async (req, res) => {
@@ -21,16 +107,13 @@ router.post(async (req, res) => {
   try {
     await db.connectDb();
     const keys = await ZerodhaBroker.findOne({ user: id });
-    const kite = new KiteConnect({
-      api_key: keys.apiKey,
-    });
     kite.setAccessToken(keys.accessToken);
-    console.log("log", keys.accessToken);
+    console.log("log", generateOptionSymbol("NIFTY", "CE", 50, false));
     // Function to place an order for a single leg
     const placeOrderForLeg = async (leg) => {
       const orderDetails = {
         exchange: "NFO",
-        tradingsymbol: createInstrument(leg.instrument),
+        tradingsymbol: generateOptionSymbol(leg.instrument, leg.instrumentType),
         transaction_type: "BUY", // or "SELL" depending on your strategy
         quantity: leg.quantity * 50, // The number of contracts you wish to buy/sell
         order_type: "MARKET", // or "LIMIT" if you want to specify a price
@@ -39,6 +122,8 @@ router.post(async (req, res) => {
 
       return await kite.placeOrder("regular", orderDetails);
     };
+
+    console.log("order", orderDetails);
 
     // Placing orders for each leg
     const orderResponses = await Promise.all(
