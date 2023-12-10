@@ -16,9 +16,7 @@ import {
 import {
   FaCirclePlus,
   FaMagnifyingGlass,
-  FaBarsProgress,
-  FaPencil,
-  FaTrash,
+  FaBarsProgress
 } from "react-icons/fa6";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -282,17 +280,6 @@ const StemDashboardComponent = () => {
   // const StrategyDetail = useAccordionButton(eventKey, () =>
   //   console.log("totally custom!")
   // );
-
-  const createInstrument = (instrument, type) => {
-    const currentDate = new Date();
-    const year = currentDate.getFullYear();
-    const month = ("0" + (currentDate.getMonth() + 1)).slice(-2); // Month is zero-based
-    const day = ("0" + currentDate.getDate()).slice(-2);
-    const tradingSymbol = `${instrument?.toUpperCase()}${year
-      .toString()
-      .slice(-2)}D${month}${day}0850${type?.toUpperCase()}`;
-    return tradingSymbol;
-  };
 
   return (
     <>
