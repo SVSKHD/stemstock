@@ -105,6 +105,7 @@ router.post(async (req, res) => {
 
     // console.log("log", generateOptionSymbol("NIFTY 50", "CE", 50, false));
     // Function to place an order for a single leg
+    
     const getLastThursdayOfMonth = (date) => {
       const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
       return new Date(
@@ -135,9 +136,7 @@ router.post(async (req, res) => {
         "D",
       ];
       const day = ("0" + new Date().getDate()).slice(-2);
-      return `${instrument.toUpperCase()}${year}${
-        months[month]
-      }${day}${strikePrice}${optionType.toUpperCase()}`;
+      return `${instrument.toUpperCase()}${year}${months[month-1]}1420950${optionType.toUpperCase()}`
     };
     const placeOrderForLeg = async (leg) => {
       const orderDetails = {

@@ -298,15 +298,17 @@ const StemDashboardComponent = () => {
     });
 
     setStrategy(updatedStrategies);
-    console.log("update" , updatedStrategies)
     const data = {
       id: strategyId,
       status: updatedStrategies.find((item) => item._id === strategyId).status,
     };
-    console.log(data);
     strategyEnable(data)
       .then(() => {
-        StemToast("succfully updated");
+        StemToast(
+          `succfully "${
+            updatedStrategies.find((item) => item._id === strategyId).name
+          }" updated`
+        );
       })
       .catch(() => {
         StemToast("sorry please try again", "error");
