@@ -16,7 +16,7 @@ import {
 import {
   FaCirclePlus,
   FaMagnifyingGlass,
-  FaBarsProgress
+  FaBarsProgress,
 } from "react-icons/fa6";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -29,7 +29,11 @@ import StemReusableDialog from "@/components/reusables/dialog";
 import StartegyCard from "./strategyCard";
 
 const StemDashboardComponent = () => {
-  const { strategyFetch, strategyDelete } = StrategyOperations();
+  const {
+    strategyFetch,
+    strategyDelete,
+    strategyEnable,
+  } = StrategyOperations();
   const { userData, zerodhaUser } = useSelector((state) => ({ ...state }));
   const [strategy, setStrategy] = useState([]); // Corrected the typo in variable name
   const [strategySearch, setStrategySeacrh] = useState("");
@@ -200,8 +204,15 @@ const StemDashboardComponent = () => {
 
   const handleStartegyRun = async (data) => {
     console.log("r", data);
+    const replaceData = data;
 
-    await zerodhaPlaceOrder(userData.user.id, strategy);
+    await zerodhaPlaceOrder(replaceData)
+      .then(() => {
+        StemToast("Succsfully sbmitted", "success");
+      })
+      .catch((err) => {
+        StemToast(`sorry please try again ${err}`, "error");
+      });
     // await zerodhaPlaceOrder(userData.user.id, {
     //   legs: [
     //     {
@@ -269,12 +280,38 @@ const StemDashboardComponent = () => {
   const ReloadStrategies = () => {
     strategyFetch(userData ? userData.user.id : "")
       .then((res) => {
-        setStrategy([])
-        setStrategy([...res.data])
+        setStrategy([]);
+        setStrategy([...res.data]);
       })
       .catch((err) => {
         console.log("err", err);
       });
+  };
+
+  const handleStatusChange = (strategyId, newStatus) => {
+    // Your existing logic to update the strategy
+    const updatedStrategies = strategy.map((s) => {
+      if (s._id === strategyId) {
+        return { ...s, status: newStatus };
+      }
+      return s;
+    });
+
+    setStrategy(updatedStrategies);
+    console.log("update" , updatedStrategies)
+    const data = {
+      id: strategyId,
+      status: updatedStrategies.find((item) => item._id === strategyId).status,
+    };
+    console.log(data);
+    strategyEnable(data)
+      .then(() => {
+        StemToast("succfully updated");
+      })
+      .catch(() => {
+        StemToast("sorry please try again", "error");
+      });
+    // Additional actions (like API calls) if needed
   };
 
   // const StrategyDetail = useAccordionButton(eventKey, () =>
@@ -401,6 +438,8 @@ const StemDashboardComponent = () => {
                       strategy={r}
                       zerodhaUser={zerodhaUser}
                       zerodhaLogin={zerodhaLogin}
+                      handleStrategyRun={handleStartegyRun}
+                      handleStatusChange={handleStatusChange}
                     />
                   </>
                 ))

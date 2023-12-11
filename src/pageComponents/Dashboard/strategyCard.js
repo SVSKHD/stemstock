@@ -4,9 +4,10 @@ const StartegyCard = ({
   strategy,
   zerodhaUser,
   zerodhaLogin,
-  handleStartegyRun,
+  handleStrategyRun,
   handleEdit,
   handleDeleteDialog,
+  handleStatusChange
 }) => {
   return (
     <>
@@ -34,6 +35,7 @@ const StartegyCard = ({
                       id="custom-switch"
                       label=""
                       checked={strategy.status}
+                      onChange={(e) => handleStatusChange(strategy._id, e.target.checked)}
                     />
                   </span>
                 </span>
@@ -79,7 +81,7 @@ const StartegyCard = ({
                   <Button
                     variant="outline-success"
                     className="btn-sm"
-                    onClick={() => handleStartegyRun(r)}
+                    onClick={() => handleStrategyRun(strategy)}
                     disabled={!strategy.status}
                   >
                     Run
