@@ -1,52 +1,38 @@
 import { createRouter } from "next-connect";
-import mongoose from "mongoose";
-import User from "@/backend/models/user"; // Adjust the import path as necessary
+import User from "@/backend/models/user";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
 import db from "@/backend/db/db";
 
 const App = createRouter();
 
 App.post(async (req, res) => {
-  const { email } = req.body;
-
   try {
-    // Connect to MongoDB
+    await db.connectDb();
+    const { email, password } = req.body;
 
-    db.connectDb();
-
-    // Check if user exists
-    const user = await User.findOne({ email: email.toLowerCase() });
-    if (!user) {
-      return res.status(404).send("User not found.");
+    if (!email) {
+      return res.status(400).json({ error: "Email is required." });
     }
 
-    // Create token (could also include more info or use a separate email token strategy)
-    const token = jwt.sign(
-      { userId: user._id.toString() },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" } // Token valid for 1 hour
-    );
+    const user = await User.findOne({ email: email });
+    if (!user) {
+      return res.status(400).json({ error: "User not found." });
+    }
 
-    // TODO: Send email to user with the token in a link they can use to reset password
-    // Example: `https://yourdomain.com/reset-password?token=${token}`
-
-    // Respond with a message
-    res.status(200).send("Password reset link has been sent to your email.");
-    db.disconnectDb();
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      await User.findByIdAndUpdate(user._id, { password: hashedPassword });
+      return res.status(200).json({ message: "Password updated successfully." });
+    } else {
+      return res.status(200).json({ message: "User found, but no password provided." });
+    }
   } catch (error) {
-    console.error(error.message);
-    res.status(500).send("Server error");
-    db.disconnectDb();
+    // Generic error handling
+    return res.status(500).json({ error: "Internal server error." });
+  } finally {
+    // Disconnect from the database in the finally block
+    await db.disconnectDb();
   }
 });
 
 export default App.handler();
-
-// NEXT_PUBLIC_API_DB = "mongodb+srv://hithesh:hithesh@aqua.6swj0.mongodb.net/"
-// NEXT_PUBLIC_API_URL= "http://localhost:4000/api"
-// NEXT_PUBLIC_JWT_SECRET="stemstock"
-
-// # kite connect
-// NEXT_PUBLIC_API_ZERODHA_KEY = 2g58vdwzg7xhqkk7
-// NEXT_PUBLIC_API_ZERODHA_SECRET = 5zyx5mdfltk3illcdv6fj7pq6zujy4e1

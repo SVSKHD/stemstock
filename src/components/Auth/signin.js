@@ -116,6 +116,20 @@ const StemSignin = () => {
                   }
                   placeholder="Enter your password"
                 />
+                <div>
+                  <Form.Text id="passwordHelpBlock" muted>
+                    <span
+                      onClick={() =>
+                        dispatch({
+                          type: "SET_FORGET_PASSWORD",
+                          payload: true,
+                        })
+                      }
+                    >
+                      forgot Password..?
+                    </span>
+                  </Form.Text>
+                </div>
               </Form.Group>
 
               <div className="d-grid gap-2">

@@ -145,7 +145,7 @@ router.post(async (req, res) => {
           leg.instrument,
           leg.instrumentType,
           20950,
-          15
+          14
         ),
         transaction_type: "BUY", // or "SELL" depending on your strategy
         quantity: leg.quantity * 50, // The number of contracts you wish to buy/sell

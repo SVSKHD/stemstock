@@ -1,5 +1,13 @@
 import { Form } from "react-bootstrap";
-const StemInput = ({ placeholder, handleChange, value, label ,disabled , type}) => {
+const StemInput = ({
+  placeholder,
+  handleChange,
+  value,
+  label,
+  disabled,
+  type,
+  name,
+}) => {
   return (
     <>
       <Form.Group
@@ -14,6 +22,7 @@ const StemInput = ({ placeholder, handleChange, value, label ,disabled , type}) 
           className="stem-fin-input"
           value={value}
           onChange={handleChange}
+          name={name}
         />
       </Form.Group>
     </>
