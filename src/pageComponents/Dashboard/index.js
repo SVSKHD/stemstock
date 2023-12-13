@@ -51,6 +51,9 @@ const StemDashboardComponent = () => {
     }
   }, [userData, Router]);
 
+
+
+
   const LivePrice = () => {
     const exchange = "NSE";
     const tradingsymbol = "NIFTY";
@@ -257,7 +260,7 @@ const StemDashboardComponent = () => {
   };
 
   const handleEdit = (data) => {
-    console.log("element", data);
+    router.push(`/strategy?id=${data._id}`);
   };
 
   const handleDeleteDialog = (data) => {
@@ -296,7 +299,6 @@ const StemDashboardComponent = () => {
       }
       return s;
     });
-
     setStrategy(updatedStrategies);
     const data = {
       id: strategyId,
@@ -440,6 +442,7 @@ const StemDashboardComponent = () => {
                       strategy={r}
                       zerodhaUser={zerodhaUser}
                       zerodhaLogin={zerodhaLogin}
+                      handleEdit={(r)=>handleEdit(r)}
                       handleStrategyRun={handleStartegyRun}
                       handleStatusChange={handleStatusChange}
                     />

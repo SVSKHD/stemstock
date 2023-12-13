@@ -70,8 +70,13 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
     { value: "2", displayText: "MTM" },
     { value: "3", displayText: "Premium %" },
   ];
+
   const [strategy, setStrategy] = useState(data);
   const [Newleg, setNewleg] = useState(legData);
+
+  useEffect(() => {
+    setStrategy(data);
+  }, [data]);
   let current_time = moment(new Date()).format("HH:mm a");
   const legStateManage = (key, e) => {
     const value = key === "quantity" ? Number(e.target.value) : e.target.value;
@@ -83,10 +88,6 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
       ...prevStrategy,
       [property]: newValue,
     }));
-  };
-
-  const handleSubmit = () => {
-    console.log("save", strategy);
   };
 
   const addNewLeg = () => {
@@ -370,7 +371,7 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
 
               <div className="col">
                 <StemInput
-                type="number"
+                  type="number"
                   label={"Total Lots:"}
                   value={Newleg.quantity}
                   handleChange={(e) => legStateManage("quantity", e)}

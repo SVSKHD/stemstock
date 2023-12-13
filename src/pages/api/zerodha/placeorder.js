@@ -105,13 +105,91 @@ router.post(async (req, res) => {
 
     // console.log("log", generateOptionSymbol("NIFTY 50", "CE", 50, false));
     // Function to place an order for a single leg
-    
-    const getLastThursdayOfMonth = (date) => {
-      const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
-      return new Date(
-        lastDay.setDate(lastDay.getDate() - ((lastDay.getDay() + 3) % 7))
-      );
+
+    const getNiftyLTP = async () => {
+      try {
+        const instruments = await kite.getInstruments("NSE"); // Fetch instruments from the NSE segment
+        const niftyInstrument = instruments.find(
+          (inst) => inst.tradingsymbol === "NIFTY 50"
+        ); // Replace with the correct symbol for NIFTY 50 Index
+
+        if (!niftyInstrument) {
+          throw new Error("Nifty instrument not found");
+        }
+
+        const quote = await kite.getQuote([niftyInstrument.instrument_token]);
+        console.log("quote", quote);
+        return quote[niftyInstrument.instrument_token].last_price;
+      } catch (err) {
+        console.error("Error fetching Nifty LTP:", err);
+        throw err;
+      }
     };
+
+    // Function to get the ATM strike price
+    const getATMStrikePrice = async () => {
+      try {
+        const niftyLTP = await getNiftyLTP();
+        const optionsInstruments = await kite.getInstruments("NFO"); // Fetch instruments from the NFO segment
+
+        const niftyOptions = optionsInstruments.filter(
+          (inst) => inst.name === "NIFTY" && inst.segment === "NFO-OPT"
+        );
+
+        const atmStrike = niftyOptions.reduce(
+          (prev, curr) =>
+            Math.abs(curr.strike - niftyLTP) < Math.abs(prev.strike - niftyLTP)
+              ? curr
+              : prev,
+          niftyOptions[0]
+        ).strike;
+
+        return atmStrike;
+      } catch (error) {
+        console.error("Error fetching ATM strike price:", error);
+        throw error;
+      }
+    };
+
+    // function for dates in month
+
+
+     // Outputs an array of numbers representing the dates of Thursdays
+
+    const getNearestThursday = () => {
+      const today = new Date();
+      const year = today.getFullYear();
+      const month = today.getMonth();
+      const currentDay = today.getDate();
+      let nearestThursday = null;
+      let smallestDiff = Infinity;
+
+      // Find the first day of the month
+      let date = new Date(year, month, 1);
+
+      // Find the first Thursday in the month
+      while (date.getDay() !== 4) {
+        date.setDate(date.getDate() + 1);
+      }
+
+      // Iterate over all Thursdays in the month
+      while (date.getMonth() === month) {
+        const thursdayDate = date.getDate();
+        const diff = Math.abs(thursdayDate - currentDay);
+
+        if (diff < smallestDiff) {
+          smallestDiff = diff;
+          nearestThursday = thursdayDate;
+        }
+
+        date.setDate(date.getDate() + 7);
+      }
+
+      return nearestThursday;
+    };
+
+    const nearestThursdayDate = getNearestThursday();
+    console.log(nearestThursdayDate); // Outputs the date of the nearest Thursday
 
     const createOptionSymbol = (
       instrument,
@@ -136,18 +214,32 @@ router.post(async (req, res) => {
         "D",
       ];
       const day = ("0" + new Date().getDate()).slice(-2);
-      return `${instrument.toUpperCase()}${year}${months[month-1]}1420950${optionType.toUpperCase()}`
+
+      console.log(`${instrument.toUpperCase()}${year}${
+        months[month - 1]
+      }${expiryDate}${strikePrice}${optionType.toUpperCase()}`);
     };
+
+    const AtmLegType = async (leg) => {
+      if (leg.strikeType === "ATM Type") {
+        let price = getATMStrikePrice(leg.instrument.toUpperCase());
+      }
+    };
+
+    //placing orders
     const placeOrderForLeg = async (leg) => {
+      const atmStrikePrice = await getATMStrikePrice(
+        leg.instrument.toUpperCase()
+      );
       const orderDetails = {
         exchange: "NFO",
         tradingsymbol: createOptionSymbol(
           leg.instrument,
           leg.instrumentType,
-          20950,
-          14
+          atmStrikePrice,
+          nearestThursdayDate
         ),
-        transaction_type: "BUY", // or "SELL" depending on your strategy
+        transaction_type: leg.position === "BUY" ? "BUY" : "SELL", // or "SELL" depending on your strategy
         quantity: leg.quantity * 50, // The number of contracts you wish to buy/sell
         order_type: "MARKET", // or "LIMIT" if you want to specify a price
         product: "MIS", // or "MIS" for intraday trades, "CNC" for equities
