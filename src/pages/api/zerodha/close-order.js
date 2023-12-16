@@ -6,32 +6,42 @@ var KiteConnect = require("kiteconnect").KiteConnect;
 
 const router = createRouter();
 
-// ... existing GET route for fetching order status ...
-
-// New POST route for closing orders
 router.post(async (req, res) => {
   try {
+    const { orderId } = req.body; // Assuming orderId is sent in the request body
+    const { id } = req.query;
+   
+
+    // Ensure connection to the database
     await db.connectDb();
 
-     // You may also need orderType
-    const keys = await ZerodhaBroker.findOne({ user: req.body.user });
-    console.log("api" , keys)
-    // const kite = new KiteConnect({
-    //   api_key: keys.apiKey,
-    // });
-    // kite.setAccessToken(keys.accessToken);
+    // Find the broker details for the user
+    const brokerDetails = await ZerodhaBroker.findOne({ user: id });
+    if (!brokerDetails) {
+      // Handle the case where the broker details are not found
+      return res.status(404).json({ message: "Broker details not found." });
+    }
 
-    // // Cancel the order
-    // let response = await kite.cancelOrder(orderType, orderId);
-    // await db.disconnectDb();
+    // Initialize KiteConnect with the found keys
+    const kite = new KiteConnect({
+      api_key: brokerDetails.apiKey,
+      access_token: brokerDetails.accessToken
+    });
 
-    res.json({ success: true, keys});
+    // Close the order
+    await kite.cancelOrder(orderId); // Replace with the actual method to close the order
 
+    // Respond with success message
+    res.status(200).json({ message: "Order closed successfully" });
   } catch (error) {
-    console.error("Error closing order:", error);
-    await db.disconnectDb();
-    res.status(500).json({ error: "Internal Server Error", details: error.message });
+    console.error("Error in POST /api/orders:", error);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
+
+// router.post((req, res) => {
+//   const { orderId } = req.body;
+//   console.log("req", orderId);
+// });
 
 export default router.handler();

@@ -40,7 +40,7 @@ const StemDashboardComponent = () => {
   const [deleteId, setDeleteId] = useState({});
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [run, seTRun] = useState(false);
-  const { zerodhaPlaceOrder } = zerodhaOperations();
+  const { zerodhaPlaceOrder , zerodhaCloseOrder } = zerodhaOperations();
   const router = useRouter();
   const { query } = router;
   const dispatch = useDispatch();
@@ -327,6 +327,7 @@ const StemDashboardComponent = () => {
 
   const handleStrategyRunClose = (data) => {
     console.log("delete", data);
+    zerodhaCloseOrder(userData.user.id , data)
   };
   return (
     <>
@@ -451,7 +452,7 @@ const StemDashboardComponent = () => {
                       handleDeleteDialog={(r) => handleDeleteDialog(r)}
                       handleStrategyRunClose={(r) => handleStrategyRunClose(r)}
                       handleStrategyRun={handleStrategyRun}
-                      handleStatusChange={() => handleStatusChange}
+                      handleStatusChange={handleStatusChange}
                       handleZerodhaLogout={() => handleZerodhaLogout}
                       run={run}
                     />
