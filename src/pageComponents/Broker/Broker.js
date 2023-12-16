@@ -3,9 +3,10 @@ import ZerodhaBrokerForm from "@/components/forms/zerodhaBrokerForm";
 import StemToast from "@/components/reusables/js/toast";
 import BrokerOperations from "@/services/broker";
 import { useEffect, useState } from "react";
-import { Row, Col, Form, Button } from "react-bootstrap";
-import { FaEdit } from "react-icons/fa";
+import { Row, Col, Button, Form, InputGroup } from "react-bootstrap";
+import { FaEdit, FaRegCopy } from "react-icons/fa";
 import { useSelector } from "react-redux";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 const StemBrokerComponent = () => {
   const { userData } = useSelector((state) => ({ ...state }));
@@ -13,12 +14,14 @@ const StemBrokerComponent = () => {
     clientId: "",
     apiKey: "",
     apiSecret: "",
-    accessToken:"",
+    accessToken: "",
     user: userData ? userData.user.id : "",
   });
   const [id, setId] = useState(false);
   const [data, setData] = useState({});
   const [mode, setMode] = useState("create");
+  const [copied, setCopied] = useState(false);
+  const value = "https://stemfin.in/dashboard";
 
   const { BrokerCreate, BrokerFetch, BrokerUpdate } = BrokerOperations();
 
@@ -38,7 +41,7 @@ const StemBrokerComponent = () => {
           console.log("err", err);
         });
     }
-  }, [BrokerFetch , userData]);
+  }, [BrokerFetch, userData]);
 
   const handleChange = (e) => {
     setBrokerDetails({
@@ -102,6 +105,11 @@ const StemBrokerComponent = () => {
       });
   };
 
+  const onCopy = () => {
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000); // Reset copied state after 2 seconds
+  };
+
   return (
     <>
       <StemLayout>
@@ -111,9 +119,27 @@ const StemBrokerComponent = () => {
               <Col>
                 <h4>Clinet ID : {data ? data.clientId : ""}</h4>
                 <h5>api key and api secret are encrypted</h5>
-                <Button variant="dark" onClick={handleEdit}>
+                <Button variant="dark" onClick={handleEdit} className="mb-2">
                   <FaEdit size={25} />
                 </Button>
+                <InputGroup className="mb-3">
+                  <Form.Control
+                    placeholder="Recipient's username"
+                    aria-label="Recipient's username"
+                    aria-describedby="basic-addon2"
+                    value={value}
+                    readOnly={true}
+                  />
+                  <CopyToClipboard text={value} onCopy={onCopy}>
+                    <Button variant="outline-white" id="button-addon2">
+                      {copied ? (
+                        <FaRegCopy size={25} className="text-success" />
+                      ) : (
+                        <FaRegCopy size={25} />
+                      )}
+                    </Button>
+                  </CopyToClipboard>
+                </InputGroup>
               </Col>
             </>
           ) : (
