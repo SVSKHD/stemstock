@@ -113,6 +113,7 @@ const StemStrategyComponent = () => {
           .then((res) => {
             console.log(res.data);
             StemToast("Succesfully Submitted");
+            router.push("/dashboard")
           })
           .catch(() => {
             StemToast("please try again", "error");

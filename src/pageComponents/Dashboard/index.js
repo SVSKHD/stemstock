@@ -26,7 +26,7 @@ import zerodhaOperations from "@/services/zerdoha";
 import StemToast from "@/components/reusables/js/toast";
 import axios from "axios";
 import StemReusableDialog from "@/components/reusables/dialog";
-import StartegyCard from "./strategyCard";
+import StrategyCard from "./strategyCard";
 
 const StemDashboardComponent = () => {
   const {
@@ -36,9 +36,10 @@ const StemDashboardComponent = () => {
   } = StrategyOperations();
   const { userData, zerodhaUser } = useSelector((state) => ({ ...state }));
   const [strategy, setStrategy] = useState([]); // Corrected the typo in variable name
-  const [strategySearch, setStrategySeacrh] = useState("");
+  const [strategySearch, setStrategySearch] = useState("");
   const [deleteId, setDeleteId] = useState({});
   const [deleteDialog, setDeleteDialog] = useState(false);
+  const [run, seTRun] = useState(false);
   const { zerodhaPlaceOrder } = zerodhaOperations();
   const router = useRouter();
   const { query } = router;
@@ -50,9 +51,6 @@ const StemDashboardComponent = () => {
       Router.push("/");
     }
   }, [userData, Router]);
-
-
-
 
   const LivePrice = () => {
     const exchange = "NSE";
@@ -145,7 +143,7 @@ const StemDashboardComponent = () => {
     }
   }, [userData, query.request_token, dispatch]);
 
-  // startegy fetch
+  // strategy fetch
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
@@ -179,7 +177,7 @@ const StemDashboardComponent = () => {
 
   //filtering strategies
   const handleSearchChange = (e) => {
-    setStrategySeacrh(e.target.value.toLowerCase());
+    setStrategySearch(e.target.value.toLowerCase());
   };
 
   // strategy active and non active count
@@ -205,13 +203,13 @@ const StemDashboardComponent = () => {
       });
   };
 
-  const handleStartegyRun = async (data) => {
+  const handleStrategyRun = async (data) => {
     console.log("r", data);
     const replaceData = data;
 
     await zerodhaPlaceOrder(replaceData)
       .then(() => {
-        StemToast("Succsfully sbmitted", "success");
+        StemToast("Successfully submitted", "success");
       })
       .catch((err) => {
         StemToast(`sorry please try again ${err}`, "error");
@@ -264,9 +262,13 @@ const StemDashboardComponent = () => {
   };
 
   const handleDeleteDialog = (data) => {
-    setDeleteDialog(true);
+    if (data) {
+      setDeleteDialog(true);
+    }
+    console.log("r", data, deleteDialog);
     setDeleteId(data);
   };
+
   const handleDelete = () => {
     strategyDelete(deleteId._id)
       .then(() => {
@@ -291,6 +293,12 @@ const StemDashboardComponent = () => {
       });
   };
 
+  const handleZerodhaLogout = () => {
+    dispatch({
+      type: "LOGOUT",
+    });
+  };
+
   const handleStatusChange = (strategyId, newStatus) => {
     // Your existing logic to update the strategy
     const updatedStrategies = strategy.map((s) => {
@@ -307,7 +315,7 @@ const StemDashboardComponent = () => {
     strategyEnable(data)
       .then(() => {
         StemToast(
-          `succfully "${
+          `successfully "${
             updatedStrategies.find((item) => item._id === strategyId).name
           }" updated`
         );
@@ -315,13 +323,11 @@ const StemDashboardComponent = () => {
       .catch(() => {
         StemToast("sorry please try again", "error");
       });
-    // Additional actions (like API calls) if needed
   };
 
-  // const StrategyDetail = useAccordionButton(eventKey, () =>
-  //   console.log("totally custom!")
-  // );
-
+  const handleStrategyRunClose = (data) => {
+    console.log("delete", data);
+  };
   return (
     <>
       <StemLayout>
@@ -436,15 +442,18 @@ const StemDashboardComponent = () => {
                 .filter((r) => r.name.includes(strategySearch))
                 .map((r, i) => (
                   <>
-                    <StartegyCard
+                    <StrategyCard
                       key={i}
-                      handleDeleteDialog={handleDeleteDialog}
                       strategy={r}
                       zerodhaUser={zerodhaUser}
                       zerodhaLogin={zerodhaLogin}
-                      handleEdit={(r)=>handleEdit(r)}
-                      handleStrategyRun={handleStartegyRun}
-                      handleStatusChange={handleStatusChange}
+                      handleEdit={(r) => handleEdit(r)}
+                      handleDeleteDialog={(r) => handleDeleteDialog(r)}
+                      handleStrategyRunClose={(r) => handleStrategyRunClose(r)}
+                      handleStrategyRun={handleStrategyRun}
+                      handleStatusChange={() => handleStatusChange}
+                      handleZerodhaLogout={() => handleZerodhaLogout}
+                      run={run}
                     />
                   </>
                 ))
@@ -454,12 +463,12 @@ const StemDashboardComponent = () => {
         <StemReusableDialog
           onShow={deleteDialog}
           onHide={() => setDeleteDialog(false)}
-          title={`Confrim Consent "${deleteId.name}" Strategy`}
+          title={`Confirm Consent "${deleteId.name}" Strategy`}
         >
           <div className="text-center">
             <ButtonGroup size="lg" className="mb-2">
               <Button variant="danger" onClick={handleDelete}>
-                Confrim
+                Confirm
               </Button>
               <Button
                 variant="secondary"

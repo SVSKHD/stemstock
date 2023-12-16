@@ -19,142 +19,94 @@ router.post(async (req, res) => {
     });
     kite.setAccessToken(keys.accessToken);
 
-    // const getInstrumentPrice = async (instrumentSymbol) => {
+    // const getNiftyLTP = async () => {
     //   try {
-    //     const instruments = await kite.getInstruments();
-    //     const instrument = instruments.find(
-    //       (inst) => inst.tradingsymbol === instrumentSymbol
-    //     );
+    //     const instruments = await kite.getInstruments("NSE"); // Fetch instruments from the NSE segment
+    //     const niftyInstrument = instruments.find(
+    //       (inst) => inst.tradingsymbol === "NIFTY 50"
+    //     ); // Replace with the correct symbol for NIFTY 50 Index
 
-    //     if (!instrument) {
-    //       throw new Error(`Instrument ${instrumentSymbol} not found`);
+    //     if (!niftyInstrument) {
+    //       throw new Error("Nifty instrument not found");
     //     }
 
-    //     const quote = await kite.quote([instrument.instrument_token]);
-    //     return quote[instrument.instrument_token].last_price;
+    //     const quote = await kite.getQuote([niftyInstrument.instrument_token]);
+    //     console.log("quote", quote);
+    //     return quote[niftyInstrument.instrument_token].last_price;
     //   } catch (err) {
-    //     console.error(err);
+    //     console.error("Error fetching Nifty LTP:", err);
     //     throw err;
     //   }
     // };
 
-    // const calculateStrikePrice = (currentPrice, offset) => {
-    //   return currentPrice + offset;
-    // };
-
-    // const createOptionSymbol = (
-    //   instrument,
-    //   strikePrice,
-    //   optionType,
-    //   expiryDate
-    // ) => {
-    //   const year = expiryDate.getFullYear().toString().slice(-2);
-    //   const monthNames = [
-    //     "January",
-    //     "February",
-    //     "March",
-    //     "April",
-    //     "May",
-    //     "June",
-    //     "July",
-    //     "August",
-    //     "September",
-    //     "October",
-    //     "November",
-    //     "December",
-    //   ];
-    //   const currentDate = new Date();
-    //   const day = ("0" + expiryDate.getDate()).slice(-2);
-
-    //   return `${instrument.toUpperCase()}${year}${monthNames[
-    //     currentDate.getMonth()
-    //   ]
-    //     .toUpperCase()
-    //     .substring(0, 3)}${day}${strikePrice}${optionType}`;
-    // };
-
-    // const generateOptionSymbol = async (
-    //   instrument,
-    //   optionType,
-    //   offset,
-    //   isMonthlyExpiry
-    // ) => {
-    //   try {
-    //     const currentPrice = await getInstrumentPrice(instrument);
-    //     const adjustedStrikePrice = calculateStrikePrice(currentPrice, offset);
-
-    //     const today = new Date();
-    //     const expiryDate = isMonthlyExpiry
-    //       ? getLastThursdayOfMonth(today)
-    //       : getNextThursday(today);
-
-    //     console.log(
-    //       "symbol",
-    //       createOptionSymbol(
-    //         instrument,
-    //         adjustedStrikePrice,
-    //         optionType,
-    //         expiryDate
-    //       )
-    //     );
-    //   } catch (err) {
-    //     console.error(err);
-    //     return null;
-    //   }
-    // };
-
-    // console.log("log", generateOptionSymbol("NIFTY 50", "CE", 50, false));
-    // Function to place an order for a single leg
-
-    const getNiftyLTP = async () => {
+    const getIndicesLTP = async (symbols) => {
       try {
         const instruments = await kite.getInstruments("NSE"); // Fetch instruments from the NSE segment
-        const niftyInstrument = instruments.find(
-          (inst) => inst.tradingsymbol === "NIFTY 50"
-        ); // Replace with the correct symbol for NIFTY 50 Index
+        let quotes = {};
 
-        if (!niftyInstrument) {
-          throw new Error("Nifty instrument not found");
+        for (let symbol of symbols) {
+          const instrument = instruments.find(
+            (inst) => inst.tradingsymbol === symbol
+          );
+
+          if (!instrument) {
+            console.error(`Instrument not found for ${symbol}`);
+            continue;
+          }
+
+          const quote = await kite.getQuote([instrument.instrument_token]);
+          quotes[symbol] = quote[instrument.instrument_token].last_price;
         }
 
-        const quote = await kite.getQuote([niftyInstrument.instrument_token]);
-        console.log("quote", quote);
-        return quote[niftyInstrument.instrument_token].last_price;
+        console.log("Quotes:", quotes);
+        return quotes;
       } catch (err) {
-        console.error("Error fetching Nifty LTP:", err);
+        console.error("Error fetching indices LTP:", err);
         throw err;
       }
     };
 
     // Function to get the ATM strike price
-    const getATMStrikePrice = async () => {
+    const getATMStrikePrice = async (indexSymbol) => {
       try {
-        const niftyLTP = await getNiftyLTP();
+        // Fetch LTP for the specified index
+        const ltpData = await getIndicesLTP([indexSymbol]);
+        const indexLTP = ltpData[indexSymbol];
+
+        // Validate if LTP is available
+        if (!indexLTP) {
+          throw new Error(`LTP not found for ${indexSymbol}`);
+        }
+
         const optionsInstruments = await kite.getInstruments("NFO"); // Fetch instruments from the NFO segment
 
-        const niftyOptions = optionsInstruments.filter(
-          (inst) => inst.name === "NIFTY" && inst.segment === "NFO-OPT"
+        // Filter options for the specified index
+        const indexOptions = optionsInstruments.filter(
+          (inst) =>
+            inst.name === indexSymbol.split(" ")[0] &&
+            inst.segment === "NFO-OPT"
         );
 
-        const atmStrike = niftyOptions.reduce(
+        // Find the ATM strike
+        const atmStrike = indexOptions.reduce(
           (prev, curr) =>
-            Math.abs(curr.strike - niftyLTP) < Math.abs(prev.strike - niftyLTP)
+            Math.abs(curr.strike - indexLTP) < Math.abs(prev.strike - indexLTP)
               ? curr
               : prev,
-          niftyOptions[0]
+          indexOptions[0]
         ).strike;
 
         return atmStrike;
       } catch (error) {
-        console.error("Error fetching ATM strike price:", error);
+        console.error(
+          `Error fetching ATM strike price for ${indexSymbol}:`,
+          error
+        );
         throw error;
       }
     };
 
-    // function for dates in month
-
-
-     // Outputs an array of numbers representing the dates of Thursdays
+    // Outputs an array of numbers representing the dates of Thursdays
 
     const getNearestThursday = () => {
       const today = new Date();
@@ -191,6 +143,7 @@ router.post(async (req, res) => {
     const nearestThursdayDate = getNearestThursday();
     console.log(nearestThursdayDate); // Outputs the date of the nearest Thursday
 
+    //create option symbol
     const createOptionSymbol = (
       instrument,
       optionType,
@@ -215,9 +168,19 @@ router.post(async (req, res) => {
       ];
       const day = ("0" + new Date().getDate()).slice(-2);
 
-      console.log(`${instrument.toUpperCase()}${year}${
-        months[month - 1]
-      }${expiryDate}${strikePrice}${optionType.toUpperCase()}`);
+      console.log(
+        `${instrument.toUpperCase()}${year}${
+          months[month - 1]
+        }${expiryDate}${strikePrice}${optionType.toUpperCase()}`
+      );
+    };
+
+    const BooleanReturns = (data, value) => {
+      if (data === true) {
+        return value;
+      } else {
+        return null;
+      }
     };
 
     const AtmLegType = async (leg) => {
@@ -243,6 +206,8 @@ router.post(async (req, res) => {
         quantity: leg.quantity * 50, // The number of contracts you wish to buy/sell
         order_type: "MARKET", // or "LIMIT" if you want to specify a price
         product: "MIS", // or "MIS" for intraday trades, "CNC" for equities
+        stoploss:BooleanReturns(leg.stopLoss, leg.stopLossValue),
+        
       };
 
       return await kite.placeOrder("regular", orderDetails);

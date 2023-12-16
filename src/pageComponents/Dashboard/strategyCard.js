@@ -1,13 +1,18 @@
+import { useEffect } from "react";
 import { Card, Row, Col, Form, Badge, Button } from "react-bootstrap";
 import { FaPencil, FaTrash } from "react-icons/fa6";
-const StartegyCard = ({
+const StrategyCard = ({
   strategy,
   zerodhaUser,
   zerodhaLogin,
   handleStrategyRun,
   handleEdit,
   handleDeleteDialog,
-  handleStatusChange
+  handleStatusChange,
+  handleStrategyRunClose,
+  handleZerodhaLogout,
+  run,
+  handleRun,
 }) => {
   return (
     <>
@@ -35,7 +40,9 @@ const StartegyCard = ({
                       id="custom-switch"
                       label=""
                       checked={strategy.status}
-                      onChange={(e) => handleStatusChange(strategy._id, e.target.checked)}
+                      onChange={(e) =>
+                        handleStatusChange(strategy._id, e.target.checked)
+                      }
                     />
                   </span>
                 </span>
@@ -54,7 +61,9 @@ const StartegyCard = ({
               <div className="d-flex align-items-center justify-content-center">
                 <span className="pe-3">
                   {zerodhaUser.requestToken && zerodhaUser.accessToken ? (
-                    <Button variant="danger">Logout</Button>
+                    <Button variant="danger" onClick={handleZerodhaLogout}>
+                      Logout
+                    </Button>
                   ) : (
                     <Button
                       variant="primary"
@@ -77,26 +86,43 @@ const StartegyCard = ({
             </Col>
             <Col md={4}>
               <div className="d-flex align-items-center justify-content-end">
-                <span className="pe-3">
-                  <Button
-                    variant="outline-success"
-                    className="btn-sm"
-                    onClick={() => handleStrategyRun(strategy)}
-                    disabled={!strategy.status}
-                  >
-                    Run
-                  </Button>
-                </span>
+                {run ? (
+                  <span className="pe-3">
+                    <Button
+                      variant="outline-danger"
+                      className="btn-sm"
+                      onClick={() => handleStrategyRunClose(strategy)}
+                    >
+                      Close
+                    </Button>
+                  </span>
+                ) : (
+                  <span className="pe-3">
+                    <Button
+                      variant="outline-success"
+                      className="btn-sm"
+                      onClick={() => handleStrategyRun(strategy)}
+                      disabled={!strategy.status}
+                    >
+                      Run
+                    </Button>
+                  </span>
+                )}
+
                 {/* <span className="pe-3">
                             <FaExpand className="text-theme" />
                           </span> */}
+                {run ? (
+                  <div />
+                ) : (
+                  <span
+                    className="ps-3 cursor-pointer"
+                    onClick={() => handleEdit(strategy)}
+                  >
+                    <FaPencil className="text-secondary" />
+                  </span>
+                )}
 
-                <span
-                  className="ps-3 cursor-pointer"
-                  onClick={() => handleEdit(strategy)}
-                >
-                  <FaPencil className="text-secondary" />
-                </span>
                 <span
                   className="ps-3 cursor-pointer"
                   onClick={() => handleDeleteDialog(strategy)}
@@ -111,4 +137,4 @@ const StartegyCard = ({
     </>
   );
 };
-export default StartegyCard;
+export default StrategyCard;
