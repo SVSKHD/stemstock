@@ -81,13 +81,13 @@ const StemSettingsPage = () => {
                     <h5>User Details</h5>
                     <hr />
                     <div className="mb-1">
-                      <h4>Email : {userData?.user?.email}</h4>
+                      <p>Email : {userData?.user?.email}</p>
                     </div>
                     <div className="mb-1">
-                      <h4>Name : {userData?.user?.firstname}</h4>
+                      <p>Name : {userData?.user?.firstname}</p>
                     </div>
                     <div className="mb-1">
-                      <h4>phone : {userData?.user?.phone}</h4>
+                      <p>phone : {userData?.user?.phone}</p>
                     </div>
                   </>
                 )}
