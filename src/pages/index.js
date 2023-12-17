@@ -5,18 +5,54 @@ import Landingimg from "../assets/images/stem-landing.svg";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import StemAuthDialog from "@/components/Auth/AuthDialog";
+import { useEffect } from "react";
+import moment from "moment";
 
 const StemHome = () => {
   const { userData } = useSelector((state) => ({ ...state }));
   const dispatch = useDispatch();
+
+  function getTimeDifferenceInHours(startDate, endDate) {
+    // Check if both dates are valid
+    if (isNaN(Date.parse(startDate)) || isNaN(Date.parse(endDate))) {
+      console.error("Invalid date(s)");
+      return NaN; // One or both dates are invalid
+    }
+
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+    const msPerHour = 1000 * 60 * 60;
+    return Math.abs(end - start) / msPerHour;
+  }
+
+  useEffect(() => {
+    console.log("time", moment(new Date()).format("YYYY-MM-DD HH:mm"));
+    const loggedInTime = JSON.parse(sessionStorage.getItem("user"))?.time;
+    const presentTime = JSON.parse(sessionStorage.getItem("user"))?.time;
+    const hours = getTimeDifferenceInHours(loggedInTime, presentTime);
+    if (hours === 6) {
+      dispatch({
+        type: "LOGOUT",
+        payload: null,
+      });
+      sessionStorage.removeItem("user")
+    }
+
+    console.log(
+      "time",
+      moment(new Date()).format("YYYY-MM-DD HH:mm"),
+      loggedInTime,
+      hours
+    );
+  });
   const handleTrading = () => {
     if (!userData?.user) {
       dispatch({
         type: "SET_AUTH_DIALOG_VISIBLE",
         payload: true,
       });
-    }else{
-      console.log("err")
+    } else {
+      console.log("err");
     }
   };
   return (

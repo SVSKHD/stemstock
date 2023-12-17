@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import Signinimg from "../../assets/images/signin.png";
 import { FaUserShield } from "react-icons/fa6";
+import moment from "moment";
 
 const StemSignin = () => {
   const dispatch = useDispatch();
@@ -20,6 +21,14 @@ const StemSignin = () => {
 
   const { userData } = useSelector((state) => ({ ...state }));
 
+  const setSessionUser = (key, data) => {
+    const flattenData = {
+      data: data,
+      time: moment(new Date()).format("YYYY-MM-DD HH:mm"),
+    };
+    sessionStorage.setItem(key, JSON.stringify(flattenData));
+  };
+
   const handleSubmit = () => {
     setLoading(true);
     StemUserSignin(data)
@@ -27,6 +36,7 @@ const StemSignin = () => {
         StemToast("Successfully Logged in", "success");
         setTimeout(() => setLoading(false), 3000);
         setTimeout(() => setSuccess(true), 3000);
+        setSessionUser("user", res.data);
         dispatch({
           type: "LOGGED_IN_USER",
           payload: res.data,

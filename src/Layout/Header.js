@@ -16,6 +16,7 @@ const StemNavBar = () => {
       type: "LOGOUT",
       payload: null,
     });
+    sessionStorage.removeItem("user")
     router.push("/");
   };
 
