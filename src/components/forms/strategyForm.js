@@ -361,7 +361,7 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
                       <StemSelect
                         label={"Strike Type:"}
                         value={Newleg.strike_value}
-                        handleChange={(e) => legStateManage("strike_value", e)}
+                        handleChange={(e) => legStateManage("strikeValue", e)}
                         options={strikeTypeOptions}
                       />
                     </div>
@@ -733,7 +733,7 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
                             variant="primary"
                             onClick={() => removeLeg(i)}
                           >
-                            <FaTrash size={25} />
+                            <FaTrash size={20} />
                           </Button>
                         </div>
                       </div>
