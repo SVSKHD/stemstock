@@ -41,10 +41,15 @@ router.post(async (req, res) => {
 
     const getIndicesLTP = async (symbols) => {
       try {
-        const instruments = await kite.getInstruments("NSE"); // Fetch instruments from the NSE segment
+        const instruments = await kite.getInstruments("NSE");
         let quotes = {};
 
         for (let symbol of symbols) {
+          // If the symbol is 'NIFTY', replace it with 'NIFTY 50'
+          if (symbol === "NIFTY") {
+            symbol = "NIFTY 50";
+          }
+
           const instrument = instruments.find(
             (inst) => inst.tradingsymbol === symbol
           );
@@ -54,8 +59,8 @@ router.post(async (req, res) => {
             continue;
           }
 
-          const quote = await kite.getQuote([instrument.instrument_token]);
-          quotes[symbol] = quote[instrument.instrument_token].last_price;
+          const quote = await kite.getQuote(`NSE:${instrument.tradingsymbol}`);
+          quotes[symbol] = quote[`NSE:${instrument.tradingsymbol}`].last_price;
         }
 
         console.log("Quotes:", quotes);
@@ -66,82 +71,122 @@ router.post(async (req, res) => {
       }
     };
 
-    // Function to get the ATM strike price
     const getATMStrikePrice = async (indexSymbol) => {
       try {
-        // Fetch LTP for the specified index
+        // If the symbol is 'NIFTY', replace it with 'NIFTY 50'
+        if (indexSymbol === "NIFTY") {
+          indexSymbol = "NIFTY 50";
+        }
+
+        // Fetch LTP for the index
         const ltpData = await getIndicesLTP([indexSymbol]);
         const indexLTP = ltpData[indexSymbol];
 
-        // Validate if LTP is available
         if (!indexLTP) {
           throw new Error(`LTP not found for ${indexSymbol}`);
         }
 
-        const optionsInstruments = await kite.getInstruments("NFO"); // Fetch instruments from the NFO segment
-
-        // Filter options for the specified index
-        const indexOptions = optionsInstruments.filter(
-          (inst) =>
-            inst.name === indexSymbol.split(" ")[0] &&
-            inst.segment === "NFO-OPT"
-        );
-
-        // Find the ATM strike
-        const atmStrike = indexOptions.reduce(
-          (prev, curr) =>
-            Math.abs(curr.strike - indexLTP) < Math.abs(prev.strike - indexLTP)
-              ? curr
-              : prev,
-          indexOptions[0]
-        ).strike;
+        // Assuming strike prices are in increments of 100 (adjust as needed)
+        const strikeIncrement = 100;
+        const atmStrike =
+          Math.round(indexLTP / strikeIncrement) * strikeIncrement;
 
         return atmStrike;
       } catch (error) {
         console.error(
-          `Error fetching ATM strike price for ${indexSymbol}:`,
+          `Error calculating ATM strike for ${indexSymbol}:`,
           error
         );
         throw error;
       }
     };
 
+    // Function to get the ATM strike price
+    // const getATMStrikePrice = async (indexSymbol) => {
+    //   try {
+    //     // Fetch LTP for the specified index
+    //     const ltpData = await getIndicesLTP([indexSymbol]);
+    //     const indexLTP = ltpData[indexSymbol];
+
+    //     // Validate if LTP is available
+    //     if (!indexLTP) {
+    //       throw new Error(`LTP not found for ${indexSymbol}`);
+    //     }
+
+    //     const optionsInstruments = await kite.getInstruments("NFO"); // Fetch instruments from the NFO segment
+
+    //     // Filter options for the specified index
+    //     const indexOptions = optionsInstruments.filter(
+    //       (inst) =>
+    //         inst.name === indexSymbol.split(" ")[0] &&
+    //         inst.segment === "NFO-OPT"
+    //     );
+
+    //     // Find the ATM strike
+    //     const atmStrike = indexOptions.reduce(
+    //       (prev, curr) =>
+    //         Math.abs(curr.strike - indexLTP) < Math.abs(prev.strike - indexLTP)
+    //           ? curr
+    //           : prev,
+    //       indexOptions[0]
+    //     ).strike;
+
+    //     return atmStrike;
+    //   } catch (error) {
+    //     console.error(
+    //       `Error fetching ATM strike price for ${indexSymbol}:`,
+    //       error
+    //     );
+    //     throw error;
+    //   }
+    // };
+
     // Outputs an array of numbers representing the dates of Thursdays
-
-    const getNearestThursday = () => {
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = today.getMonth();
-      const currentDay = today.getDate();
-      let nearestThursday = null;
-      let smallestDiff = Infinity;
-
-      // Find the first day of the month
+    function getThursdaysOfMonth(year, month) {
       let date = new Date(year, month, 1);
-
-      // Find the first Thursday in the month
-      while (date.getDay() !== 4) {
+      let thursdays = [];
+    
+      // Adjust the date to the first Thursday
+      while (date.getDay() !== 4) { // 4 is Thursday
         date.setDate(date.getDate() + 1);
       }
-
+    
       // Iterate over all Thursdays in the month
       while (date.getMonth() === month) {
-        const thursdayDate = date.getDate();
-        const diff = Math.abs(thursdayDate - currentDay);
-
-        if (diff < smallestDiff) {
-          smallestDiff = diff;
-          nearestThursday = thursdayDate;
-        }
-
+        thursdays.push(new Date(date)); // Add the date to the array
         date.setDate(date.getDate() + 7);
       }
+    
+      return thursdays;
+    }
+    
+    const currentYear = new Date().getFullYear();
+    const currentMonth = new Date().getMonth(); // Note: January is 0, December is 11
+    
+    const thursdaysInMonth = getThursdaysOfMonth(currentYear, currentMonth);
+    
+    function getNearestUpcomingThursday() {
+      let today = new Date();
+      today.setHours(0, 0, 0, 0); // Set time to start of the day
+    
+      // Find the next Thursday from today
+      let nextThursday = new Date(today);
+      nextThursday.setDate(today.getDate() + (4 - today.getDay() + 7) % 7);
+    
+      // If today is Thursday, add 7 days to get the next Thursday
+      if (today.getDay() === 4) {
+        nextThursday.setDate(nextThursday.getDate() + 7);
+      }
+    
+      return nextThursday;
+    }
+    
+    const nearestUpcomingThursday = getNearestUpcomingThursday();
+    
+    console.log("day", nearestUpcomingThursday); // Outputs the date of the nearest next Thursday
+    
 
-      return nearestThursday;
-    };
-
-    const nearestThursdayDate = getNearestThursday();
-    console.log(nearestThursdayDate); // Outputs the date of the nearest Thursday
+    // Outputs the date of the nearest Thursday
 
     //create option symbol
     const createOptionSymbol = (
@@ -169,15 +214,19 @@ router.post(async (req, res) => {
       const day = ("0" + new Date().getDate()).slice(-2);
 
       console.log(
+        "instrument",
         `${instrument.toUpperCase()}${year}${
           months[month - 1]
         }${expiryDate}${strikePrice}${optionType.toUpperCase()}`
       );
+      return `${instrument.toUpperCase()}${year}${
+        months[month - 1]
+      }${expiryDate}${strikePrice}${optionType.toUpperCase()}`;
     };
 
     const BooleanReturns = (data, value) => {
       if (data === true) {
-        return value;
+        console.log("stop",value)
       } else {
         return null;
       }
@@ -206,8 +255,7 @@ router.post(async (req, res) => {
         quantity: leg.quantity * 50, // The number of contracts you wish to buy/sell
         order_type: "MARKET", // or "LIMIT" if you want to specify a price
         product: "MIS", // or "MIS" for intraday trades, "CNC" for equities
-        stoploss:BooleanReturns(leg.stopLoss, leg.stopLossValue),
-        
+        // stoploss: BooleanReturns(leg.stopLoss, parseFloat(leg.stopLossValue)),
       };
 
       return await kite.placeOrder("regular", orderDetails);

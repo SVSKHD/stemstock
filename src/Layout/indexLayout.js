@@ -47,116 +47,58 @@ const StemIndexLayout = (props) => {
   };
   return (
     <>
-      <StemAuthDialog />
-      {/* <Navbar bg="dark" data-bs-theme="dark">
+      <div>
         <StemAuthDialog />
         <Navbar bg="white" data-bs-theme="light" className="shadow-sm py-0">
           <Container>
-            <Navbar.Brand href="#home">
+            <Navbar.Brand href="/">
               <Image src={logo} className="w-100" alt="logo" />
             </Navbar.Brand>
             <Nav className="ms-auto">
-              <Button
-                variant="outline-info"
-                className="px-4 rounded-pill shoadow-sm"
-                onClick={() =>
-                  dispatch({
-                    type: "SET_AUTH_DIALOG_VISIBLE",
-                    payload: false,
-                  })
-                }
-              >
-                <FaArrowRightToBracket /> Login
-              </Button>
-              <Button
-                variant="info"
-                className="px-4 rounded-pill shoadow-sm ms-3"
-                onClick={() => handleSignupDialog()}
-              >
-                <FaWpforms /> Signup
-              </Button>
+              {userData ? (
+                <Dropdown>
+                  <Dropdown.Toggle variant="transparent" id="dropdown-basic">
+                    <span className="user-image me-3">
+                      <Image src={user} width="50px" alt="Stem Fin" />
+                      <span className="username fw-semibolds ms-3 text-start">
+                        <span class="text-secondary small d-block">
+                          Welcome
+                        </span>
+                        {userData.user.firstname}
+                      </span>
+                    </span>
+                  </Dropdown.Toggle>
 
-              <Nav.Link href="#features"></Nav.Link>
+                  <Dropdown.Menu>
+                    <Dropdown.Item href="/dashboard">Dashboard</Dropdown.Item>
+                    <Dropdown.Item href="/settings">Settings</Dropdown.Item>
+                    <Dropdown.Item href="/help">Help</Dropdown.Item>
+                    <Dropdown.Item onClick={StemLogout}>Logout</Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              ) : (
+                <>
+                  <Button
+                    variant="outline-info"
+                    className="px-4 rounded-pill shoadow-sm"
+                    onClick={() => handleSigninDialog()}
+                  >
+                    <FaArrowRightToBracket /> Login
+                  </Button>
+                  <Button
+                    variant="info"
+                    className="px-4 rounded-pill shoadow-sm ms-3"
+                    onClick={() => handleSignupDialog()}
+                  >
+                    <FaWpforms /> Signup
+                  </Button>
+                </>
+              )}
             </Nav>
           </Container>
         </Navbar>
-        <Container>
-          <Navbar.Brand href="/">StemNav</Navbar.Brand>
-          {userData ? (
-            <>
-              <Navbar.Text>
-                welcome back-
-                <span className="text-bold">{userData.user.firstname}</span>
-              </Navbar.Text>
-              <Button onClick={StemLogout}>
-                <FaArrowRightFromBracket size={25} />
-              </Button>
-            </>
-          ) : (
-            <>
-              <Button
-                variant="outline-light"
-                onClick={() =>
-                  dispatch({
-                    type: "SET_AUTH_DIALOG_VISIBLE",
-                    payload: true,
-                  })
-                }
-              >
-                <FaUserAlt size={25} />
-              </Button>
-            </>
-          )}
-        </Container>
-      </Navbar> */}
-      <Navbar bg="white" data-bs-theme="light" className="shadow-sm py-0">
-        <Container>
-          <Navbar.Brand href="/">
-            <Image src={logo} className="w-100" alt="logo" />
-          </Navbar.Brand>
-          <Nav className="ms-auto">
-            {userData ? (
-              <Dropdown>
-                <Dropdown.Toggle variant="transparent" id="dropdown-basic">
-                  <span className="user-image me-3">
-                    <Image src={user} width="50px" alt="Stem Fin" />
-                    <span className="username fw-semibolds ms-3 text-start">
-                      <span class="text-secondary small d-block">Welcome</span>
-                      {userData.user.firstname}
-                    </span>
-                  </span>
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu>
-                  <Dropdown.Item href="/dashboard">Dashboard</Dropdown.Item>
-                  <Dropdown.Item href="/settings">Settings</Dropdown.Item>
-                  <Dropdown.Item href="/help">Help</Dropdown.Item>
-                  <Dropdown.Item onClick={StemLogout}>Logout</Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            ) : (
-              <>
-                <Button
-                  variant="outline-info"
-                  className="px-4 rounded-pill shoadow-sm"
-                  onClick={() => handleSigninDialog()}
-                >
-                  <FaArrowRightToBracket /> Login
-                </Button>
-                <Button
-                  variant="info"
-                  className="px-4 rounded-pill shoadow-sm ms-3"
-                  onClick={() => handleSignupDialog()}
-                >
-                  <FaWpforms /> Signup
-                </Button>
-              </>
-            )}
-          </Nav>
-        </Container>
-      </Navbar>
-
-      {props.children}
+        {props.children}
+      </div>
     </>
   );
 };
