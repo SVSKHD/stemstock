@@ -15,6 +15,8 @@ const StemHome = () => {
         type: "SET_AUTH_DIALOG_VISIBLE",
         payload: true,
       });
+    }else{
+      console.log("err")
     }
   };
   return (
