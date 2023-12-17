@@ -733,7 +733,7 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
                             variant="primary"
                             onClick={() => removeLeg(i)}
                           >
-                            <FaTrash size={20} />
+                            <FaTrash size={15} />
                           </Button>
                         </div>
                       </div>
