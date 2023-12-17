@@ -15,7 +15,6 @@ const StemLayout = (props) => {
       <title>Stem fin</title>
     </Head>
       <StemNavBar />
-      <StemAuthDialog/>
       <div className="row" style={{ minHeight: "100vh" }}>
         <div className="col-md-2 col-lg-2 col-xs-12 col-sm-12" id="leftbar">
           <div className="bg-light h-100 text-center">

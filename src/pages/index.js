@@ -10,12 +10,10 @@ const StemHome = () => {
   const { userData } = useSelector((state) => ({ ...state }));
   const dispatch = useDispatch();
   const handleTrading = () => {
-    if (!userData) {
       dispatch({
-        type: "SET_AUTH_STATUS_VISIBLE",
+        type: "SET_AUTH_DIALOG_VISIBLE",
         payload: true,
       });
-    }
   };
   return (
     <>

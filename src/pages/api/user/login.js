@@ -38,7 +38,7 @@ App.post(async (req, res) => {
 
     // Sign the token
     const token = jwt.sign(payload, process.env.NEXT_PUBLIC_JWT_SECRET, {
-      expiresIn: "1d",
+      expiresIn: "3h",
     });
     res.status(200).json({ success: true, user: payload.user, token: token });
     db.disconnectDb();
