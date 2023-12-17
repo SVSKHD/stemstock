@@ -37,12 +37,7 @@ const StemHome = () => {
                   <Button
                     variant="dark"
                     className="px-4 rounded-pill shoadow-sm"
-                    onClick={() =>
-                      dispatch({
-                        type: "SET_AUTH_STATUS_VISIBLE",
-                        payload: true,
-                      })
-                    }
+                    onClick={() => handleTrading()}
                   >
                     Start Trading <FaArrowRightLong />
                   </Button>

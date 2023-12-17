@@ -31,7 +31,7 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
     { value: "2", displayText: "ATM-50" },
     { value: "3", displayText: "ATM" },
     { value: "4", displayText: "ATM+50" },
-    { value: "5", displayText: "ATM+50" },
+    { value: "5", displayText: "ATM+100" },
   ];
   const strikeCriteriaOptions = [
     { value: "1", displayText: "ATM Type" },

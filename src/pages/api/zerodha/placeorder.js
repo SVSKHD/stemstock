@@ -165,9 +165,9 @@ router.post(async (req, res) => {
     
     const thursdaysInMonth = getThursdaysOfMonth(currentYear, currentMonth);
     
-    function getNearestUpcomingThursday() {
+    function getNextUpcomingThursday() {
       let today = new Date();
-      today.setHours(0, 0, 0, 0); // Set time to start of the day
+      today.setHours(0, 0, 0, 0); // Reset the time part to avoid any time-related issues
     
       // Find the next Thursday from today
       let nextThursday = new Date(today);
@@ -178,12 +178,12 @@ router.post(async (req, res) => {
         nextThursday.setDate(nextThursday.getDate() + 7);
       }
     
-      return nextThursday;
+      return nextThursday.getDate(); // Return only the date part
     }
     
-    const nearestUpcomingThursday = getNearestUpcomingThursday();
-    
-    console.log("day", nearestUpcomingThursday); // Outputs the date of the nearest next Thursday
+    const upcomingThursdayDate = getNextUpcomingThursday();
+    console.log(upcomingThursdayDate);
+    // Outputs the date of the nearest next Thursday
     
 
     // Outputs the date of the nearest Thursday
@@ -249,7 +249,7 @@ router.post(async (req, res) => {
           leg.instrument,
           leg.instrumentType,
           atmStrikePrice,
-          nearestThursdayDate
+          upcomingThursdayDate
         ),
         transaction_type: leg.position === "BUY" ? "BUY" : "SELL", // or "SELL" depending on your strategy
         quantity: leg.quantity * 50, // The number of contracts you wish to buy/sell
