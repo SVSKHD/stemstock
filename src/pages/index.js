@@ -10,15 +10,17 @@ const StemHome = () => {
   const { userData } = useSelector((state) => ({ ...state }));
   const dispatch = useDispatch();
   const handleTrading = () => {
+    if (!userData?.user) {
       dispatch({
         type: "SET_AUTH_DIALOG_VISIBLE",
         payload: true,
       });
+    }
   };
   return (
     <>
       <StemIndexLayout>
-        <StemAuthDialog/>
+        <StemAuthDialog />
         <section className="landing-sec py-5">
           <Container>
             <Row className="align-items-center">

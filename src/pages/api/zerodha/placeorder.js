@@ -53,6 +53,7 @@ router.post(async (req, res) => {
           const instrument = instruments.find(
             (inst) => inst.tradingsymbol === symbol
           );
+          console.log("instrument", instrument)
 
           if (!instrument) {
             console.error(`Instrument not found for ${symbol}`);
