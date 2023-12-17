@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import StemAuthDialog from "@/components/Auth/AuthDialog";
 import { useEffect } from "react";
 import moment from "moment";
+import StemToast from "@/components/reusables/js/toast";
 
 const StemHome = () => {
   const { userData } = useSelector((state) => ({ ...state }));
@@ -28,22 +29,22 @@ const StemHome = () => {
   useEffect(() => {
     console.log("time", moment(new Date()).format("YYYY-MM-DD HH:mm"));
     const loggedInTime = JSON.parse(sessionStorage.getItem("user"))?.time;
-    const presentTime = JSON.parse(sessionStorage.getItem("user"))?.time;
+    const presentTime = moment(new Date()).format("YYYY-MM-DD HH:mm");
     const hours = getTimeDifferenceInHours(loggedInTime, presentTime);
-    if (hours === 6) {
+    if (!loggedInTime) {
       dispatch({
         type: "LOGOUT",
         payload: null,
       });
-      sessionStorage.removeItem("user")
+      sessionStorage.removeItem("user");
+      StemToast("Logged Out", "error");
+    } else if (hours === 6) {
+      dispatch({
+        type: "LOGOUT",
+        payload: null,
+      });
+      sessionStorage.removeItem("user");
     }
-
-    console.log(
-      "time",
-      moment(new Date()).format("YYYY-MM-DD HH:mm"),
-      loggedInTime,
-      hours
-    );
   });
   const handleTrading = () => {
     if (!userData?.user) {
