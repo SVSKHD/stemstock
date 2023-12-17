@@ -4,7 +4,7 @@ const HelpPageComponent = () =>{
 return(
 <>
 <StemLayout>
-    <h1>help in progress</h1>
+    <h1>help text</h1>
 </StemLayout>
 </>
 )

@@ -4,6 +4,7 @@ import Image from "next/image";
 import Landingimg from "../assets/images/stem-landing.svg";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
+import StemAuthDialog from "@/components/Auth/AuthDialog";
 
 const StemHome = () => {
   const { userData } = useSelector((state) => ({ ...state }));
@@ -19,6 +20,7 @@ const StemHome = () => {
   return (
     <>
       <StemIndexLayout>
+        <StemAuthDialog/>
         <section className="landing-sec py-5">
           <Container>
             <Row className="align-items-center">
@@ -37,7 +39,7 @@ const StemHome = () => {
                   <Button
                     variant="dark"
                     className="px-4 rounded-pill shoadow-sm"
-                    onClick={() => handleTrading()}
+                    onClick={handleTrading}
                   >
                     Start Trading <FaArrowRightLong />
                   </Button>
