@@ -38,14 +38,17 @@ const StemHome = () => {
       });
       sessionStorage.removeItem("user");
       StemToast("Logged Out", "error");
-    } else if (hours === 6) {
+    } else if (hours >=6) {
+      console.log("logout")
       dispatch({
         type: "LOGOUT",
         payload: null,
       });
       sessionStorage.removeItem("user");
+    }else if(!userData){
+      console.log("not logged in")
     }
-  });
+  },[])
   const handleTrading = () => {
     if (!userData?.user) {
       dispatch({
