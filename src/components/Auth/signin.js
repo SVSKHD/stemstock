@@ -8,6 +8,7 @@ import Image from "next/image";
 import Signinimg from "../../assets/images/signin.png";
 import { FaUserShield } from "react-icons/fa6";
 import moment from "moment";
+import StemInput from "../reusables/input";
 
 const StemSignin = () => {
   const dispatch = useDispatch();
@@ -101,47 +102,36 @@ const StemSignin = () => {
           </Col>
           <Col md={6}>
             <Form>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <Form.Label className="mb-0">Email Address:</Form.Label>
-                <Form.Control
-                  type="email"
-                  value={data.email}
-                  onChange={(e) => setData({ ...data, email: e.target.value })}
-                  placeholder="Name@example.com"
-                />
-              </Form.Group>
-              <Form.Group
-                className="mb-3"
-                controlId="exampleForm.ControlInput1"
-              >
-                <Form.Label className="mb-0">Password:</Form.Label>
-                <Form.Control
-                  type="password"
-                  value={data.password}
-                  onChange={(e) =>
-                    setData({ ...data, password: e.target.value })
+              <StemInput
+                label="Email Address:"
+                type="email"
+                value={data.email}
+                handleChange={(e) =>
+                  setData({ ...data, email: e.target.value })
+                }
+                placeholder="Name@example.com"
+              />
+              <StemInput
+                type="password"
+                label="Password"
+                value={data.password}
+                handleChange={(e) =>
+                  setData({ ...data, password: e.target.value })
+                }
+                placeholder="Enter your password"
+              />
+              <Form.Text id="passwordHelpBlock" muted>
+                <span
+                  onClick={() =>
+                    dispatch({
+                      type: "SET_FORGET_PASSWORD",
+                      payload: true,
+                    })
                   }
-                  placeholder="Enter your password"
-                />
-                <div>
-                  <Form.Text id="passwordHelpBlock" muted>
-                    <span
-                      onClick={() =>
-                        dispatch({
-                          type: "SET_FORGET_PASSWORD",
-                          payload: true,
-                        })
-                      }
-                    >
-                      forgot Password..?
-                    </span>
-                  </Form.Text>
-                </div>
-              </Form.Group>
-
+                >
+                  forgot Password..?
+                </span>
+              </Form.Text>
               <div className="d-grid gap-2">
                 <Button
                   variant="success w-auto rounded-pill px-4 d-flex align-items-center me-auto mt-3"

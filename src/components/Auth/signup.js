@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import Image from "next/image";
 import Signupimg from "../../assets/images/signup.png";
 import { FaUserShield } from "react-icons/fa6";
+import StemInput from "../reusables/input";
 
 const StemSignup = () => {
   const [data, setData] = useState({
@@ -41,36 +42,46 @@ const StemSignup = () => {
     <>
       <Row class="d-flex align-items-center">
         <Col md={6}>
-          <Image src={Signupimg} alt="Signup" className="w-100 h-auto"/>
+          <Image src={Signupimg} alt="Signup" className="w-100 h-auto" />
         </Col>
         <Col md={6}>
           <Form>
             <Row>
               <Col md={6}>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                <Form.Group
+                  className="mb-3"
+                  controlId="exampleForm.ControlInput1"
+                >
                   <Form.Label className="mb-0">Firstname:</Form.Label>
                   <Form.Control
                     type="text"
                     placeholder="Enter your First Name"
                     value={data.firstName}
-                    onChange={(e) => setData({ ...data, firstName: e.target.value })}
+                    onChange={(e) =>
+                      setData({ ...data, firstName: e.target.value })
+                    }
                   />
                 </Form.Group>
               </Col>
               <Col md={6}>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                  <Form.Label  className="mb-0">Lastname:</Form.Label>
+                <Form.Group
+                  className="mb-3"
+                  controlId="exampleForm.ControlInput1"
+                >
+                  <Form.Label className="mb-0">Lastname:</Form.Label>
                   <Form.Control
                     type="text"
                     placeholder="Enter your Last Name"
                     value={data.lastName}
-                    onChange={(e) => setData({ ...data, lastName: e.target.value })}
+                    onChange={(e) =>
+                      setData({ ...data, lastName: e.target.value })
+                    }
                   />
                 </Form.Group>
               </Col>
             </Row>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label  className="mb-0">Phone No:</Form.Label>
+              <Form.Label className="mb-0">Phone No:</Form.Label>
               <Form.Control
                 type="number"
                 placeholder="Enter Phone no"
@@ -79,7 +90,7 @@ const StemSignup = () => {
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-              <Form.Label  className="mb-0">Email Address:</Form.Label>
+              <Form.Label className="mb-0">Email Address:</Form.Label>
               <Form.Control
                 type="email"
                 placeholder="name@example.com"
@@ -89,33 +100,36 @@ const StemSignup = () => {
             </Form.Group>
             <Row>
               <Col md={6}>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                  <Form.Label  className="mb-0">Password:</Form.Label>
-                  <Form.Control
-                    type="password"
-                    placeholder="Enter your password"
-                    value={data.password}
-                    onChange={(e) => setData({ ...data, password: e.target.value })}
-                  />
-                </Form.Group>
+                <StemInput
+                  label="Password:"
+                  type="password"
+                  placeholder="Enter your password"
+                  value={data.password}
+                  handleChange={(e) =>
+                    setData({ ...data, password: e.target.value })
+                  }
+                />
               </Col>
               <Col md={6}>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                  <Form.Label  className="mb-0">Retype-Password:</Form.Label>
-                  <Form.Control
-                    type="password"
-                    placeholder="Retype password"
-                    value={data.retypePassword}
-                    onChange={(e) =>
-                      setData({ ...data, retypePassword: e.target.value })
-                    }
-                  />
-                </Form.Group>
+                <StemInput
+                label="Re-Type Password"
+                  type="password"
+                  placeholder="Retype password"
+                  value={data.retypePassword}
+                  handleChange={(e) =>
+                    setData({ ...data, retypePassword: e.target.value })
+                  }
+                />
               </Col>
             </Row>
 
             <div className="d-grid gap-2">
-              <Button onClick={handleSubmit} variant="primary" size="md" className="w-auto rounded-pill px-4 d-flex align-items-center me-auto mt-3">
+              <Button
+                onClick={handleSubmit}
+                variant="primary"
+                size="md"
+                className="w-auto rounded-pill px-4 d-flex align-items-center me-auto mt-3"
+              >
                 <FaUserShield /> &nbsp; Signup
               </Button>
             </div>

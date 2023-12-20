@@ -94,7 +94,7 @@ const StemStrategyComponent = () => {
       strategyEdit(strategy._id, removeIdFromStrategy(strategy))
         .then(() => {
           StemToast("Successfully Edited");
-          router.push("/dashboard")
+          router.push("/dashboard");
         })
         .catch(() => {
           StemToast("please try again", "error");
@@ -102,6 +102,12 @@ const StemStrategyComponent = () => {
     } else {
       if (!strategy.name) {
         StemToast("Please fill the Strategy Name", "error");
+      } else if (!strategy.entryTime) {
+        StemToast("please fill entry date", "error");
+      } else if (!strategy.endTime) {
+        StemToast("please fill end date", "error");
+      } else if (strategy.legs.length < 0) {
+        StemToast("please select desired leg", "error");
       } else if (strategy.legs.length >= 9) {
         StemToast("selected legs need to below or equal to 9", "error");
       } else if (moment(strategy.endTime).isBefore(strategy.entryTime)) {
@@ -113,7 +119,7 @@ const StemStrategyComponent = () => {
           .then((res) => {
             console.log(res.data);
             StemToast("Succesfully Submitted");
-            router.push("/dashboard")
+            router.push("/dashboard");
           })
           .catch(() => {
             StemToast("please try again", "error");

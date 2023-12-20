@@ -383,7 +383,7 @@ const StemDashboardComponent = () => {
                                 </span>
                               </Dropdown.Item>
                               <Dropdown.Item href="#/action-2">
-                                Running Strategies{" "}
+                                Active Strategies{" "}
                                 <span bg="secondary">
                                   {runningStrategy.length}
                                 </span>
@@ -402,7 +402,7 @@ const StemDashboardComponent = () => {
                         <Form>
                           <InputGroup>
                             <Form.Control
-                              placeholder="Search Strategy"
+                              placeholder="Search Strategy Name"
                               aria-label="Search Strategy"
                               aria-describedby="basic-addon2"
                               value={strategySearch}

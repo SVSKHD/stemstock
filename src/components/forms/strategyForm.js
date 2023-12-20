@@ -77,7 +77,8 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
   useEffect(() => {
     setStrategy(data);
   }, [data]);
-  let current_time = moment(new Date()).format("HH:mm a");
+  let current_time = moment(new Date()).format("hh:mm A"); // Formats current time in 12-hour format with AM/PM
+  let end_time = moment().hour(15).minute(15).format("HH:mm");
   const legStateManage = (key, e) => {
     const value = key === "quantity" ? Number(e.target.value) : e.target.value;
     setNewleg({ ...Newleg, [key]: e.target.value });
@@ -95,6 +96,16 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
 
     setStrategy((prevStrategy) => {
       // Check if the maximum number of legs (9 in this case) has been reached
+      if (!Newleg.quantity) {
+        // Handle the case where leg.quantity is not set or falsy
+        StemToast("Quantity is required for a new leg", "error");
+        return prevStrategy;
+      }
+      if (!Newleg.instrument) {
+        // Handle the case where leg.quantity is not set or falsy
+        StemToast("please select the instrument", "error");
+        return prevStrategy;
+      }
       if (prevStrategy.legs.length < 9) {
         // Create a new leg object with updated index
         const updatedNewLeg = {
@@ -244,7 +255,7 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
                     className="form-control"
                     value={
                       strategy.immediate
-                        ? `${current_time} immediate`
+                        ? current_time
                         : strategy.entryTime || "9:15"
                     }
                     min="09:15"
@@ -280,18 +291,19 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
                   <input
                     type="time"
                     className="form-control"
-                    value={strategy.endTime}
+                    value={strategy.immediate ? end_time : strategy.endTime}
                     onChange={(e) => {
                       // Validate the time to ensure it's within the allowed range
                       const time = e.target.value;
-                      if (time >= "09:15" && time <= "15:59") {
+                      if (time >= "09:15" && time <= "15:15") {
                         updateStrategyAttribute("endTime", time);
                       } else {
                         // Optionally, reset the value or provide feedback to the user
-                        updateStrategyAttribute("endTime", "15:59");
+                        updateStrategyAttribute("endTime", "15:15");
                         // You might want to alert the user that the entered time is out of bounds
                       }
                     }}
+                    disabled={strategy.immediate}
                   />
                 </div>
               </div>

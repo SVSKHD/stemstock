@@ -3,8 +3,15 @@ import ZerodhaBrokerForm from "@/components/forms/zerodhaBrokerForm";
 import StemToast from "@/components/reusables/js/toast";
 import BrokerOperations from "@/services/broker";
 import { useEffect, useState } from "react";
-import { Row, Col, Button, Form, InputGroup } from "react-bootstrap";
-import { FaEdit, FaRegCopy } from "react-icons/fa";
+import {
+  Row,
+  Col,
+  Button,
+  Form,
+  InputGroup,
+  ButtonGroup,
+} from "react-bootstrap";
+import { FaEdit, FaRegCopy, FaTrash } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
@@ -23,7 +30,12 @@ const StemBrokerComponent = () => {
   const [copied, setCopied] = useState(false);
   const value = "https://stemfin.in/dashboard";
 
-  const { BrokerCreate, BrokerFetch, BrokerUpdate } = BrokerOperations();
+  const {
+    BrokerCreate,
+    BrokerFetch,
+    BrokerUpdate,
+    BrokerDelete,
+  } = BrokerOperations();
 
   useEffect(() => {
     if (userData) {
@@ -72,7 +84,7 @@ const StemBrokerComponent = () => {
         .catch((err) => {
           StemToast(err.message, "error");
         });
-    } else if (mode === "create") {
+    } else if (mode === "") {
       BrokerCreate(brokerDetails)
         .then((res) => {
           setId(true);
@@ -110,36 +122,76 @@ const StemBrokerComponent = () => {
     setTimeout(() => setCopied(false), 2000); // Reset copied state after 2 seconds
   };
 
+  const handleDelete = () => {
+    BrokerDelete(userData?.user?.id)
+      .then(() => {
+        setMode("");
+        setId(false);
+        StemToast("Successfully deleted");
+        setBrokerDetails({
+          clientId: "",
+          apiKey: "",
+          apiSecret: "",
+          accessToken: "",
+          user: userData ? userData.user.id : "",
+        });
+      })
+      .catch((err) => {
+        StemToast("Please try again", "error");
+      });
+  };
+
   return (
     <>
       <StemLayout>
         <Row>
           {id ? (
             <>
-              <Col>
+              <Col md={6}>
                 <h4>Clinet ID : {data ? data.clientId : ""}</h4>
                 <h5>api key and api secret are encrypted</h5>
-                <Button variant="dark" onClick={handleEdit} className="mb-2">
-                  <FaEdit size={25} />
-                </Button>
-                <InputGroup className="mb-3">
-                  <Form.Control
-                    placeholder="Recipient's username"
-                    aria-label="Recipient's username"
-                    aria-describedby="basic-addon2"
-                    value={value}
-                    readOnly={true}
-                  />
-                  <CopyToClipboard text={value} onCopy={onCopy}>
-                    <Button variant="outline-white" id="button-addon2">
-                      {copied ? (
-                        <FaRegCopy size={25} className="text-success" />
-                      ) : (
-                        <FaRegCopy size={25} />
-                      )}
-                    </Button>
-                  </CopyToClipboard>
-                </InputGroup>
+              </Col>
+
+              <Col md={6} className="text-end">
+                <ButtonGroup className="mb-1 pt-2 me-3">
+                  <Button
+                    variant="outline-primary"
+                    onClick={handleEdit}
+                    className="px-3"
+                  >
+                    <FaEdit size={20} />
+                  </Button>
+                  <Button
+                    variant="outline-danger"
+                    onClick={handleDelete}
+                    className="px-3"
+                  >
+                    <FaTrash size={20} />
+                  </Button>
+                </ButtonGroup>
+              </Col>
+              <Col md={6}>
+                <div className="mt-3">
+                  <Form.Label htmlFor="basic-url">Redirect Url:</Form.Label>
+                  <InputGroup className="mb-3">
+                    <Form.Control
+                      placeholder=""
+                      aria-label=""
+                      aria-describedby="basic-addon2"
+                      value={value}
+                      readOnly={true}
+                    />
+                    <CopyToClipboard text={value} onCopy={onCopy}>
+                      <Button variant="outline-secondary" id="button-addon2">
+                        {copied ? (
+                          <FaRegCopy size={25} className="text-success" />
+                        ) : (
+                          <FaRegCopy size={25} />
+                        )}
+                      </Button>
+                    </CopyToClipboard>
+                  </InputGroup>
+                </div>
               </Col>
             </>
           ) : (
