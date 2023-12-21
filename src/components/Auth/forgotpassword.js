@@ -6,13 +6,13 @@ import StemToast from "../reusables/js/toast";
 import { useDispatch } from "react-redux";
 
 const StemForgetPassword = () => {
-  const [data, setData] = useState({ email: "", password: "" });
+  const [data, setData] = useState({ email: "", password: "", otp: "" });
   const [disable, setDisable] = useState(false);
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const { forgotPassword } = UserOperations();
 
   const handleChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value, otp } = event.target;
     setData((prevState) => ({
       ...prevState,
       [name]: value,
@@ -70,13 +70,23 @@ const StemForgetPassword = () => {
             name="email"
           />
           {showPasswordInput ? (
-            <StemInput
-              label="Please enter your desired password"
-              value={data.password}
-              handleChange={handleChange}
-              type="password"
-              name="password"
-            />
+            <>
+             <StemInput
+                label="enter your otp"
+                type="number"
+                value={data.otp}
+                handleChange={handleChange}
+                name="otp"
+              />
+              <StemInput
+                label="Please enter your desired password"
+                value={data.password}
+                handleChange={handleChange}
+                type="password"
+                name="password"
+              />
+             
+            </>
           ) : (
             <div />
           )}

@@ -1,32 +1,36 @@
-import nodemailer from "nodemailer";
+// utils/sendEmail.js
+import nodemailer from 'nodemailer';
 
-const sendEmail = async ({ from, to, subject, text, content }) => {
+async function sendEmail({ to, subject, text, html }) {
   try {
     // Create a transporter
-    const transporter = nodemailer.createTransport({
-      service: "gmail", // Replace with your email service
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false, // true for 465, false for other ports
       auth: {
-        user: "8svskhd@gmail.com",
-        pass: "Hithesh.svsk123", // Your email password
+        user: "storyplank.com@gmail.com", // Your Gmail address
+        pass: "gdbt sauu vpqf nmgd", // Your Gmail password or App Password
       },
     });
 
-    // Set up email options
+    // Set up email data
     const mailOptions = {
-      from: from, // Sender address
-      to: to, // List of recipients
-      subject: subject, // Subject line
-      text: text, // Plain text body
-      html: `<b>${content}</b>`,
+      from: "storyplank.com@gmail.com", // Sender address
+      to, // Receiver email address
+      subject, // Subject line
+      text, // Plain text body
+      html, // HTML body (optional)
     };
 
-    // Send the email
+    // Send email
     await transporter.sendMail(mailOptions);
-    console.log("Email sent successfully");
+    console.log('Email sent successfully');
   } catch (error) {
-    console.error("Error sending email:", error);
-    throw error; // Or handle the error as per your application's need
+    console.error('Error sending email:', error);
+    throw error;
   }
-};
+}
 
 export default sendEmail;

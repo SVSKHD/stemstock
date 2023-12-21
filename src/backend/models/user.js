@@ -34,6 +34,9 @@ const UserSchema = new mongoose.Schema({
   lastPasswordUpdated: {
     type: Date,
   },
+  otp: {
+    type: Number,
+  },
   role: {
     type: Number,
     default: 2,
