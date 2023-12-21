@@ -70,7 +70,7 @@ const StrategyCard = ({
                       className="btn-sm"
                       onClick={zerodhaLogin}
                     >
-                      Login With Zerodha
+                      Login With Broker
                     </Button>
                   )}
                 </span>

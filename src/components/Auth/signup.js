@@ -22,7 +22,6 @@ const StemSignup = () => {
 
   const handleSubmit = async () => {
     if (data.password === data.retypePassword) {
-      StemToast("Password has matched", "success");
       const { retypePassword, ...dataToSubmit } = data;
       console.log(dataToSubmit);
       await StemUserSignup(dataToSubmit)
@@ -33,8 +32,9 @@ const StemSignup = () => {
             payload: false,
           });
         })
-        .catch(() => {
-          StemToast("please try again", "error");
+        .catch((err) => {
+          console.log(err?.response.data);
+          StemToast(`${err?.response.data}`, "error");
         });
     }
   };
@@ -112,7 +112,7 @@ const StemSignup = () => {
               </Col>
               <Col md={6}>
                 <StemInput
-                label="Re-Type Password"
+                  label="Re-Type Password"
                   type="password"
                   placeholder="Retype password"
                   value={data.retypePassword}

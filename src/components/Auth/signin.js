@@ -48,8 +48,8 @@ const StemSignin = () => {
         });
         Router.push("/dashboard");
       })
-      .catch(() => {
-        StemToast("Sorry please try again", "error");
+      .catch((err) => {
+        StemToast(`${err.message}`, "error");
         setTimeout(() => setLoading(false), 3000);
       });
   };

@@ -255,7 +255,7 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
                     className="form-control"
                     value={
                       strategy.immediate
-                        ? current_time
+                        ? (strategy.entryTime = current_time)
                         : strategy.entryTime || "9:15"
                     }
                     min="09:15"
@@ -291,7 +291,11 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
                   <input
                     type="time"
                     className="form-control"
-                    value={strategy.immediate ? end_time : strategy.endTime}
+                    value={
+                      strategy.immediate
+                        ? (strategy.endTime = end_time)
+                        : strategy.endTime
+                    }
                     onChange={(e) => {
                       // Validate the time to ensure it's within the allowed range
                       const time = e.target.value;

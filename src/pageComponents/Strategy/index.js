@@ -103,11 +103,11 @@ const StemStrategyComponent = () => {
       if (!strategy.name) {
         StemToast("Please fill the Strategy Name", "error");
       } else if (!strategy.entryTime) {
-        StemToast("please fill entry date", "error");
+        StemToast("please fill entry time", "error");
       } else if (!strategy.endTime) {
-        StemToast("please fill end date", "error");
-      } else if (strategy.legs.length < 0) {
-        StemToast("please select desired leg", "error");
+        StemToast("please fill end time", "error");
+      } else if (strategy.legs.length <= 0) {
+        StemToast("please fill any one leg", "error");
       } else if (strategy.legs.length >= 9) {
         StemToast("selected legs need to below or equal to 9", "error");
       } else if (moment(strategy.endTime).isBefore(strategy.entryTime)) {
