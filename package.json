@@ -24,6 +24,7 @@
     "next-redux-wrapper": "^8.1.0",
     "node-cron": "^3.0.2",
     "nodemailer": "^6.9.7",
+    "nodemailer-smtp-transport": "^2.7.4",
     "query-string": "^8.1.0",
     "react": "^18",
     "react-bootstrap": "^2.9.1",
