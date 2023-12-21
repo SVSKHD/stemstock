@@ -29,6 +29,7 @@ const StemInput = ({
               value={value}
               onChange={handleChange}
               name={name}
+              autoComplete="off"
             />
             <Button
               variant="outline-secondary"
@@ -57,6 +58,7 @@ const StemInput = ({
               value={value}
               onChange={handleChange}
               name={name}
+              autoComplete="off"
             />
           </div>
         </Form.Group>
