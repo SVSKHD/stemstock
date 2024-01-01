@@ -37,7 +37,7 @@ const StemHome = () => {
         payload: null,
       });
       sessionStorage.removeItem("user");
-      StemToast("Logged Out", "error");
+      StemToast("Please Login", "error");
     } else if (hours>=6) {
       console.log("logout")
       dispatch({

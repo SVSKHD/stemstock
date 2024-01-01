@@ -74,6 +74,9 @@ const StemStrategyComponent = () => {
   const [strategy, setStrategy] = useState(straddleStrategy);
   const [mode, setMode] = useState("");
   useEffect(() => {
+    if (!userData) {
+      router.push("/");
+    }
     const id = query.id;
     if (id) {
       strategyById(id).then((res) => {

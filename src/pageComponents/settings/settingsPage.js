@@ -6,22 +6,29 @@ import { useDispatch, useSelector } from "react-redux";
 import { FaPen } from "react-icons/fa";
 import UserOperations from "@/services/user";
 import StemToast from "@/components/reusables/js/toast";
+import { useRouter } from "next/router";
 
 const StemSettingsPage = () => {
   const [mode, setMode] = useState("");
   const { userData } = useSelector((state) => ({ ...state }));
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const [details, setDetails] = useState({
-    email: userData.user?.email,
-    firstName: userData.user?.firstname,
-    lastName: userData.user?.lastname,
-    phoneNo: userData.user?.phone,
+    email: userData?.user?.email,
+    firstName: userData?.user?.firstname,
+    lastName: userData?.user?.lastname,
+    phoneNo: userData?.user?.phone,
   });
 
   const { userUpdate } = UserOperations();
+  const router = useRouter();
+  useEffect(() => {
+    if (!userData) {
+      router.push("/");
+    }
+  }, [userData]);
 
   const handleSubmit = () => {
-    userUpdate(userData.user.id, details)
+    userUpdate(userData?.user.id, details)
       .then((res) => {
         StemToast("successfully Update");
         console.log("user", res.data);
@@ -52,7 +59,7 @@ const StemSettingsPage = () => {
       <StemLayout>
         <h1>
           Hello{" "}
-          <span className="text-success">"{userData.user.firstname}"</span>
+          <span className="text-success">"{userData?.user?.firstname}"</span>
           profile settings
         </h1>
         <hr />

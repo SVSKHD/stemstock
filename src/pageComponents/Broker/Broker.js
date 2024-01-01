@@ -42,6 +42,9 @@ const StemBrokerComponent = () => {
   } = BrokerOperations();
 
   useEffect(() => {
+    if(!userData){
+      router.push("/")
+    }
     if (userData) {
       BrokerFetch(userData ? userData.user.id : "")
         .then((res) => {
