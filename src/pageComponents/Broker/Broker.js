@@ -12,11 +12,14 @@ import {
   ButtonGroup,
 } from "react-bootstrap";
 import { FaEdit, FaRegCopy, FaTrash } from "react-icons/fa";
-import { useSelector } from "react-redux";
+import { useSelector , useDispatch} from "react-redux";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import axios from "axios"
+import { useRouter } from "next/router";
 
 const StemBrokerComponent = () => {
-  const { userData } = useSelector((state) => ({ ...state }));
+  const { userData, broker } = useSelector((state) => ({ ...state }));
+  const dispatch = useDispatch()
   const [brokerDetails, setBrokerDetails] = useState({
     clientId: "",
     apiKey: "",
@@ -29,6 +32,7 @@ const StemBrokerComponent = () => {
   const [mode, setMode] = useState("create");
   const [copied, setCopied] = useState(false);
   const value = "https://stemfin.in/dashboard";
+  const router = useRouter()
 
   const {
     BrokerCreate,
@@ -84,7 +88,7 @@ const StemBrokerComponent = () => {
         .catch((err) => {
           StemToast(err.message, "error");
         });
-    } else if (mode === "") {
+    } else {
       BrokerCreate(brokerDetails)
         .then((res) => {
           setId(true);
@@ -128,6 +132,7 @@ const StemBrokerComponent = () => {
         setMode("");
         setId(false);
         StemToast("Successfully deleted");
+        
         setBrokerDetails({
           clientId: "",
           apiKey: "",
@@ -138,6 +143,25 @@ const StemBrokerComponent = () => {
       })
       .catch((err) => {
         StemToast("Please try again", "error");
+      });
+  };
+
+  const zerodhaLogin = () => {
+    axios
+      .get(`/api/zerodha/login?id=${userData.user.id}`)
+      .then((res) => {
+        if (res.data) {
+          // Redirect the user to Zerodha login page
+          window.location.href = res.data.loginUrl;
+        } else {
+          console.error("Failed to get Zerodha login URL");
+          // Handle the error appropriately (e.g., show an error message to the user)
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching Zerodha login URL:", error);
+        StemToast(error.message, "error");
+        router.push("/broker")
       });
   };
 
@@ -157,6 +181,7 @@ const StemBrokerComponent = () => {
                   <Button
                     variant="outline-primary"
                     onClick={handleEdit}
+                    disabled={broker}
                     className="px-3"
                   >
                     <FaEdit size={20} />
@@ -167,6 +192,9 @@ const StemBrokerComponent = () => {
                     className="px-3"
                   >
                     <FaTrash size={20} />
+                  </Button>
+                  <Button variant="dark" onClick={zerodhaLogin}>
+                    Broker Login
                   </Button>
                 </ButtonGroup>
               </Col>

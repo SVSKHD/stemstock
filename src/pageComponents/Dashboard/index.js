@@ -34,13 +34,15 @@ const StemDashboardComponent = () => {
     strategyDelete,
     strategyEnable,
   } = StrategyOperations();
-  const { userData, zerodhaUser } = useSelector((state) => ({ ...state }));
+  const { userData, zerodhaUser, broker } = useSelector((state) => ({
+    ...state,
+  }));
   const [strategy, setStrategy] = useState([]); // Corrected the typo in variable name
   const [strategySearch, setStrategySearch] = useState("");
   const [deleteId, setDeleteId] = useState({});
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [run, seTRun] = useState(false);
-  const { zerodhaPlaceOrder , zerodhaCloseOrder } = zerodhaOperations();
+  const { zerodhaPlaceOrder, zerodhaCloseOrder } = zerodhaOperations();
   const router = useRouter();
   const { query } = router;
   const dispatch = useDispatch();
@@ -51,31 +53,6 @@ const StemDashboardComponent = () => {
       Router.push("/");
     }
   }, [userData, Router]);
-
-  const LivePrice = () => {
-    const exchange = "NSE";
-    const tradingsymbol = "NIFTY";
-
-    axios
-      .get("https://api.kite.trade/instruments", {
-        params: {
-          exchange,
-          tradingsymbol,
-        },
-      })
-      .then((response) => {
-        if (response.data.length > 0) {
-          const instrument = response.data[0]; // Assuming you want the first instrument in the list.
-          const instrumentToken = instrument.instrument_token;
-          console.log("Instrument Token:", instrumentToken);
-        } else {
-          console.log("Instrument not found.");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
 
   useEffect(() => {
     strategyFetch(userData ? userData.user.id : "")
@@ -101,8 +78,6 @@ const StemDashboardComponent = () => {
       .catch((err) => {
         console.log("err", err);
       });
-    console.log("strategies", strategy);
-    LivePrice();
   }, [userData, setStrategy]);
 
   useEffect(() => {
@@ -257,6 +232,12 @@ const StemDashboardComponent = () => {
     //   });
   };
 
+  const handleBrokerLogin = () => {
+    if (!broker) {
+      router.push("/broker");
+    }
+  };
+
   const handleEdit = (data) => {
     router.push(`/strategy?id=${data._id}`);
   };
@@ -327,7 +308,7 @@ const StemDashboardComponent = () => {
 
   const handleStrategyRunClose = (data) => {
     console.log("delete", data);
-    zerodhaCloseOrder(userData.user.id , data)
+    zerodhaCloseOrder(userData.user.id, data);
   };
   return (
     <>
@@ -454,6 +435,7 @@ const StemDashboardComponent = () => {
                       handleStrategyRun={handleStrategyRun}
                       handleStatusChange={handleStatusChange}
                       handleZerodhaLogout={() => handleZerodhaLogout}
+                      handleBrokerLogin={handleBrokerLogin}
                       run={run}
                     />
                   </>

@@ -31,6 +31,10 @@ const StemIndexLayout = (props) => {
       payload: true,
     });
     dispatch({
+      type: "SET_FORGET_PASSWORD",
+      payload: false,
+    });
+    dispatch({
       type: "SET_AUTH_STATUS_VISIBLE",
       payload: true,
     });
@@ -39,6 +43,10 @@ const StemIndexLayout = (props) => {
     dispatch({
       type: "SET_AUTH_DIALOG_VISIBLE",
       payload: true,
+    });
+    dispatch({
+      type: "SET_FORGET_PASSWORD",
+      payload: false,
     });
     dispatch({
       type: "SET_AUTH_STATUS_VISIBLE",

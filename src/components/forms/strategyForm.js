@@ -10,6 +10,7 @@ import moment from "moment/moment";
 const StrategyForm = ({ data, legData, onSave, mode }) => {
   //select options
   const instrumenOptions = [
+    { value: "1", displayText: "none" },
     { value: "1", displayText: "BankNifty" },
     { value: "2", displayText: "Nifty" },
     { value: "3", displayText: "Finnifty" },
@@ -27,6 +28,7 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
     { value: "2", displayText: "PE" },
   ];
   const strikeTypeOptions = [
+    { value: "0", displayText: "Atm select" },
     { value: "1", displayText: "ATM-100" },
     { value: "2", displayText: "ATM-50" },
     { value: "3", displayText: "ATM" },
@@ -99,11 +101,6 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
       if (!Newleg.quantity) {
         // Handle the case where leg.quantity is not set or falsy
         StemToast("Quantity is required for a new leg", "error");
-        return prevStrategy;
-      }
-      if (!Newleg.instrument) {
-        // Handle the case where leg.quantity is not set or falsy
-        StemToast("please select the instrument", "error");
         return prevStrategy;
       }
       if (prevStrategy.legs.length < 9) {
@@ -786,7 +783,7 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
                     <div className="mb-1">
                       <StemPlaceHolderInput
                         type="number"
-                        value={strategy.stopLossValue}
+                        value={strategy.overAllStopLossValue}
                         disabled={
                           !strategy.overAllStopLossType ||
                           strategy.overAllStopLossType === "None"
@@ -794,7 +791,7 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
                         placeholder="OverAll Type Stop Loss"
                         handleChange={(e) =>
                           updateStrategyAttribute(
-                            "stopLossValue",
+                            "overAllStopLossValue",
                             e.target.value
                           )
                         }
@@ -831,6 +828,7 @@ const StrategyForm = ({ data, legData, onSave, mode }) => {
                       </div>
                     </div>
                   </div>
+                  {/* overAllMTMValue */}
                   <div className="col">
                     <div className="mb-1">
                       <StemSelect

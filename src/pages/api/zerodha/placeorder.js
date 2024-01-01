@@ -53,7 +53,7 @@ router.post(async (req, res) => {
           const instrument = instruments.find(
             (inst) => inst.tradingsymbol === symbol
           );
-          console.log("instrument", instrument)
+          console.log("instrument", instrument);
 
           if (!instrument) {
             console.error(`Instrument not found for ${symbol}`);
@@ -76,7 +76,11 @@ router.post(async (req, res) => {
       try {
         // If the symbol is 'NIFTY', replace it with 'NIFTY 50'
         if (indexSymbol === "NIFTY") {
-          indexSymbol = "NIFTY 50";
+          return "NIFTY 50";
+        } else if (indexSymbol === "BANKNIFTY") {
+          return "NIFTY BANK";
+        } else if (indexSymbol === "FINNIFTY") {
+          return "NIFTY FINANCIAL SERVICES";
         }
 
         // Fetch LTP for the index
@@ -146,46 +150,46 @@ router.post(async (req, res) => {
     function getThursdaysOfMonth(year, month) {
       let date = new Date(year, month, 1);
       let thursdays = [];
-    
+
       // Adjust the date to the first Thursday
-      while (date.getDay() !== 4) { // 4 is Thursday
+      while (date.getDay() !== 4) {
+        // 4 is Thursday
         date.setDate(date.getDate() + 1);
       }
-    
+
       // Iterate over all Thursdays in the month
       while (date.getMonth() === month) {
         thursdays.push(new Date(date)); // Add the date to the array
         date.setDate(date.getDate() + 7);
       }
-    
+
       return thursdays;
     }
-    
+
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth(); // Note: January is 0, December is 11
-    
+
     const thursdaysInMonth = getThursdaysOfMonth(currentYear, currentMonth);
-    
+
     function getNextUpcomingThursday() {
       let today = new Date();
       today.setHours(0, 0, 0, 0); // Reset the time part to avoid any time-related issues
-    
+
       // Find the next Thursday from today
       let nextThursday = new Date(today);
-      nextThursday.setDate(today.getDate() + (4 - today.getDay() + 7) % 7);
-    
+      nextThursday.setDate(today.getDate() + ((4 - today.getDay() + 7) % 7));
+
       // If today is Thursday, add 7 days to get the next Thursday
       if (today.getDay() === 4) {
         nextThursday.setDate(nextThursday.getDate() + 7);
       }
-    
+
       return nextThursday.getDate(); // Return only the date part
     }
-    
+
     const upcomingThursdayDate = getNextUpcomingThursday();
     console.log(upcomingThursdayDate);
     // Outputs the date of the nearest next Thursday
-    
 
     // Outputs the date of the nearest Thursday
 
@@ -227,7 +231,7 @@ router.post(async (req, res) => {
 
     const BooleanReturns = (data, value) => {
       if (data === true) {
-        console.log("stop",value)
+        console.log("stop", value);
       } else {
         return null;
       }
@@ -239,6 +243,15 @@ router.post(async (req, res) => {
       }
     };
 
+    const quantityGenerate = (symbol, quantity) => {
+      if (symbol === "NIFTY") {
+        return 50 * quantity;
+      } else if (symbol === "FINIFTY") {
+        return 40 * quantity;
+      } else if (symbol === "BANKNIFTY") {
+        return 15 * quantity;
+      }
+    };
     //placing orders
     const placeOrderForLeg = async (leg) => {
       const atmStrikePrice = await getATMStrikePrice(
@@ -253,9 +266,11 @@ router.post(async (req, res) => {
           upcomingThursdayDate
         ),
         transaction_type: leg.position === "BUY" ? "BUY" : "SELL", // or "SELL" depending on your strategy
-        quantity: leg.quantity * 50, // The number of contracts you wish to buy/sell
+        quantity: quantityGenerate(leg.instrument.toUpperCase(), leg.quantity), // The number of contracts you wish to buy/sell
         order_type: "MARKET", // or "LIMIT" if you want to specify a price
         product: "MIS", // or "MIS" for intraday trades, "CNC" for equities
+        stoploss: 2, // Stop loss in absolute points
+        trailing_stoploss: 1, // Optional: Trailing stop loss in absolute points
         // stoploss: BooleanReturns(leg.stopLoss, parseFloat(leg.stopLossValue)),
       };
 

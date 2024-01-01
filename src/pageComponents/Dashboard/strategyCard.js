@@ -13,6 +13,7 @@ const StrategyCard = ({
   handleZerodhaLogout,
   run,
   handleRun,
+  handleBrokerLogin,
 }) => {
   return (
     <>
@@ -65,11 +66,7 @@ const StrategyCard = ({
                       Logout
                     </Button>
                   ) : (
-                    <Button
-                      variant="primary"
-                      className="btn-sm"
-                      onClick={zerodhaLogin}
-                    >
+                    <Button onClick={handleBrokerLogin}>
                       Login With Broker
                     </Button>
                   )}
@@ -79,7 +76,7 @@ const StrategyCard = ({
                     MTM
                   </span>
                   <span className="border border-body px-3 py-2 bg-secondary text-white rounded-end">
-                    {strategy.overallMTM}
+                    {strategy.overAllMTMValue}
                   </span>
                 </span>
               </div>
