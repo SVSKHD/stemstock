@@ -47,10 +47,12 @@ const StemSignin = () => {
           payload: false,
         });
         Router.push("/dashboard");
+        setLoading(false)
       })
-      .catch((err) => {
-        StemToast(`${err.message}`, "error");
+      .catch(() => {
+        StemToast(`Wrong credentials`, "error");
         setTimeout(() => setLoading(false), 3000);
+        setLoading(false)
       });
   };
   return (
@@ -133,18 +135,27 @@ const StemSignin = () => {
                 </span>
               </Form.Text>
               <div className="d-grid gap-2">
-                <Button
-                  variant="success w-auto rounded-pill px-4 d-flex align-items-center me-auto mt-3"
-                  onClick={handleSubmit}
-                  size="md"
-                >
-                  <FaUserShield /> &nbsp;
-                  {loading ? (
-                    <Spinner animation="border" variant="light" />
-                  ) : (
-                    "Login"
-                  )}
+              {loading ? (
+                <Button variant="primary" disabled>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                  <span className="visually-hidden">Loading...</span>
                 </Button>
+              ) : (
+                <Button
+                  onClick={handleSubmit}
+                  variant="primary"
+                  size="md"
+                  className="w-auto rounded-pill px-4 d-flex align-items-center me-auto mt-3"
+                >
+                  <FaUserShield /> &nbsp; Login
+                </Button>
+              )}
               </div>
             </Form>
           </Col>

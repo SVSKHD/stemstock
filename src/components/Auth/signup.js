@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button, Row, Col, Spinner } from "react-bootstrap";
 import StemUserOperations from "./authOperations";
 import StemToast from "../reusables/js/toast";
 import { useDispatch } from "react-redux";
@@ -17,13 +17,14 @@ const StemSignup = () => {
     phoneNo: "",
     retypePassword: "",
   });
+  const [loading, setLoading] = useState(false);
   const { StemUserSignup } = StemUserOperations();
   const dispatch = useDispatch();
 
   const handleSubmit = async () => {
     if (data.password === data.retypePassword) {
+      setLoading(true);
       const { retypePassword, ...dataToSubmit } = data;
-      console.log(dataToSubmit);
       await StemUserSignup(dataToSubmit)
         .then(() => {
           StemToast("Succesfull", "success");
@@ -31,10 +32,12 @@ const StemSignup = () => {
             type: "SET_AUTH_STATUS_VISIBLE",
             payload: false,
           });
+          setLoading(false);
         })
         .catch((err) => {
           console.log(err?.response.data);
           StemToast(`${err?.response.data}`, "error");
+          setLoading(false);
         });
     }
   };
@@ -124,14 +127,27 @@ const StemSignup = () => {
             </Row>
 
             <div className="d-grid gap-2">
-              <Button
-                onClick={handleSubmit}
-                variant="primary"
-                size="md"
-                className="w-auto rounded-pill px-4 d-flex align-items-center me-auto mt-3"
-              >
-                <FaUserShield /> &nbsp; Signup
-              </Button>
+              {loading ? (
+                <Button variant="primary" disabled>
+                  <Spinner
+                    as="span"
+                    animation="border"
+                    size="sm"
+                    role="status"
+                    aria-hidden="true"
+                  />
+                  <span className="visually-hidden">Loading...</span>
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleSubmit}
+                  variant="primary"
+                  size="md"
+                  className="w-auto rounded-pill px-4 d-flex align-items-center me-auto mt-3"
+                >
+                  <FaUserShield /> &nbsp; Signup
+                </Button>
+              )}
             </div>
           </Form>
         </Col>

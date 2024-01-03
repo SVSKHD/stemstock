@@ -4,18 +4,18 @@ import nodemailer from "nodemailer";
 export default async function POST(request) {
   try {
     const transporter = nodemailer.createTransport({
-      service: "google",
+      service: "gmail",
       host: "smt.google.com",
       port: 465,
       secure: true,
       auth: {
-        user: "storyplank.com@gmail.com",
-        pass: "gdbt sauu vpqf nmgd",
+        user: "8svskhd@gmail.com",
+        pass: "huvekurwgftfdbwz",
       },
     });
 
     const mailOption = {
-      from: "storyplank.com@gmail.com",
+      from: "8svskhd@gmail.com",
       to: "aquakart8@gmail.com",
       subject: "Send Email Tutorial",
       html: `
@@ -35,4 +35,33 @@ export default async function POST(request) {
       { status: 500 }
     );
   }
+}
+
+
+var nodemailer = require("nodemailer");
+//-----------------------------------------------------------------------------
+export async function sendMail(subject, toEmail, otpText) {
+  var transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "8svskhd@gmail.com",
+      pass: "huvekurwgftfdbwz",
+    },
+  });
+
+  var mailOptions = {
+    from: "8svskhd@gmail.com",
+    to: toEmail,
+    subject: subject,
+    text: otpText,
+  };
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      throw new Error(error);
+    } else {
+      console.log("Email Sent");
+      return true;
+    }
+  });
 }
