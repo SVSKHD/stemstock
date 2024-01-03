@@ -434,7 +434,7 @@ const StemDashboardComponent = () => {
                       handleStrategyRunClose={(r) => handleStrategyRunClose(r)}
                       handleStrategyRun={handleStrategyRun}
                       handleStatusChange={handleStatusChange}
-                      handleZerodhaLogout={() => handleZerodhaLogout}
+                      handleZerodhaLogout={handleZerodhaLogout}
                       handleBrokerLogin={handleBrokerLogin}
                       run={run}
                     />
