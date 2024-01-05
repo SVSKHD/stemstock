@@ -61,7 +61,7 @@ const StrategyCard = ({
             <Col md={4}>
               <div className="d-flex align-items-center justify-content-center">
                 <span className="pe-3">
-                  {zerodhaUser.requestToken && zerodhaUser.accessToken ? (
+                  {zerodhaUser.accessToken ? (
                     <Button variant="danger" onClick={handleZerodhaLogout}>
                       Logout
                     </Button>
