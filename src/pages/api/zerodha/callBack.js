@@ -13,7 +13,6 @@ App.post(async (req, res) => {
     const keys = await ZerodhaBroker.findOne({ user: id });
     const APIKEY = keys.apiKey;
     const SECRET = keys.apiSecret;
-    console.log("keys", APIKEY, SECRET);
     if (!requestToken) {
       return res.status(400).json({ error: "Request token is missing" });
     }
@@ -27,7 +26,7 @@ App.post(async (req, res) => {
 
     const updatedBroker = await ZerodhaBroker.findOneAndUpdate(
         { user: id },
-        { accessToken },
+        { accessToken , requestToken},
         { new: true }
       );
 

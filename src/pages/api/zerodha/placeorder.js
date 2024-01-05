@@ -7,6 +7,11 @@ import ZerodhaBroker from "@/backend/models/broker";
 const router = createRouter();
 
 router.post(async (req, res) => {
+  headers: {
+    'Access-Control-Allow-Origin': origin || '*',
+    'Access-Control-Allow-Methods': 'GET,OPTIONS,PATCH,DELETE,POST,PUT',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+}
   try {
     const body = req.body;
     const legs = req.body.legs;
@@ -43,27 +48,22 @@ router.post(async (req, res) => {
       try {
         const instruments = await kite.getInstruments("NSE");
         let quotes = {};
-
+    
         for (let symbol of symbols) {
-          // If the symbol is 'NIFTY', replace it with 'NIFTY 50'
-          if (symbol === "NIFTY") {
-            symbol = "NIFTY 50";
-          }
-
+          // Find the correct instrument
           const instrument = instruments.find(
             (inst) => inst.tradingsymbol === symbol
           );
-          console.log("instrument", instrument);
-
           if (!instrument) {
             console.error(`Instrument not found for ${symbol}`);
             continue;
           }
-
+    
+          // Fetch the quote
           const quote = await kite.getQuote(`NSE:${instrument.tradingsymbol}`);
           quotes[symbol] = quote[`NSE:${instrument.tradingsymbol}`].last_price;
         }
-
+    
         console.log("Quotes:", quotes);
         return quotes;
       } catch (err) {
@@ -71,40 +71,45 @@ router.post(async (req, res) => {
         throw err;
       }
     };
-
+    
     const getATMStrikePrice = async (indexSymbol) => {
       try {
-        // If the symbol is 'NIFTY', replace it with 'NIFTY 50'
-        if (indexSymbol === "NIFTY") {
-          return "NIFTY 50";
-        } else if (indexSymbol === "BANKNIFTY") {
-          return "NIFTY BANK";
-        } else if (indexSymbol === "FINNIFTY") {
-          return "NIFTY FINANCIAL SERVICES";
+        // Replace index symbols with their full names before fetching LTP
+        let fullSymbol = indexSymbol;
+        switch (indexSymbol) {
+          case "NIFTY":
+            fullSymbol = "NIFTY 50";
+            break;
+          case "BANKNIFTY":
+            fullSymbol = "NIFTY BANK";
+            break;
+          case "FINNIFTY":
+            fullSymbol = "NIFTY FINANCIAL SERVICES";
+            break;
+          // Add more cases if needed
         }
-
+    
+        console.log("Index Symbol:", fullSymbol);
+    
         // Fetch LTP for the index
-        const ltpData = await getIndicesLTP([indexSymbol]);
-        const indexLTP = ltpData[indexSymbol];
-
+        const ltpData = await getIndicesLTP([fullSymbol]);
+        const indexLTP = ltpData[fullSymbol];
+    
         if (!indexLTP) {
-          throw new Error(`LTP not found for ${indexSymbol}`);
+          throw new Error(`LTP not found for ${fullSymbol}`);
         }
-
+    
         // Assuming strike prices are in increments of 100 (adjust as needed)
         const strikeIncrement = 100;
-        const atmStrike =
-          Math.round(indexLTP / strikeIncrement) * strikeIncrement;
-
+        const atmStrike = Math.round(indexLTP / strikeIncrement) * strikeIncrement;
+        console.log("ATM Strike Price for", indexSymbol, ":", atmStrike);
         return atmStrike;
       } catch (error) {
-        console.error(
-          `Error calculating ATM strike for ${indexSymbol}:`,
-          error
-        );
+        console.error(`Error calculating ATM strike for ${indexSymbol}:`, error);
         throw error;
       }
     };
+    
 
     // Function to get the ATM strike price
     // const getATMStrikePrice = async (indexSymbol) => {
@@ -219,7 +224,7 @@ router.post(async (req, res) => {
       const day = ("0" + new Date().getDate()).slice(-2);
 
       console.log(
-        "instrument",
+        "instrument placed for trade",
         `${instrument.toUpperCase()}${year}${
           months[month - 1]
         }${expiryDate}${strikePrice}${optionType.toUpperCase()}`

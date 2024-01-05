@@ -13,6 +13,7 @@ const zerodhaBrokerSchema = new mongoose.Schema({
   apiKey: { type: String, unique: true },
   apiSecret: { type: String, unique: true },
   accessToken: { type: String, unique: true },
+  requestToken: { type: String, unique: true },
 });
 
 const ZerodhaBroker =
