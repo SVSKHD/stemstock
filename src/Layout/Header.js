@@ -25,7 +25,7 @@ const StemNavBar = () => {
       <Navbar bg="light" data-bs-theme="light" className="py-0 shadow-sm">
         <Container fluid>
           <Navbar.Brand href="/" className="border-end border-light-subtle">
-            <Image src={logo} className="w-100" alt="Stem Fin" />
+            <b>UTBIZ</b>
           </Navbar.Brand>
           {userData ? (
             <>

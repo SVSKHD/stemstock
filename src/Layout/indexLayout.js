@@ -60,7 +60,7 @@ const StemIndexLayout = (props) => {
         <Navbar bg="white" data-bs-theme="light" className="shadow-sm py-0">
           <Container>
             <Navbar.Brand href="/">
-              <Image src={logo} className="w-100" alt="logo" />
+              <b>UTBIZ</b>
             </Navbar.Brand>
             <Nav className="ms-auto">
               {userData ? (

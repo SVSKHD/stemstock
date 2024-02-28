@@ -48,7 +48,7 @@ const StemHome = () => {
     }else if(!userData){
       console.log("not logged in")
     }
-  },[])
+  },[dispatch , userData])
   const handleTrading = () => {
     if (!userData?.user) {
       dispatch({
@@ -69,13 +69,10 @@ const StemHome = () => {
               <Col md={5}>
                 <h6 className="text-secondary mb-0">Welcome To</h6>
                 <h1 className="display-1 display4 fw-bold text-uppercase text-theme">
-                  Stem FIN
+                  UTBIZ
                 </h1>
                 <p className="mt-3">
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo.
+                  Login with multiple brokers.
                 </p>
                 <div className="mt-4">
                   <Button

@@ -25,7 +25,7 @@ const StemSettingsPage = () => {
     if (!userData) {
       router.push("/");
     }
-  }, [userData]);
+  }, [userData , router]);
 
   const handleSubmit = () => {
     userUpdate(userData?.user.id, details)

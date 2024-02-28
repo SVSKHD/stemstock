@@ -78,7 +78,7 @@ const StemDashboardComponent = () => {
       .catch((err) => {
         console.log("err", err);
       });
-  }, [userData, setStrategy]);
+  }, [userData, setStrategy,strategyFetch]);
 
   useEffect(() => {
     if (!userData) {

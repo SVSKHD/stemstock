@@ -84,7 +84,7 @@ const StemStrategyComponent = () => {
         setMode("EDIT");
       });
     }
-  }, [query]);
+  }, [query, strategyById , router]);
 
   const removeIdFromStrategy = (strategy) => {
     const { _id, __v, ...strategyWithoutId } = strategy;
